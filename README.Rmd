@@ -9,3 +9,8 @@ knitr::opts_chunk$set(echo = TRUE)
 
 # Final Project DS202
 ## Marissa Baietto, Ryan Dorle, Braeden Collings
+
+```{r}
+read.csv
+```
+
