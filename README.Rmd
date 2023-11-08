@@ -1,1 +1,7 @@
-Names
+---
+title: 'Final Project'
+author: "Marissa Baietto, Ryan Dorle, Braeden Collings"
+date: "12/11/2023"
+output: html_document
+---
+
