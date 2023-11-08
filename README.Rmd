@@ -1,7 +1,11 @@
 ---
-title: 'Final Project'
-author: "Marissa Baietto, Ryan Dorle, Braeden Collings"
-date: "12/11/2023"
-output: html_document
+output: github_document
 ---
 
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+# Final Project
