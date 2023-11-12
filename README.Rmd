@@ -9,8 +9,67 @@ knitr::opts_chunk$set(echo = TRUE)
 
 # Final Project DS202
 ## Marissa Baietto, Ryan Dorle, Braeden Collings
+Importing the accident datasets.
+```{r}
+library(readr)
+accident_2017 <- read_csv("2017.csv")
+accident_2018 <- read_csv("2018.csv")
+accident_2019 <- read_csv("2019.csv")
+accident_2020 <- read_csv("2020.csv")
+accident_2021 <- read_csv("2021.csv")
+```
 
 ```{r}
-read.csv
+library(tidyverse)
 ```
+
+Selecting the variables we need.
+```{r}
+accident_2017 <- accident_2017 %>% select(STATENAME, ST_CASE, PERNOTMVIT, VE_FORMS, PVH_INVL, PERMVIT, COUNTY, CITY, MONTH, DAY, YEAR, HOUR, MINUTE, RUR_URBNAME, LATITUDE, LONGITUD, HARM_EVNAME, MAN_COLLNAME, RELJCT2NAME, WRK_ZONENAME, LGT_CONDNAME, WEATHER1NAME, SCH_BUSNAME, FATALS, DRUNK_DR)
+accident_2018 <- accident_2018 %>% select(STATENAME, ST_CASE, PERNOTMVIT, VE_FORMS, PVH_INVL, PERMVIT, COUNTY, CITY, MONTH, DAY, YEAR, HOUR, MINUTE, RUR_URBNAME, LATITUDE, LONGITUD, HARM_EVNAME, MAN_COLLNAME, RELJCT2NAME, WRK_ZONENAME, LGT_CONDNAME, WEATHER1NAME, SCH_BUSNAME, FATALS, DRUNK_DR)
+accident_2019 <- accident_2019 %>% select(STATENAME, ST_CASE, PERNOTMVIT, VE_FORMS, PVH_INVL, PERMVIT, COUNTY, CITY, MONTH, DAY, YEAR, HOUR, MINUTE, RUR_URBNAME, LATITUDE, LONGITUD, HARM_EVNAME, MAN_COLLNAME, RELJCT2NAME, WRK_ZONENAME, LGT_CONDNAME, WEATHER1NAME, SCH_BUSNAME, FATALS, DRUNK_DR)
+accident_2020 <- accident_2020 %>% select(STATENAME, ST_CASE, PERNOTMVIT, VE_FORMS, PVH_INVL, PERMVIT, COUNTY, CITY, MONTH, DAY, YEAR, HOUR, MINUTE, RUR_URBNAME, LATITUDE, LONGITUD, HARM_EVNAME, MAN_COLLNAME, RELJCT2NAME, WRK_ZONENAME, LGT_CONDNAME, WEATHERNAME, SCH_BUSNAME, FATALS, DRUNK_DR)
+accident_2021 <- accident_2021 %>% select(STATENAME, ST_CASE, PERNOTMVIT, VE_FORMS, PVH_INVL, PERMVIT, COUNTY, CITY, MONTH, DAY, YEAR, HOUR, MINUTE, RUR_URBNAME, LATITUDE, LONGITUD, HARM_EVNAME, MAN_COLLNAME, RELJCT2NAME, WRK_ZONENAME, LGT_CONDNAME, WEATHERNAME, SCH_BUSNAME, FATALS)
+```
+
+Importing the person datasets.
+```{r}
+person_2017 <- read_csv("2017_person.csv")
+person_2018 <- read_csv("2018_person.csv")
+person_2019 <- read_csv("2019_person.csv")
+person_2020 <- read_csv("2020_person.csv")
+person_2021 <- read_csv("2021_person.csv")
+```
+
+Adding year variable to the datasets.
+```{r}
+person_2017$YEAR = 2017
+person_2018$YEAR = 2018
+person_2019$YEAR = 2019
+person_2020$YEAR = 2020
+person_2021$YEAR = 2021
+```
+
+
+Merging the datasets.
+```{r}
+df_2017 <- left_join(accident_2017, person_2017, by=c('YEAR', 'ST_CASE'))
+df_2018 <- left_join(accident_2018, person_2018, by=c('YEAR', 'ST_CASE'))
+df_2019 <- left_join(accident_2019, person_2019, by=c('YEAR', 'ST_CASE'))
+df_2020 <- left_join(accident_2020, person_2020, by=c('YEAR', 'ST_CASE'))
+df_2021 <- left_join(accident_2021, person_2021, by=c('YEAR', 'ST_CASE'))
+```
+
+Creating one dataset with all years.
+```{r}
+df <- bind_rows(df_2017, df_2018,df_2019,df_2020,df_2021)
+df1 <- df %>% group_by(STATENAME, YEAR) %>% filter(ST_CASE %% 10000 <= 200)
+```
+
+Saving the final dataset to 'master.csv'
+
+```{r}
+write.csv(df1, 'master.csv')
+```
+
 
