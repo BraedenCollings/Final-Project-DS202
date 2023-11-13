@@ -256,89 +256,26 @@ various medical reports, and department data. We chose to look at the
 years from 2017-2021 for our report.
 
 ``` r
-summary(df1)
+head(df1)
 ```
 
-    ##   STATENAME            ST_CASE         PERNOTMVIT         VE_FORMS     
-    ##  Length:66042       Min.   : 10001   Min.   : 0.0000   Min.   : 1.000  
-    ##  Class :character   1st Qu.:170123   1st Qu.: 0.0000   1st Qu.: 1.000  
-    ##  Mode  :character   Median :290016   Median : 0.0000   Median : 2.000  
-    ##                     Mean   :288775   Mean   : 0.1542   Mean   : 1.891  
-    ##                     3rd Qu.:410087   3rd Qu.: 0.0000   3rd Qu.: 2.000  
-    ##                     Max.   :560121   Max.   :12.0000   Max.   :28.000  
-    ##                                                                        
-    ##     PVH_INVL          PERMVIT           COUNTY            CITY     
-    ##  Min.   :0.00000   Min.   : 0.000   Min.   :  0.00   Min.   :   0  
-    ##  1st Qu.:0.00000   1st Qu.: 1.000   1st Qu.: 19.00   1st Qu.:   0  
-    ##  Median :0.00000   Median : 2.000   Median : 51.00   Median :  20  
-    ##  Mean   :0.03243   Mean   : 2.743   Mean   : 70.62   Mean   :1170  
-    ##  3rd Qu.:0.00000   3rd Qu.: 3.000   3rd Qu.:101.00   3rd Qu.:1670  
-    ##  Max.   :9.00000   Max.   :61.000   Max.   :999.00   Max.   :9999  
-    ##                                                                    
-    ##      MONTH             DAY             YEAR           HOUR          MINUTE     
-    ##  Min.   : 1.000   Min.   : 1.00   Min.   :2017   Min.   : 0.0   Min.   : 0.00  
-    ##  1st Qu.: 2.000   1st Qu.: 7.00   1st Qu.:2018   1st Qu.: 8.0   1st Qu.:14.00  
-    ##  Median : 3.000   Median :15.00   Median :2019   Median :14.0   Median :30.00  
-    ##  Mean   : 3.716   Mean   :14.97   Mean   :2019   Mean   :13.7   Mean   :29.06  
-    ##  3rd Qu.: 5.000   3rd Qu.:22.00   3rd Qu.:2020   3rd Qu.:18.0   3rd Qu.:44.00  
-    ##  Max.   :12.000   Max.   :31.00   Max.   :2021   Max.   :99.0   Max.   :99.00  
-    ##                                                                                
-    ##  RUR_URBNAME           LATITUDE         LONGITUD       HARM_EVNAME       
-    ##  Length:66042       Min.   : 19.04   Min.   :-170.51   Length:66042      
-    ##  Class :character   1st Qu.: 35.37   1st Qu.:-103.58   Class :character  
-    ##  Mode  :character   Median : 39.42   Median : -89.67   Mode  :character  
-    ##                     Mean   : 39.06   Mean   : -90.05                     
-    ##                     3rd Qu.: 42.23   3rd Qu.: -80.81                     
-    ##                     Max.   :100.00   Max.   :1000.00                     
-    ##                                                                          
-    ##  MAN_COLLNAME       RELJCT2NAME        WRK_ZONENAME       LGT_CONDNAME      
-    ##  Length:66042       Length:66042       Length:66042       Length:66042      
-    ##  Class :character   Class :character   Class :character   Class :character  
-    ##  Mode  :character   Mode  :character   Mode  :character   Mode  :character  
-    ##                                                                             
-    ##                                                                             
-    ##                                                                             
-    ##                                                                             
-    ##  WEATHER1NAME       SCH_BUSNAME            FATALS         DRUNK_DR    
-    ##  Length:66042       Length:66042       Min.   :1.000   Min.   :0.000  
-    ##  Class :character   Class :character   1st Qu.:1.000   1st Qu.:0.000  
-    ##  Mode  :character   Mode  :character   Median :1.000   Median :0.000  
-    ##                                        Mean   :1.117   Mean   :0.279  
-    ##                                        3rd Qu.:1.000   3rd Qu.:1.000  
-    ##                                        Max.   :8.000   Max.   :4.000  
-    ##                                                        NA's   :13273  
-    ##      ...26            AGE           SEXNAME          INJ_SEVNAME       
-    ##  Min.   :    1   Min.   :  7.00   Length:66042       Length:66042      
-    ##  1st Qu.:18045   1st Qu.: 28.00   Class :character   Class :character  
-    ##  Median :27704   Median : 42.00   Mode  :character   Mode  :character  
-    ##  Mean   :27531   Mean   : 58.78                                        
-    ##  3rd Qu.:37871   3rd Qu.: 58.00                                        
-    ##  Max.   :54165   Max.   :999.00                                        
-    ##  NA's   :13352   NA's   :95                                            
-    ##  REST_USENAME       EJECTIONNAME       DRINKINGNAME        DRUGSNAME        
-    ##  Length:66042       Length:66042       Length:66042       Length:66042      
-    ##  Class :character   Class :character   Class :character   Class :character  
-    ##  Mode  :character   Mode  :character   Mode  :character   Mode  :character  
-    ##                                                                             
-    ##                                                                             
-    ##                                                                             
-    ##                                                                             
-    ##    DOANAME          LAG_HRSNAME        WORK_INJNAME           VEH_NO      
-    ##  Length:66042       Length:66042       Length:66042       Min.   : 1.000  
-    ##  Class :character   Class :character   Class :character   1st Qu.: 1.000  
-    ##  Mode  :character   Mode  :character   Mode  :character   Median : 1.000  
-    ##                                                           Mean   : 1.448  
-    ##                                                           3rd Qu.: 2.000  
-    ##                                                           Max.   :28.000  
-    ##                                                           NA's   :95      
-    ##      PER_NO      WEATHERNAME            ...25      
-    ##  Min.   :1.000   Length:66042       Min.   :    1  
-    ##  1st Qu.:1.000   Class :character   1st Qu.:20636  
-    ##  Median :1.000   Mode  :character   Median :32289  
-    ##  Mean   :1.001                      Mean   :31728  
-    ##  3rd Qu.:1.000                      3rd Qu.:43824  
-    ##  Max.   :6.000                      Max.   :60904  
-    ##  NA's   :95                         NA's   :52785
+    ## # A tibble: 6 × 40
+    ## # Groups:   STATENAME, YEAR [1]
+    ##   STATENAME ST_CASE PERNOTMVIT VE_FORMS PVH_INVL PERMVIT COUNTY  CITY MONTH
+    ##   <chr>       <dbl>      <dbl>    <dbl>    <dbl>   <dbl>  <dbl> <dbl> <dbl>
+    ## 1 Alabama     10001          0        1        0       1     73   330     2
+    ## 2 Alabama     10002          0        1        0       1     89  1730     2
+    ## 3 Alabama     10003          0        3        0       3    101  2130     1
+    ## 4 Alabama     10003          0        3        0       3    101  2130     1
+    ## 5 Alabama     10003          0        3        0       3    101  2130     1
+    ## 6 Alabama     10004          0        1        0       1     73   350     1
+    ## # ℹ 31 more variables: DAY <dbl>, YEAR <dbl>, HOUR <dbl>, MINUTE <dbl>,
+    ## #   RUR_URBNAME <chr>, LATITUDE <dbl>, LONGITUD <dbl>, HARM_EVNAME <chr>,
+    ## #   MAN_COLLNAME <chr>, RELJCT2NAME <chr>, WRK_ZONENAME <chr>,
+    ## #   LGT_CONDNAME <chr>, WEATHER1NAME <chr>, SCH_BUSNAME <chr>, FATALS <dbl>,
+    ## #   DRUNK_DR <dbl>, ...26 <dbl>, AGE <dbl>, SEXNAME <chr>, INJ_SEVNAME <chr>,
+    ## #   REST_USENAME <chr>, EJECTIONNAME <chr>, DRINKINGNAME <chr>,
+    ## #   DRUGSNAME <chr>, DOANAME <chr>, LAG_HRSNAME <chr>, WORK_INJNAME <chr>, …
 
 ## Marginal Summaries
 
@@ -353,23 +290,29 @@ summary(df1)
   the time of the crash.
 - LAG_HRSNAME: Lag Time, hours between the crash and the time of death.
 - DOANAME:
-- DRUGSNAME:
-- DRINKINGNAME:  
-- EJECTIONNAME:
-- REST_USENAME:
-- INJ_SEVNAME:
-- SEXNAME:
-- AGE:
+- DRUGSNAME: Were there drugs involved in the crash if so the name of
+  the drug.
+- DRINKINGNAME: Was drinking involved in the crash if so what alcohol.  
+- EJECTIONNAME: Was there an ejection of a person in the crash.
+- REST_USENAME: Restraint System Used, was there a seatbelt used in the
+  crash.
+- INJ_SEVNAME: What is the severity of the injury.
+- SEXNAME: The gender of people related to the crash.
+- AGE: Age of people in the crash.
 - DRUNK_DR: Drinking Drivers, The number of drinking drivers involved in
   the crash.
-- FATALS:
-- SCH_BUSNAME:
-- WEATHER1NAME:
-- LGT_CONDNAME:
-- WRK_ZONENAME:  
-- RELJCT2NAME:  
-- MAN_COLLNAME:
-- HARM_EVNAME:
+- FATALS: The number of fatalities in the crash.
+- SCH_BUSNAME: Was there a school bus related in the crash.
+- WEATHER1NAME: Atmospheric conditions at the time of the crash.
+- LGT_CONDNAME: What was the lighting condition at the time of the
+  crash.
+- WRK_ZONENAME: Did the crash occur in the boundaries of a work zone.  
+- RELJCT2NAME: Location of the crash with respect to presence to a
+  junction or interchange areas.  
+- MAN_COLLNAME: Manner of the collision, were ther multiple vechiles
+  involed in the crash.
+- HARM_EVNAME: First harmful event, first injury produced by the event
+  of a crash.
 - LATITUDE: The location of the crash using global positioning (East and
   West).
 - LONGITUD: The location of the crash using global positioning (North
