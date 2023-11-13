@@ -79,43 +79,43 @@ summary(df1)
 ```
 
 ## Marginal Summaries
-* STATENAME
-* WEATHERNAME
-* VEH_NO
-* PER_NO
-* WORK_INJNAME
-* LAG_HRSNAME
-* DOANAME
-* DRUGSNAME
-* DRINKINGNAME      
-* EJECTIONNAME
-* REST_USENAME
-* INJ_SEVNAME
-* SEXNAME
-* AGE
-* DRUNK_DR
-* FATALS
-* SCH_BUSNAME
-* WEATHER1NAME
-* LGT_CONDNAME
-* WRK_ZONENAME      
-* RELJCT2NAME       
-* MAN_COLLNAME
-* HARM_EVNAME
-* LATITUDE
-* LONGITUD
-* RUR_URBNAME
-* HOUR
-* MINUTE
-* CITY
-* MONTH
-* DAY
-* YEAR
-* COUNTY
-* PERMVIT
-* PVH_INVL
-* VE_FORMS
-* PERNOTMVIT
-* ST_CASE
+* STATENAME: The state the fatal crash occured in
+* WEATHERNAME: The type of weather outside at the time and location of the crash.
+* VEH_NO: Vehicle Number, a number assigned to each vehicle in the crash.
+* PER_NO: Person Number, A unique number assigned to any person involved in the crash.
+* WORK_INJNAME: Fatal injury at work, whether the person was at work at the time of the crash.
+* LAG_HRSNAME: Lag Time, hours between the crash and the time of death.
+* DOANAME:
+* DRUGSNAME:
+* DRINKINGNAME:      
+* EJECTIONNAME:
+* REST_USENAME:
+* INJ_SEVNAME:
+* SEXNAME:
+* AGE:
+* DRUNK_DR:
+* FATALS:
+* SCH_BUSNAME:
+* WEATHER1NAME:
+* LGT_CONDNAME:
+* WRK_ZONENAME:      
+* RELJCT2NAME:       
+* MAN_COLLNAME:
+* HARM_EVNAME:
+* LATITUDE:
+* LONGITUD:
+* RUR_URBNAME:
+* HOUR:
+* MINUTE:
+* CITY:
+* MONTH:
+* DAY:
+* YEAR:
+* COUNTY:
+* PERMVIT:
+* PVH_INVL:
+* VE_FORMS:
+* PERNOTMVIT:
+* ST_CASE: Unique case number assigned to each crash.
 
 
