@@ -112,11 +112,11 @@ head(df1)
 * MONTH: The month the crash occurred in.
 * DAY: The day the crash occurred on.
 * YEAR: The year in which the crash happened. 
-* COUNTY: The county in which the crash occured in.
-* PERMVIT:
-* PVH_INVL:
-* VE_FORMS:
-* PERNOTMVIT:
+* COUNTY: The county in which the crash occurred in.
+* PERMVIT: Number of motorists involved in the crash.
+* PVH_INVL: Number of parked vehicles involved in the crash.
+* VE_FORMS: Number of vehicles in-transport involved in the crash.
+* PERNOTMVIT: The number of non-motorists in the crash.
 * ST_CASE: Unique case number assigned to each crash.
 
 
