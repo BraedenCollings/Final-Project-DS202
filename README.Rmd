@@ -74,5 +74,48 @@ write.csv(df1, 'master.csv')
 
 ## Discription of Data
 The data we chose to work with is from the National Highway Traffic Safety Administration. The administration has a system called FARS or the Fatality Analysis Reporting System in which vehicle crashes are noted. The data is comprised from police reports, death certificates, various medical reports, and department data. We chose to look at the years from 2017-2021 for our report. 
+```{r}
+summary(df1)
+```
 
 ## Marginal Summaries
+* STATENAME
+* WEATHERNAME
+* VEH_NO
+* PER_NO
+* WORK_INJNAME
+* LAG_HRSNAME
+* DOANAME
+* DRUGSNAME
+* DRINKINGNAME      
+* EJECTIONNAME
+* REST_USENAME
+* INJ_SEVNAME
+* SEXNAME
+* AGE
+* DRUNK_DR
+* FATALS
+* SCH_BUSNAME
+* WEATHER1NAME
+* LGT_CONDNAME
+* WRK_ZONENAME      
+* RELJCT2NAME       
+* MAN_COLLNAME
+* HARM_EVNAME
+* LATITUDE
+* LONGITUD
+* RUR_URBNAME
+* HOUR
+* MINUTE
+* CITY
+* MONTH
+* DAY
+* YEAR
+* COUNTY
+* PERMVIT
+* PVH_INVL
+* VE_FORMS
+* PERNOTMVIT
+* ST_CASE
+
+
