@@ -131,4 +131,8 @@ In pursuit of the stated goal, we will explore the following questions:
 
 3. How does the demographics of the driver affect crashes? Are changes based on occupants more prevalent for younger drivers?
 
-4. Are crashes affected by lighting and road conditions? How so, and what conditions are most impact? Sent from my iPhone
+4. Are crashes affected by lighting and road conditions? How so, and what conditions are most impact? 
+
+5. When are crashes most likely? Are there any seasonal effects, and are night crashes more likely than in the morning or afternoon?
+
+6. Does seatbelt use reduce injuries? Are people more likely to be ejected without wearing a seatbelt, and does seatbelt use prolong the time between the crash and the death of the driver?

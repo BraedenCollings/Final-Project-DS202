@@ -75,14 +75,15 @@ accident_2021 <- read_csv("2021.csv")
 library(tidyverse)
 ```
 
-    ## ── Attaching packages ─────────────────────────────────────── tidyverse 1.3.2 ──
-    ## ✔ ggplot2 3.4.0     ✔ dplyr   1.1.0
-    ## ✔ tibble  3.1.8     ✔ stringr 1.5.0
-    ## ✔ tidyr   1.3.0     ✔ forcats 1.0.0
-    ## ✔ purrr   1.0.1     
+    ## ── Attaching core tidyverse packages ──────────────────────── tidyverse 2.0.0 ──
+    ## ✔ dplyr     1.1.2     ✔ purrr     1.0.2
+    ## ✔ forcats   1.0.0     ✔ stringr   1.5.0
+    ## ✔ ggplot2   3.4.3     ✔ tibble    3.2.1
+    ## ✔ lubridate 1.9.2     ✔ tidyr     1.3.0
     ## ── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──
     ## ✖ dplyr::filter() masks stats::filter()
     ## ✖ dplyr::lag()    masks stats::lag()
+    ## ℹ Use the conflicted package (<http://conflicted.r-lib.org/>) to force all conflicts to become errors
 
 Selecting the variables we need.
 
@@ -180,48 +181,11 @@ Merging the datasets.
 
 ``` r
 df_2017 <- left_join(accident_2017, person_2017, by=c('YEAR', 'ST_CASE'))
-```
-
-    ## Warning in left_join(accident_2017, person_2017, by = c("YEAR", "ST_CASE")): Each row in `x` is expected to match at most 1 row in `y`.
-    ## ℹ Row 3 of `x` matches multiple rows.
-    ## ℹ If multiple matches are expected, set `multiple = "all"` to silence this
-    ##   warning.
-
-``` r
 df_2018 <- left_join(accident_2018, person_2018, by=c('YEAR', 'ST_CASE'))
-```
-
-    ## Warning in left_join(accident_2018, person_2018, by = c("YEAR", "ST_CASE")): Each row in `x` is expected to match at most 1 row in `y`.
-    ## ℹ Row 3 of `x` matches multiple rows.
-    ## ℹ If multiple matches are expected, set `multiple = "all"` to silence this
-    ##   warning.
-
-``` r
 df_2019 <- left_join(accident_2019, person_2019, by=c('YEAR', 'ST_CASE'))
-```
-
-    ## Warning in left_join(accident_2019, person_2019, by = c("YEAR", "ST_CASE")): Each row in `x` is expected to match at most 1 row in `y`.
-    ## ℹ Row 1 of `x` matches multiple rows.
-    ## ℹ If multiple matches are expected, set `multiple = "all"` to silence this
-    ##   warning.
-
-``` r
 df_2020 <- left_join(accident_2020, person_2020, by=c('YEAR', 'ST_CASE'))
-```
-
-    ## Warning in left_join(accident_2020, person_2020, by = c("YEAR", "ST_CASE")): Each row in `x` is expected to match at most 1 row in `y`.
-    ## ℹ Row 2 of `x` matches multiple rows.
-    ## ℹ If multiple matches are expected, set `multiple = "all"` to silence this
-    ##   warning.
-
-``` r
 df_2021 <- left_join(accident_2021, person_2021, by=c('YEAR', 'ST_CASE'))
 ```
-
-    ## Warning in left_join(accident_2021, person_2021, by = c("YEAR", "ST_CASE")): Each row in `x` is expected to match at most 1 row in `y`.
-    ## ℹ Row 1 of `x` matches multiple rows.
-    ## ℹ If multiple matches are expected, set `multiple = "all"` to silence this
-    ##   warning.
 
 Creating one dataset with all years.
 
@@ -353,4 +317,11 @@ In pursuit of the stated goal, we will explore the following questions:
     based on occupants more prevalent for younger drivers?
 
 4.  Are crashes affected by lighting and road conditions? How so, and
-    what conditions are most impact? Sent from my iPhone
+    what conditions are most impact?
+
+5.  When are crashes most likely? Are there any seasonal effects, and
+    are night crashes more likely than in the morning or afternoon?
+
+6.  Does seatbelt use reduce injuries? Are people more likely to be
+    ejected without wearing a seatbelt, and does seatbelt use prolong
+    the time between the crash and the death of the driver?
