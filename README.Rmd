@@ -72,4 +72,7 @@ Saving the final dataset to 'master.csv'
 write.csv(df1, 'master.csv')
 ```
 
+## Discription of Data
+The data we chose to work with is from the National Highway Traffic Safety Administration. The administration has a system called FARS or the Fatality Analysis Reporting System in which vehicle crashes are noted. The data is comprised from police reports, death certificates, various medical reports, and department data. We chose to look at the years from 2017-2021 for our report. 
 
+## Marginal Summaries

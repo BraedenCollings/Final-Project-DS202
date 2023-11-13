@@ -75,15 +75,14 @@ accident_2021 <- read_csv("2021.csv")
 library(tidyverse)
 ```
 
-    ## ── Attaching core tidyverse packages ──────────────────────── tidyverse 2.0.0 ──
-    ## ✔ dplyr     1.1.2     ✔ purrr     1.0.2
-    ## ✔ forcats   1.0.0     ✔ stringr   1.5.0
-    ## ✔ ggplot2   3.4.3     ✔ tibble    3.2.1
-    ## ✔ lubridate 1.9.2     ✔ tidyr     1.3.0
+    ## ── Attaching packages ─────────────────────────────────────── tidyverse 1.3.2 ──
+    ## ✔ ggplot2 3.4.0     ✔ dplyr   1.1.0
+    ## ✔ tibble  3.1.8     ✔ stringr 1.5.0
+    ## ✔ tidyr   1.3.0     ✔ forcats 1.0.0
+    ## ✔ purrr   1.0.1     
     ## ── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──
     ## ✖ dplyr::filter() masks stats::filter()
     ## ✖ dplyr::lag()    masks stats::lag()
-    ## ℹ Use the conflicted package (<http://conflicted.r-lib.org/>) to force all conflicts to become errors
 
 Selecting the variables we need.
 
@@ -181,11 +180,48 @@ Merging the datasets.
 
 ``` r
 df_2017 <- left_join(accident_2017, person_2017, by=c('YEAR', 'ST_CASE'))
+```
+
+    ## Warning in left_join(accident_2017, person_2017, by = c("YEAR", "ST_CASE")): Each row in `x` is expected to match at most 1 row in `y`.
+    ## ℹ Row 3 of `x` matches multiple rows.
+    ## ℹ If multiple matches are expected, set `multiple = "all"` to silence this
+    ##   warning.
+
+``` r
 df_2018 <- left_join(accident_2018, person_2018, by=c('YEAR', 'ST_CASE'))
+```
+
+    ## Warning in left_join(accident_2018, person_2018, by = c("YEAR", "ST_CASE")): Each row in `x` is expected to match at most 1 row in `y`.
+    ## ℹ Row 3 of `x` matches multiple rows.
+    ## ℹ If multiple matches are expected, set `multiple = "all"` to silence this
+    ##   warning.
+
+``` r
 df_2019 <- left_join(accident_2019, person_2019, by=c('YEAR', 'ST_CASE'))
+```
+
+    ## Warning in left_join(accident_2019, person_2019, by = c("YEAR", "ST_CASE")): Each row in `x` is expected to match at most 1 row in `y`.
+    ## ℹ Row 1 of `x` matches multiple rows.
+    ## ℹ If multiple matches are expected, set `multiple = "all"` to silence this
+    ##   warning.
+
+``` r
 df_2020 <- left_join(accident_2020, person_2020, by=c('YEAR', 'ST_CASE'))
+```
+
+    ## Warning in left_join(accident_2020, person_2020, by = c("YEAR", "ST_CASE")): Each row in `x` is expected to match at most 1 row in `y`.
+    ## ℹ Row 2 of `x` matches multiple rows.
+    ## ℹ If multiple matches are expected, set `multiple = "all"` to silence this
+    ##   warning.
+
+``` r
 df_2021 <- left_join(accident_2021, person_2021, by=c('YEAR', 'ST_CASE'))
 ```
+
+    ## Warning in left_join(accident_2021, person_2021, by = c("YEAR", "ST_CASE")): Each row in `x` is expected to match at most 1 row in `y`.
+    ## ℹ Row 1 of `x` matches multiple rows.
+    ## ℹ If multiple matches are expected, set `multiple = "all"` to silence this
+    ##   warning.
 
 Creating one dataset with all years.
 
@@ -209,3 +245,14 @@ Saving the final dataset to ‘master.csv’
 ``` r
 write.csv(df1, 'master.csv')
 ```
+
+## Discription of Data
+
+The data we chose to work with is from the National Highway Traffic
+Safety Administration. The administration has a system called FARS or
+the Fatality Analysis Reporting System in which vehicle crashes are
+noted. The data is comprised from police reports, death certificates,
+various medical reports, and department data. We chose to look at the
+years from 2017-2021 for our report.
+
+## Marginal Summaries
