@@ -119,4 +119,16 @@ head(df1)
 * PERNOTMVIT: The number of non-motorists in the crash.
 * ST_CASE: Unique case number assigned to each crash.
 
+# Research Goals and Questions
 
+The goal of the project is to explore the data set to better understand vehicle crashes. Understanding this topic better can lead to increased awareness, targeted policing efforts, and identification of common trends for accidents. Ultimately, the goal is the circumstances in which individuals get into vehicular accidents, and how to avoid fatal crashes.
+
+In pursuit of the stated goal, we will explore the following questions:
+
+1. Does impairment affect crashes overall? When are impaired crashes most likely?
+
+2. What regions of the United States have the most fatal crashes? What conditions are present in those regions?
+
+3. How does the demographics of the driver affect crashes? Are changes based on occupants more prevalent for younger drivers?
+
+4. Are crashes affected by lighting and road conditions? How so, and what conditions are most impact? Sent from my iPhone
