@@ -93,7 +93,7 @@ summary(df1)
 * INJ_SEVNAME:
 * SEXNAME:
 * AGE:
-* DRUNK_DR:
+* DRUNK_DR: Drinking Drivers, The number of drinking drivers involved in the crash.
 * FATALS:
 * SCH_BUSNAME:
 * WEATHER1NAME:
@@ -102,16 +102,16 @@ summary(df1)
 * RELJCT2NAME:       
 * MAN_COLLNAME:
 * HARM_EVNAME:
-* LATITUDE:
-* LONGITUD:
-* RUR_URBNAME:
-* HOUR:
-* MINUTE:
-* CITY:
-* MONTH:
-* DAY:
-* YEAR:
-* COUNTY:
+* LATITUDE: The location of the crash using global positioning (East and West).
+* LONGITUD: The location of the crash using global positioning (North and South).
+* RUR_URBNAME: Land Use, the segment of the traffic way on which the crash occurred based on urbanized areas.
+* HOUR: The time of the crash in hours.
+* MINUTE: The time of the crash in minutes.
+* CITY: The location of the crash.
+* MONTH: The month the crash occurred in.
+* DAY: The day the crash occurred on.
+* YEAR: The year in which the crash happened. 
+* COUNTY: The county in which the crash occured in.
 * PERMVIT:
 * PVH_INVL:
 * VE_FORMS:
