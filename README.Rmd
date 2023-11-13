@@ -9,6 +9,9 @@ knitr::opts_chunk$set(echo = TRUE)
 
 # Final Project DS202
 ## Marissa Baietto, Ryan Dorle, Braeden Collings
+
+Here is the link to all of the csv files we used: https://www.nhtsa.gov/file-downloads?p=nhtsa/downloads/FARS/
+
 Importing the accident datasets.
 ```{r}
 library(readr)
