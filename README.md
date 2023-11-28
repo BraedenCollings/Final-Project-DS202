@@ -223,26 +223,41 @@ various medical reports, and department data. We chose to look at the
 years from 2017-2021 for our report.
 
 ``` r
-head(df1)
+master <- read_csv('master.csv')
 ```
 
-    ## # A tibble: 6 × 40
-    ## # Groups:   STATENAME, YEAR [1]
-    ##   STATENAME ST_CASE PERNOTMVIT VE_FORMS PVH_INVL PERMVIT COUNTY  CITY MONTH
-    ##   <chr>       <dbl>      <dbl>    <dbl>    <dbl>   <dbl>  <dbl> <dbl> <dbl>
-    ## 1 Alabama     10001          0        1        0       1     73   330     2
-    ## 2 Alabama     10002          0        1        0       1     89  1730     2
-    ## 3 Alabama     10003          0        3        0       3    101  2130     1
-    ## 4 Alabama     10003          0        3        0       3    101  2130     1
-    ## 5 Alabama     10003          0        3        0       3    101  2130     1
-    ## 6 Alabama     10004          0        1        0       1     73   350     1
-    ## # ℹ 31 more variables: DAY <dbl>, YEAR <dbl>, HOUR <dbl>, MINUTE <dbl>,
-    ## #   RUR_URBNAME <chr>, LATITUDE <dbl>, LONGITUD <dbl>, HARM_EVNAME <chr>,
-    ## #   MAN_COLLNAME <chr>, RELJCT2NAME <chr>, WRK_ZONENAME <chr>,
-    ## #   LGT_CONDNAME <chr>, WEATHER1NAME <chr>, SCH_BUSNAME <chr>, FATALS <dbl>,
-    ## #   DRUNK_DR <dbl>, ...26 <dbl>, AGE <dbl>, SEXNAME <chr>, INJ_SEVNAME <chr>,
-    ## #   REST_USENAME <chr>, EJECTIONNAME <chr>, DRINKINGNAME <chr>,
-    ## #   DRUGSNAME <chr>, DOANAME <chr>, LAG_HRSNAME <chr>, WORK_INJNAME <chr>, …
+    ## New names:
+    ## Rows: 66042 Columns: 41
+    ## ── Column specification
+    ## ──────────────────────────────────────────────────────── Delimiter: "," chr
+    ## (19): STATENAME, RUR_URBNAME, HARM_EVNAME, MAN_COLLNAME, RELJCT2NAME, WR... dbl
+    ## (22): ...1, ST_CASE, PERNOTMVIT, VE_FORMS, PVH_INVL, PERMVIT, COUNTY, CI...
+    ## ℹ Use `spec()` to retrieve the full column specification for this data. ℹ
+    ## Specify the column types or set `show_col_types = FALSE` to quiet this message.
+    ## • `` -> `...1`
+    ## • `...26` -> `...27`
+    ## • `...25` -> `...41`
+
+``` r
+head(master)
+```
+
+    ## # A tibble: 6 × 41
+    ##    ...1 STATENAME ST_CASE PERNOTMVIT VE_FORMS PVH_INVL PERMVIT COUNTY  CITY
+    ##   <dbl> <chr>       <dbl>      <dbl>    <dbl>    <dbl>   <dbl>  <dbl> <dbl>
+    ## 1     1 Alabama     10001          0        1        0       1     73   330
+    ## 2     2 Alabama     10002          0        1        0       1     89  1730
+    ## 3     3 Alabama     10003          0        3        0       3    101  2130
+    ## 4     4 Alabama     10003          0        3        0       3    101  2130
+    ## 5     5 Alabama     10003          0        3        0       3    101  2130
+    ## 6     6 Alabama     10004          0        1        0       1     73   350
+    ## # ℹ 32 more variables: MONTH <dbl>, DAY <dbl>, YEAR <dbl>, HOUR <dbl>,
+    ## #   MINUTE <dbl>, RUR_URBNAME <chr>, LATITUDE <dbl>, LONGITUD <dbl>,
+    ## #   HARM_EVNAME <chr>, MAN_COLLNAME <chr>, RELJCT2NAME <chr>,
+    ## #   WRK_ZONENAME <chr>, LGT_CONDNAME <chr>, WEATHER1NAME <chr>,
+    ## #   SCH_BUSNAME <chr>, FATALS <dbl>, DRUNK_DR <dbl>, ...27 <dbl>, AGE <dbl>,
+    ## #   SEXNAME <chr>, INJ_SEVNAME <chr>, REST_USENAME <chr>, EJECTIONNAME <chr>,
+    ## #   DRINKINGNAME <chr>, DRUGSNAME <chr>, DOANAME <chr>, LAG_HRSNAME <chr>, …
 
 ## Marginal Summaries
 
@@ -328,3 +343,90 @@ In pursuit of the stated goal, we will explore the following questions:
 6.  Does seatbelt use reduce injuries? Are people more likely to be
     ejected without wearing a seatbelt, and does seatbelt use prolong
     the time between the crash and the death of the driver?
+
+### When are crashes most likely? Are there any seasonal effects, and are night crashes more likely than in the morning or afternoon?
+
+``` r
+master %>% ggplot(aes(x = DAY)) + geom_histogram() + facet_wrap(~MONTH)
+```
+
+    ## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
+
+![](README_files/figure-gfm/unnamed-chunk-10-1.png)<!-- -->
+
+``` r
+master %>% ggplot(aes(x = MONTH)) + geom_histogram()
+```
+
+    ## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
+
+![](README_files/figure-gfm/unnamed-chunk-11-1.png)<!-- -->
+
+It appears that fatal crashes occur the most in the beginning of the
+year, and decrease heavily until December for all of the years.
+
+``` r
+master %>% ggplot(aes(x = HOUR)) + geom_histogram(bins = 100)
+```
+
+![](README_files/figure-gfm/unnamed-chunk-12-1.png)<!-- -->
+
+There is a strange outlier with hour, so I will remove that.
+
+``` r
+master %>% filter(HOUR <=24) %>% ggplot(aes(x = HOUR)) + geom_histogram() + scale_x_continuous(name="Hour", limits=c(0, 24))
+```
+
+    ## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
+
+    ## Warning: Removed 2 rows containing missing values (`geom_bar()`).
+
+![](README_files/figure-gfm/unnamed-chunk-13-1.png)<!-- --> It appears
+that the peak is around 17:00 military time, which is 5pm. Thus, crashes
+appear to be increasingly likely as the day goes on, peaks at 5pm, and
+has a minimum at around 4pm.
+
+### Does seatbelt use reduce injuries? Are people more likely to be ejected without wearing a seatbelt, and does seatbelt use prolong the time between the crash and the death of the driver?
+
+``` r
+master$REST_USENAME %>% unique()
+```
+
+    ##  [1] "None Used / Not Applicable"                        
+    ##  [2] "Shoulder and Lap Belt Used"                        
+    ##  [3] "Unknown"                                           
+    ##  [4] "DOT-Compliant Motorcycle Helmet"                   
+    ##  [5] "No Helmet"                                         
+    ##  [6] "Helmet, Other than DOT-Compliant Motorcycle Helmet"
+    ##  [7] "Not Reported"                                      
+    ##  [8] "Restraint Used - Type Unknown"                     
+    ##  [9] "Helmet, Unknown if DOT Compliant"                  
+    ## [10] "Unknown if Helmet Worn"                            
+    ## [11] NA                                                  
+    ## [12] "Lap Belt Only Used"                                
+    ## [13] "Shoulder Belt Only Used"                           
+    ## [14] "Other"                                             
+    ## [15] "Reported as Unknown"                               
+    ## [16] "None Used/Not Applicable"                          
+    ## [17] "Racing-Style Harness Used"
+
+``` r
+master$RESTRAINT <- ifelse(master$REST_USENAME %in% c("None Used / Not Applicable", "Not Reported", "Reported as Unknown", "None Used/Not Applicable", "No Helmet"), "No", "Yes")
+master %>% ggplot(aes(x = RESTRAINT)) + geom_bar()
+```
+
+![](README_files/figure-gfm/unnamed-chunk-14-1.png)<!-- -->
+
+Difficult to see if this is a result of the strange types of variables
+possible. It isn’t possible to determine whether the person was wearing
+the seatbelt or not in each individual crash.
+
+``` r
+master %>% filter(REST_USENAME == "Shoulder and Lap Belt Used") %>% ggplot(aes(x = YEAR)) + geom_histogram()
+```
+
+    ## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
+
+![](README_files/figure-gfm/unnamed-chunk-15-1.png)<!-- -->
+
+It apppears that seat belt use has not changed over the years.
