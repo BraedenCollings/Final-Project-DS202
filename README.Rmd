@@ -129,7 +129,7 @@ The goal of the project is to explore the data set to better understand vehicle 
 
 In pursuit of the stated goal, we will explore the following questions:
 
-1. Does impairment affect crashes overall? When are impaired crashes most likely?
+1. Does impairment affect fatality in crashes overall? When are impaired crashes most likely?
 
 2. What regions of the United States have the most fatal crashes? What conditions are present in those regions?
 
@@ -181,4 +181,43 @@ master %>% filter(REST_USENAME == "Shoulder and Lap Belt Used") %>% ggplot(aes(x
 
 It apppears that seat belt use has not changed over the years.
 
+
+
+### Does impairment affect fatality in crashes overall? When are impaired crashes most likely?
+
+```{r}
+master$ImpairmentAlcohol <- ifelse(master$DRINKINGNAME %in% c("No (Alcohol Not Involved)", "Unknown (Police Reported)", "Not Reported", "Reported as Unknown"), FALSE, TRUE)
+
+master$ImpairmentDrugs <- ifelse(master$DRUGSNAME %in% c("No (drugs not involved)", "Unknown (Police Reported)", "Not Reported", "Reported as Unknown"), FALSE, TRUE)
+
+master <- master %>% mutate(
+  Impairment = as.logical(pmax(ImpairmentDrugs, ImpairmentAlcohol))
+)
+
+master %>% ggplot(aes(x = Impairment)) + geom_bar()
+
+```
+
+```{r}
+master %>% filter(Impairment == TRUE) %>%
+  filter(HOUR <=24) %>% ggplot(aes(x = HOUR), fill = factor(MONTH)) + geom_bar(bins = 24)
+```
+
+
+
+
+
+### What regions of the United States have the most fatal crashes? What conditions are present in those regions?
+
+```{r}
+
+  northeast <- c("Connecticut", "Maine", "Massachusetts", "New Hampshire", "Rhode Island", "Vermont", "New Jersey", "New York", "Pennsylvania")
+  
+  midwest <- c("Illinois", "Indiana", "Iowa", "Kansas", "Michigan", "Minnesota", "Missouri", "Nebraska", "North Dakota", "Ohio", "South Dakota", "Wisconsin")
+  
+  south <- c("Alabama", "Arkansas", "Delaware", "Florida", "Georgia", "Kentucky", "Louisiana", "Maryland", "Mississippi", "North Carolina", "Oklahoma", "South Carolina", "Tennessee", "Texas", "Virginia", "West Virginia")
+  
+  west <- c("Alaska", "Arizona", "California","Colorado", "Hawaii", "Idaho", "Montana", "Nevada", "New Mexico", "Oregon", "Utah", "Washington", "Wyoming")
+
+```
 
