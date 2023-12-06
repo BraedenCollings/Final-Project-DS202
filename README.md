@@ -240,13 +240,13 @@ df <- bind_rows(df_2017, df_2018,df_2019,df_2020,df_2021)
     ## • `...1` -> `...26`
 
 ``` r
-df1 <- df %>% group_by(STATENAME, YEAR) %>% filter(ST_CASE %% 10000 <= 200)
+df1 <- df %>% group_by(STATENAME, YEAR) %>% filter()
 ```
 
 Saving the final dataset to ‘master.csv’
 
 ``` r
-write.csv(df1, 'master.csv')
+write.csv(df1, 'master2.csv')
 ```
 
 ## Discription of Data
@@ -259,11 +259,11 @@ various medical reports, and department data. We chose to look at the
 years from 2017-2021 for our report.
 
 ``` r
-master <- read_csv('master.csv')
+master <- read_csv('master2.csv')
 ```
 
     ## New names:
-    ## Rows: 66042 Columns: 41
+    ## Rows: 271395 Columns: 41
     ## ── Column specification
     ## ──────────────────────────────────────────────────────── Delimiter: "," chr
     ## (19): STATENAME, RUR_URBNAME, HARM_EVNAME, MAN_COLLNAME, RELJCT2NAME, WR... dbl
@@ -383,7 +383,7 @@ In pursuit of the stated goal, we will explore the following questions:
 ### When are crashes most likely? Are there any seasonal effects, and are night crashes more likely than in the morning or afternoon?
 
 ``` r
-master %>% ggplot(aes(x = DAY)) + geom_histogram() + facet_wrap(~MONTH)
+df1 %>% ggplot(aes(x = DAY)) + geom_histogram() + facet_wrap(~MONTH)
 ```
 
     ## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
@@ -391,7 +391,7 @@ master %>% ggplot(aes(x = DAY)) + geom_histogram() + facet_wrap(~MONTH)
 ![](README_files/figure-gfm/unnamed-chunk-10-1.png)<!-- -->
 
 ``` r
-master %>% ggplot(aes(x = MONTH)) + geom_histogram()
+df1 %>% ggplot(aes(x = MONTH)) + geom_histogram()
 ```
 
     ## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
@@ -402,7 +402,7 @@ It appears that fatal crashes occur the most in the beginning of the
 year, and decrease heavily until December for all of the years.
 
 ``` r
-master %>% ggplot(aes(x = HOUR)) + geom_histogram(bins = 100)
+df1 %>% ggplot(aes(x = HOUR)) + geom_histogram(bins = 100)
 ```
 
 ![](README_files/figure-gfm/unnamed-chunk-12-1.png)<!-- -->
@@ -410,7 +410,7 @@ master %>% ggplot(aes(x = HOUR)) + geom_histogram(bins = 100)
 There is a strange outlier with hour, so I will remove that.
 
 ``` r
-master %>% filter(HOUR <=24) %>% ggplot(aes(x = HOUR)) + geom_histogram() + scale_x_continuous(name="Hour", limits=c(0, 24))
+df1 %>% filter(HOUR <=24) %>% ggplot(aes(x = HOUR)) + geom_histogram() + scale_x_continuous(name="Hour", limits=c(0, 24))
 ```
 
     ## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
@@ -434,14 +434,14 @@ master$REST_USENAME %>% unique()
     ##  [4] "DOT-Compliant Motorcycle Helmet"                   
     ##  [5] "No Helmet"                                         
     ##  [6] "Helmet, Other than DOT-Compliant Motorcycle Helmet"
-    ##  [7] "Not Reported"                                      
-    ##  [8] "Restraint Used - Type Unknown"                     
-    ##  [9] "Helmet, Unknown if DOT Compliant"                  
-    ## [10] "Unknown if Helmet Worn"                            
-    ## [11] NA                                                  
-    ## [12] "Lap Belt Only Used"                                
-    ## [13] "Shoulder Belt Only Used"                           
-    ## [14] "Other"                                             
+    ##  [7] NA                                                  
+    ##  [8] "Not Reported"                                      
+    ##  [9] "Lap Belt Only Used"                                
+    ## [10] "Helmet, Unknown if DOT Compliant"                  
+    ## [11] "Other"                                             
+    ## [12] "Shoulder Belt Only Used"                           
+    ## [13] "Restraint Used - Type Unknown"                     
+    ## [14] "Unknown if Helmet Worn"                            
     ## [15] "Reported as Unknown"                               
     ## [16] "None Used/Not Applicable"                          
     ## [17] "Racing-Style Harness Used"
@@ -495,11 +495,35 @@ master %>% filter(Impairment == TRUE) %>%
 ### What regions of the United States have the most fatal crashes? What conditions are present in those regions?
 
 ``` r
-  northeast <- c("Connecticut", "Maine", "Massachusetts", "New Hampshire", "Rhode Island", "Vermont", "New Jersey", "New York", "Pennsylvania")
+master$West <- ifelse(master$STATENAME %in% c("Alaska", "Arizona", "California","Colorado", "Hawaii", "Idaho", "Montana", "Nevada", "New Mexico", "Oregon", "Utah", "Washington", "Wyoming"), "West", NA)
+
   
-  midwest <- c("Illinois", "Indiana", "Iowa", "Kansas", "Michigan", "Minnesota", "Missouri", "Nebraska", "North Dakota", "Ohio", "South Dakota", "Wisconsin")
-  
-  south <- c("Alabama", "Arkansas", "Delaware", "Florida", "Georgia", "Kentucky", "Louisiana", "Maryland", "Mississippi", "North Carolina", "Oklahoma", "South Carolina", "Tennessee", "Texas", "Virginia", "West Virginia")
-  
-  west <- c("Alaska", "Arizona", "California","Colorado", "Hawaii", "Idaho", "Montana", "Nevada", "New Mexico", "Oregon", "Utah", "Washington", "Wyoming")
+master$NorthEast <- ifelse(master$STATENAME %in% c("Connecticut", "Maine", "Massachusetts", "New Hampshire", "Rhode Island", "Vermont", "New Jersey", "New York", "Pennsylvania"), "NorthEast", NA)
+
+master$South <- ifelse(master$STATENAME %in% c("Alabama", "Arkansas", "Delaware", "Florida", "Georgia", "Kentucky", "Louisiana", "Maryland", "Mississippi", "North Carolina", "Oklahoma", "South Carolina", "Tennessee", "Texas", "Virginia", "West Virginia"), "South", NA)
+
+master$MidWest <- ifelse(master$STATENAME %in% c("Illinois", "Indiana", "Iowa", "Kansas", "Michigan", "Minnesota", "Missouri", "Nebraska", "North Dakota", "Ohio", "South Dakota", "Wisconsin"), "MidWest", NA)
+
+master <- master %>% mutate(
+  Region = as.logical(pmax(NorthEast, West, South, MidWest))
+)
+
+head(master)
 ```
+
+    ## # A tibble: 6 × 50
+    ##    ...1 STATENAME ST_CASE PERNOTMVIT VE_FORMS PVH_INVL PERMVIT COUNTY  CITY
+    ##   <dbl> <chr>       <dbl>      <dbl>    <dbl>    <dbl>   <dbl>  <dbl> <dbl>
+    ## 1     1 Alabama     10001          0        1        0       1     73   330
+    ## 2     2 Alabama     10002          0        1        0       1     89  1730
+    ## 3     3 Alabama     10003          0        3        0       3    101  2130
+    ## 4     4 Alabama     10003          0        3        0       3    101  2130
+    ## 5     5 Alabama     10003          0        3        0       3    101  2130
+    ## 6     6 Alabama     10004          0        1        0       1     73   350
+    ## # ℹ 41 more variables: MONTH <dbl>, DAY <dbl>, YEAR <dbl>, HOUR <dbl>,
+    ## #   MINUTE <dbl>, RUR_URBNAME <chr>, LATITUDE <dbl>, LONGITUD <dbl>,
+    ## #   HARM_EVNAME <chr>, MAN_COLLNAME <chr>, RELJCT2NAME <chr>,
+    ## #   WRK_ZONENAME <chr>, LGT_CONDNAME <chr>, WEATHER1NAME <chr>,
+    ## #   SCH_BUSNAME <chr>, FATALS <dbl>, DRUNK_DR <dbl>, ...27 <dbl>, AGE <dbl>,
+    ## #   SEXNAME <chr>, INJ_SEVNAME <chr>, REST_USENAME <chr>, EJECTIONNAME <chr>,
+    ## #   DRINKINGNAME <chr>, DRUGSNAME <chr>, DOANAME <chr>, LAG_HRSNAME <chr>, …
