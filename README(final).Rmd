@@ -120,7 +120,7 @@ df_2021 <- left_join(df_2021, vehicle_2021, by=c('YEAR', 'ST_CASE', 'VEH_NO'))
 Creating one dataset with all years.
 ```{r}
 df <- bind_rows(df_2017, df_2018,df_2019,df_2020,df_2021)
-df1 <- df %>% group_by(STATENAME, YEAR) %>% filter(VEH_NO == 1 & ST_CASE %% 2 == 0)
+df1 <- df %>% group_by(STATENAME, YEAR) %>% filter(VEH_NO == 1) #add & ST_CASE %% 2 == 0
 ```
 ```{r}
 colnames(df1)
@@ -202,10 +202,26 @@ In pursuit of the stated goal, we will explore the following questions:
 6. Does seatbelt use reduce injuries? Are people more likely to be ejected without wearing a seatbelt, and does seatbelt use prolong the time between the crash and the death of the driver?
 
 
+```{r}
+df1 %>% ggplot(aes(x = YEAR, weight = FATALS)) + geom_bar() + ggtitle("Fatalities Over Last 5 Years") + ylab("Fatalities") + xlab("Year")
+df1 %>% group_by(YEAR) %>% filter(YEAR == 2021) %>% summarise(Fatalities = sum(FATALS))
+```
+
+
+
 ### When are crashes most likely? Are there any seasonal effects, and are night crashes more likely than in the morning or afternoon?
+```{r}
+df1 %>% group_by(DAY) %>% ggplot(aes(x = DAY, weight = FATALS)) + geom_bar()
+```
 
 ```{r}
-df1 %>% ggplot(aes(x = DAY)) + geom_histogram() + facet_wrap(~MONTH)
+df1 %>% group_by(DAY) %>% summarise(Fatalities = sum(FATALS))#filter(FATALS == max(df1$FATALS))
+```
+
+
+
+```{r}
+df1 %>% group_by(DAY) %>% ggplot(aes(x = DAY, weight = FATALS)) + geom_bar() + facet_wrap(~MONTH) + coord_cartesian(ylim=c(400, 700))
 ```
 
 ```{r}
