@@ -223,7 +223,6 @@ master <- master %>% mutate(
   Region = as.logical(pmax(NorthEast, West, South, MidWest))
 )
 
-head(master)
 ```
 
 

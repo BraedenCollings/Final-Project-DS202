@@ -507,23 +507,4 @@ master$MidWest <- ifelse(master$STATENAME %in% c("Illinois", "Indiana", "Iowa", 
 master <- master %>% mutate(
   Region = as.logical(pmax(NorthEast, West, South, MidWest))
 )
-
-head(master)
 ```
-
-    ## # A tibble: 6 × 50
-    ##    ...1 STATENAME ST_CASE PERNOTMVIT VE_FORMS PVH_INVL PERMVIT COUNTY  CITY
-    ##   <dbl> <chr>       <dbl>      <dbl>    <dbl>    <dbl>   <dbl>  <dbl> <dbl>
-    ## 1     1 Alabama     10001          0        1        0       1     73   330
-    ## 2     2 Alabama     10002          0        1        0       1     89  1730
-    ## 3     3 Alabama     10003          0        3        0       3    101  2130
-    ## 4     4 Alabama     10003          0        3        0       3    101  2130
-    ## 5     5 Alabama     10003          0        3        0       3    101  2130
-    ## 6     6 Alabama     10004          0        1        0       1     73   350
-    ## # ℹ 41 more variables: MONTH <dbl>, DAY <dbl>, YEAR <dbl>, HOUR <dbl>,
-    ## #   MINUTE <dbl>, RUR_URBNAME <chr>, LATITUDE <dbl>, LONGITUD <dbl>,
-    ## #   HARM_EVNAME <chr>, MAN_COLLNAME <chr>, RELJCT2NAME <chr>,
-    ## #   WRK_ZONENAME <chr>, LGT_CONDNAME <chr>, WEATHER1NAME <chr>,
-    ## #   SCH_BUSNAME <chr>, FATALS <dbl>, DRUNK_DR <dbl>, ...27 <dbl>, AGE <dbl>,
-    ## #   SEXNAME <chr>, INJ_SEVNAME <chr>, REST_USENAME <chr>, EJECTIONNAME <chr>,
-    ## #   DRINKINGNAME <chr>, DRUGSNAME <chr>, DOANAME <chr>, LAG_HRSNAME <chr>, …
