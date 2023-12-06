@@ -387,33 +387,17 @@ head(master)
   crash.
 - PER_NO: Person Number, A unique number assigned to any person involved
   in the crash.
-- WORK_INJNAME: Fatal injury at work, whether the person was at work at
-  the time of the crash.
-- LAG_HRSNAME: Lag Time, hours between the crash and the time of death.
-- DOANAME:
 - DRUGSNAME: Were there drugs involved in the crash if so the name of
   the drug.
 - DRINKINGNAME: Was drinking involved in the crash if so what alcohol.  
-- EJECTIONNAME: Was there an ejection of a person in the crash.
-- REST_USENAME: Restraint System Used, was there a seatbelt used in the
-  crash.
-- INJ_SEVNAME: What is the severity of the injury.
 - SEXNAME: The gender of people related to the crash.
 - AGE: Age of people in the crash.
 - DRUNK_DR: Drinking Drivers, The number of drinking drivers involved in
   the crash.
 - FATALS: The number of fatalities in the crash.
-- SCH_BUSNAME: Was there a school bus related in the crash.
 - WEATHER1NAME: Atmospheric conditions at the time of the crash.
 - LGT_CONDNAME: What was the lighting condition at the time of the
   crash.
-- WRK_ZONENAME: Did the crash occur in the boundaries of a work zone.  
-- RELJCT2NAME: Location of the crash with respect to presence to a
-  junction or interchange areas.  
-- MAN_COLLNAME: Manner of the collision, were ther multiple vechiles
-  involed in the crash.
-- HARM_EVNAME: First harmful event, first injury produced by the event
-  of a crash.
 - LATITUDE: The location of the crash using global positioning (East and
   West).
 - LONGITUD: The location of the crash using global positioning (North
@@ -422,16 +406,15 @@ head(master)
   crash occurred based on urbanized areas.
 - HOUR: The time of the crash in hours.
 - MINUTE: The time of the crash in minutes.
-- CITY: The location of the crash.
 - MONTH: The month the crash occurred in.
 - DAY: The day the crash occurred on.
 - YEAR: The year in which the crash happened.
-- COUNTY: The county in which the crash occurred in.
-- PERMVIT: Number of motorists involved in the crash.
-- PVH_INVL: Number of parked vehicles involved in the crash.
-- VE_FORMS: Number of vehicles in-transport involved in the crash.
-- PERNOTMVIT: The number of non-motorists in the crash.
 - ST_CASE: Unique case number assigned to each crash.
+- HIT_RUN: Whether the crash was a hit and run.
+- NUMOCCS: Number of occupants in the vehicle.
+- L_STATE: The state listed on the driver’s license.
+- SPEEDREL: Whether the crash was speeding related.
+- VSPD_LIM: What the speeding limit was.
 
 # Research Goals and Questions
 
@@ -505,7 +488,7 @@ that the peak is around 17:00 military time, which is 5pm. Thus, crashes
 appear to be increasingly likely as the day goes on, peaks at 5pm, and
 has a minimum at around 4pm.
 
-### Does seatbelt use reduce injuries? Are people more likely to be ejected without wearing a seatbelt, and does seatbelt use prolong the time between the crash and the death of the driver?
+### How is speeding related to the number of fatalities? Are younger drivers more prone to speeding? Is higher speeding limits associated with more fatalities?
 
 ### Does impairment affect fatality in crashes overall? When are impaired crashes most likely?
 
