@@ -107,10 +107,6 @@ accident_2018 <- accident_2018 %>% select(-WEATHER1NAME)
 accident_2019 <- accident_2019 %>% select(-WEATHER1NAME)
 ```
 
-``` r
-View(accident_2019)
-```
-
 Importing the person datasets.
 
 ``` r
@@ -201,10 +197,6 @@ person_2018$YEAR = 2018
 person_2019$YEAR = 2019
 person_2020$YEAR = 2020
 person_2021$YEAR = 2021
-```
-
-``` r
-View(person_2017)
 ```
 
 Importing Vehicle Datasets
@@ -320,7 +312,6 @@ df <- bind_rows(df_2017, df_2018,df_2019,df_2020,df_2021)
     ## • `...1` -> `...22`
 
 ``` r
-<<<<<<< HEAD
 df1 <- df %>% group_by(STATENAME, YEAR) %>% filter(VEH_NO == 1 & ST_CASE %% 2 == 0) #add & ST_CASE %% 2 == 0
 ```
 
@@ -337,20 +328,12 @@ colnames(df1)
 
 ``` r
 df1 <- df1 %>% select(-one_of('...22', '...21'))
-=======
-df1 <- df %>% group_by(STATENAME, YEAR) %>% filter()
->>>>>>> bb299a012f5103bb32ef857a0edac4e7bed1c3bf
 ```
 
 Saving the final dataset to ‘master.csv’
 
 ``` r
-<<<<<<< HEAD
-View(df1)
 write.csv(df1, 'master.csv')
-=======
-write.csv(df1, 'master2.csv')
->>>>>>> bb299a012f5103bb32ef857a0edac4e7bed1c3bf
 ```
 
 ## Discription of Data
@@ -363,15 +346,11 @@ various medical reports, and department data. We chose to look at the
 years from 2017-2021 for our report.
 
 ``` r
-master <- read_csv('master2.csv')
+master <- read_csv('master.csv')
 ```
 
     ## New names:
-<<<<<<< HEAD
     ## Rows: 88163 Columns: 27
-=======
-    ## Rows: 271395 Columns: 41
->>>>>>> bb299a012f5103bb32ef857a0edac4e7bed1c3bf
     ## ── Column specification
     ## ──────────────────────────────────────────────────────── Delimiter: "," chr
     ## (12): STATENAME, RUR_URBNAME, LGT_CONDNAME, WEATHERNAME, SEXNAME, DRINKI... dbl
@@ -492,7 +471,7 @@ df1 %>% ggplot(aes(x = DAY)) + geom_histogram() + facet_wrap(~MONTH)
 
     ## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
 
-![](README_files/figure-gfm/unnamed-chunk-16-1.png)<!-- -->
+![](README_files/figure-gfm/unnamed-chunk-14-1.png)<!-- -->
 
 ``` r
 df1 %>% ggplot(aes(x = MONTH)) + geom_histogram()
@@ -500,7 +479,7 @@ df1 %>% ggplot(aes(x = MONTH)) + geom_histogram()
 
     ## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
 
-![](README_files/figure-gfm/unnamed-chunk-17-1.png)<!-- -->
+![](README_files/figure-gfm/unnamed-chunk-15-1.png)<!-- -->
 
 It appears that fatal crashes occur the most in the beginning of the
 year, and decrease heavily until December for all of the years.
@@ -509,7 +488,7 @@ year, and decrease heavily until December for all of the years.
 df1 %>% ggplot(aes(x = HOUR)) + geom_histogram(bins = 100)
 ```
 
-![](README_files/figure-gfm/unnamed-chunk-18-1.png)<!-- -->
+![](README_files/figure-gfm/unnamed-chunk-16-1.png)<!-- -->
 
 There is a strange outlier with hour, so I will remove that.
 
@@ -521,59 +500,13 @@ df1 %>% filter(HOUR <=24) %>% ggplot(aes(x = HOUR)) + geom_histogram() + scale_x
 
     ## Warning: Removed 2 rows containing missing values (`geom_bar()`).
 
-![](README_files/figure-gfm/unnamed-chunk-19-1.png)<!-- --> It appears
+![](README_files/figure-gfm/unnamed-chunk-17-1.png)<!-- --> It appears
 that the peak is around 17:00 military time, which is 5pm. Thus, crashes
 appear to be increasingly likely as the day goes on, peaks at 5pm, and
 has a minimum at around 4pm.
 
 ### Does seatbelt use reduce injuries? Are people more likely to be ejected without wearing a seatbelt, and does seatbelt use prolong the time between the crash and the death of the driver?
 
-<<<<<<< HEAD
-=======
-``` r
-master$REST_USENAME %>% unique()
-```
-
-    ##  [1] "None Used / Not Applicable"                        
-    ##  [2] "Shoulder and Lap Belt Used"                        
-    ##  [3] "Unknown"                                           
-    ##  [4] "DOT-Compliant Motorcycle Helmet"                   
-    ##  [5] "No Helmet"                                         
-    ##  [6] "Helmet, Other than DOT-Compliant Motorcycle Helmet"
-    ##  [7] NA                                                  
-    ##  [8] "Not Reported"                                      
-    ##  [9] "Lap Belt Only Used"                                
-    ## [10] "Helmet, Unknown if DOT Compliant"                  
-    ## [11] "Other"                                             
-    ## [12] "Shoulder Belt Only Used"                           
-    ## [13] "Restraint Used - Type Unknown"                     
-    ## [14] "Unknown if Helmet Worn"                            
-    ## [15] "Reported as Unknown"                               
-    ## [16] "None Used/Not Applicable"                          
-    ## [17] "Racing-Style Harness Used"
-
-``` r
-master$RESTRAINT <- ifelse(master$REST_USENAME %in% c("None Used / Not Applicable", "Not Reported", "Reported as Unknown", "None Used/Not Applicable", "No Helmet"), "No", "Yes")
-master %>% ggplot(aes(x = RESTRAINT)) + geom_bar()
-```
-
-![](README_files/figure-gfm/unnamed-chunk-14-1.png)<!-- -->
-
-Difficult to see if this is a result of the strange types of variables
-possible. It isn’t possible to determine whether the person was wearing
-the seatbelt or not in each individual crash.
-
-``` r
-master %>% filter(REST_USENAME == "Shoulder and Lap Belt Used") %>% ggplot(aes(x = YEAR)) + geom_histogram()
-```
-
-    ## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
-
-![](README_files/figure-gfm/unnamed-chunk-15-1.png)<!-- -->
-
-It apppears that seat belt use has not changed over the years.
-
->>>>>>> bb299a012f5103bb32ef857a0edac4e7bed1c3bf
 ### Does impairment affect fatality in crashes overall? When are impaired crashes most likely?
 
 ``` r
@@ -588,7 +521,7 @@ master <- master %>% mutate(
 master %>% ggplot(aes(x = Impairment)) + geom_bar()
 ```
 
-![](README_files/figure-gfm/unnamed-chunk-20-1.png)<!-- -->
+![](README_files/figure-gfm/unnamed-chunk-18-1.png)<!-- -->
 
 ``` r
 master %>% filter(Impairment == TRUE) %>%
@@ -597,7 +530,7 @@ master %>% filter(Impairment == TRUE) %>%
 
     ## Warning in geom_bar(bins = 24): Ignoring unknown parameters: `bins`
 
-![](README_files/figure-gfm/unnamed-chunk-21-1.png)<!-- -->
+![](README_files/figure-gfm/unnamed-chunk-19-1.png)<!-- -->
 
 ### What regions of the United States have the most fatal crashes? What conditions are present in those regions?
 
