@@ -320,6 +320,7 @@ df <- bind_rows(df_2017, df_2018,df_2019,df_2020,df_2021)
     ## • `...1` -> `...22`
 
 ``` r
+<<<<<<< HEAD
 df1 <- df %>% group_by(STATENAME, YEAR) %>% filter(VEH_NO == 1 & ST_CASE %% 2 == 0) #add & ST_CASE %% 2 == 0
 ```
 
@@ -336,13 +337,20 @@ colnames(df1)
 
 ``` r
 df1 <- df1 %>% select(-one_of('...22', '...21'))
+=======
+df1 <- df %>% group_by(STATENAME, YEAR) %>% filter()
+>>>>>>> bb299a012f5103bb32ef857a0edac4e7bed1c3bf
 ```
 
 Saving the final dataset to ‘master.csv’
 
 ``` r
+<<<<<<< HEAD
 View(df1)
 write.csv(df1, 'master.csv')
+=======
+write.csv(df1, 'master2.csv')
+>>>>>>> bb299a012f5103bb32ef857a0edac4e7bed1c3bf
 ```
 
 ## Discription of Data
@@ -355,11 +363,15 @@ various medical reports, and department data. We chose to look at the
 years from 2017-2021 for our report.
 
 ``` r
-master <- read_csv('master.csv')
+master <- read_csv('master2.csv')
 ```
 
     ## New names:
+<<<<<<< HEAD
     ## Rows: 88163 Columns: 27
+=======
+    ## Rows: 271395 Columns: 41
+>>>>>>> bb299a012f5103bb32ef857a0edac4e7bed1c3bf
     ## ── Column specification
     ## ──────────────────────────────────────────────────────── Delimiter: "," chr
     ## (12): STATENAME, RUR_URBNAME, LGT_CONDNAME, WEATHERNAME, SEXNAME, DRINKI... dbl
@@ -516,6 +528,52 @@ has a minimum at around 4pm.
 
 ### Does seatbelt use reduce injuries? Are people more likely to be ejected without wearing a seatbelt, and does seatbelt use prolong the time between the crash and the death of the driver?
 
+<<<<<<< HEAD
+=======
+``` r
+master$REST_USENAME %>% unique()
+```
+
+    ##  [1] "None Used / Not Applicable"                        
+    ##  [2] "Shoulder and Lap Belt Used"                        
+    ##  [3] "Unknown"                                           
+    ##  [4] "DOT-Compliant Motorcycle Helmet"                   
+    ##  [5] "No Helmet"                                         
+    ##  [6] "Helmet, Other than DOT-Compliant Motorcycle Helmet"
+    ##  [7] NA                                                  
+    ##  [8] "Not Reported"                                      
+    ##  [9] "Lap Belt Only Used"                                
+    ## [10] "Helmet, Unknown if DOT Compliant"                  
+    ## [11] "Other"                                             
+    ## [12] "Shoulder Belt Only Used"                           
+    ## [13] "Restraint Used - Type Unknown"                     
+    ## [14] "Unknown if Helmet Worn"                            
+    ## [15] "Reported as Unknown"                               
+    ## [16] "None Used/Not Applicable"                          
+    ## [17] "Racing-Style Harness Used"
+
+``` r
+master$RESTRAINT <- ifelse(master$REST_USENAME %in% c("None Used / Not Applicable", "Not Reported", "Reported as Unknown", "None Used/Not Applicable", "No Helmet"), "No", "Yes")
+master %>% ggplot(aes(x = RESTRAINT)) + geom_bar()
+```
+
+![](README_files/figure-gfm/unnamed-chunk-14-1.png)<!-- -->
+
+Difficult to see if this is a result of the strange types of variables
+possible. It isn’t possible to determine whether the person was wearing
+the seatbelt or not in each individual crash.
+
+``` r
+master %>% filter(REST_USENAME == "Shoulder and Lap Belt Used") %>% ggplot(aes(x = YEAR)) + geom_histogram()
+```
+
+    ## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
+
+![](README_files/figure-gfm/unnamed-chunk-15-1.png)<!-- -->
+
+It apppears that seat belt use has not changed over the years.
+
+>>>>>>> bb299a012f5103bb32ef857a0edac4e7bed1c3bf
 ### Does impairment affect fatality in crashes overall? When are impaired crashes most likely?
 
 ``` r
@@ -544,11 +602,16 @@ master %>% filter(Impairment == TRUE) %>%
 ### What regions of the United States have the most fatal crashes? What conditions are present in those regions?
 
 ``` r
-  northeast <- c("Connecticut", "Maine", "Massachusetts", "New Hampshire", "Rhode Island", "Vermont", "New Jersey", "New York", "Pennsylvania")
+master$West <- ifelse(master$STATENAME %in% c("Alaska", "Arizona", "California","Colorado", "Hawaii", "Idaho", "Montana", "Nevada", "New Mexico", "Oregon", "Utah", "Washington", "Wyoming"), "West", NA)
+
   
-  midwest <- c("Illinois", "Indiana", "Iowa", "Kansas", "Michigan", "Minnesota", "Missouri", "Nebraska", "North Dakota", "Ohio", "South Dakota", "Wisconsin")
-  
-  south <- c("Alabama", "Arkansas", "Delaware", "Florida", "Georgia", "Kentucky", "Louisiana", "Maryland", "Mississippi", "North Carolina", "Oklahoma", "South Carolina", "Tennessee", "Texas", "Virginia", "West Virginia")
-  
-  west <- c("Alaska", "Arizona", "California","Colorado", "Hawaii", "Idaho", "Montana", "Nevada", "New Mexico", "Oregon", "Utah", "Washington", "Wyoming")
+master$NorthEast <- ifelse(master$STATENAME %in% c("Connecticut", "Maine", "Massachusetts", "New Hampshire", "Rhode Island", "Vermont", "New Jersey", "New York", "Pennsylvania"), "NorthEast", NA)
+
+master$South <- ifelse(master$STATENAME %in% c("Alabama", "Arkansas", "Delaware", "Florida", "Georgia", "Kentucky", "Louisiana", "Maryland", "Mississippi", "North Carolina", "Oklahoma", "South Carolina", "Tennessee", "Texas", "Virginia", "West Virginia"), "South", NA)
+
+master$MidWest <- ifelse(master$STATENAME %in% c("Illinois", "Indiana", "Iowa", "Kansas", "Michigan", "Minnesota", "Missouri", "Nebraska", "North Dakota", "Ohio", "South Dakota", "Wisconsin"), "MidWest", NA)
+
+master <- master %>% mutate(
+  Region = as.logical(pmax(NorthEast, West, South, MidWest))
+)
 ```
