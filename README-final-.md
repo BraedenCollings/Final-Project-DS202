@@ -320,7 +320,7 @@ df <- bind_rows(df_2017, df_2018,df_2019,df_2020,df_2021)
     ## • `...1` -> `...22`
 
 ``` r
-df1 <- df %>% group_by(STATENAME, YEAR) %>% filter(VEH_NO == 1 & ST_CASE %% 2 == 0)
+df1 <- df %>% group_by(STATENAME, YEAR) %>% filter(VEH_NO == 1) #add & ST_CASE %% 2 == 0
 ```
 
 ``` r
@@ -359,7 +359,7 @@ master <- read_csv('master_untitled_final_v3.csv')
 ```
 
     ## New names:
-    ## Rows: 88163 Columns: 27
+    ## Rows: 176380 Columns: 27
     ## ── Column specification
     ## ──────────────────────────────────────────────────────── Delimiter: "," chr
     ## (12): STATENAME, RUR_URBNAME, LGT_CONDNAME, WEATHERNAME, SEXNAME, DRINKI... dbl
@@ -375,12 +375,12 @@ head(master)
     ## # A tibble: 6 × 27
     ##    ...1 STATENAME ST_CASE MONTH   DAY  YEAR  HOUR MINUTE RUR_URBNAME LATITUDE
     ##   <dbl> <chr>       <dbl> <dbl> <dbl> <dbl> <dbl>  <dbl> <chr>          <dbl>
-    ## 1     1 Alabama     10002     2    14  2017    14     59 Urban           34.7
-    ## 2     2 Alabama     10004     1     1  2017    16     55 Urban           33.5
-    ## 3     3 Alabama     10006     1     6  2017    18     40 Rural           34.4
-    ## 4     4 Alabama     10008     1    11  2017    16     50 Rural           31.0
-    ## 5     5 Alabama     10010     1    14  2017     4      0 Urban           33.7
-    ## 6     6 Alabama     10012     1    19  2017    21     50 Rural           32.1
+    ## 1     1 Alabama     10001     2    19  2017    23     35 Urban           33.3
+    ## 2     2 Alabama     10002     2    14  2017    14     59 Urban           34.7
+    ## 3     3 Alabama     10003     1    31  2017    20     31 Urban           32.4
+    ## 4     4 Alabama     10004     1     1  2017    16     55 Urban           33.5
+    ## 5     5 Alabama     10005     1     1  2017    20      0 Rural           31.9
+    ## 6     6 Alabama     10006     1     6  2017    18     40 Rural           34.4
     ## # ℹ 17 more variables: LONGITUD <dbl>, LGT_CONDNAME <chr>, FATALS <dbl>,
     ## #   DRUNK_DR <dbl>, WEATHERNAME <chr>, AGE <dbl>, SEXNAME <chr>,
     ## #   DRINKINGNAME <chr>, DRUGSNAME <chr>, LAG_HRSNAME <chr>, VEH_NO <dbl>,
@@ -472,15 +472,53 @@ In pursuit of the stated goal, we will explore the following questions:
     ejected without wearing a seatbelt, and does seatbelt use prolong
     the time between the crash and the death of the driver?
 
+``` r
+df1 %>% ggplot(aes(x = YEAR, weight = FATALS)) + geom_bar() + ggtitle("Fatalities Over Last 5 Years") + ylab("Fatalities") + xlab("Year")
+```
+
+![](README-final-_files/figure-gfm/unnamed-chunk-16-1.png)<!-- -->
+
+``` r
+df1 %>% group_by(YEAR) %>% filter(YEAR == 2021) %>% summarise(Fatalities = sum(FATALS))
+```
+
+    ## # A tibble: 1 × 2
+    ##    YEAR Fatalities
+    ##   <dbl>      <dbl>
+    ## 1  2021      42692
+
 ### When are crashes most likely? Are there any seasonal effects, and are night crashes more likely than in the morning or afternoon?
 
 ``` r
-df1 %>% ggplot(aes(x = DAY)) + geom_histogram() + facet_wrap(~MONTH)
+df1 %>% group_by(DAY) %>% ggplot(aes(x = DAY, weight = FATALS)) + geom_bar()
 ```
 
-    ## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
+![](README-final-_files/figure-gfm/unnamed-chunk-17-1.png)<!-- -->
 
-![](README-final-_files/figure-gfm/unnamed-chunk-16-1.png)<!-- -->
+``` r
+df1 %>% group_by(DAY) %>% summarise(Fatalities = sum(FATALS))#filter(FATALS == max(df1$FATALS))
+```
+
+    ## # A tibble: 31 × 2
+    ##      DAY Fatalities
+    ##    <dbl>      <dbl>
+    ##  1     1       6630
+    ##  2     2       6342
+    ##  3     3       6476
+    ##  4     4       6473
+    ##  5     5       6482
+    ##  6     6       6315
+    ##  7     7       6410
+    ##  8     8       6126
+    ##  9     9       6244
+    ## 10    10       6253
+    ## # ℹ 21 more rows
+
+``` r
+df1 %>% group_by(DAY) %>% ggplot(aes(x = DAY, weight = FATALS)) + geom_bar() + facet_wrap(~MONTH) + coord_cartesian(ylim=c(400, 700))
+```
+
+![](README-final-_files/figure-gfm/unnamed-chunk-19-1.png)<!-- -->
 
 ``` r
 df1 %>% ggplot(aes(x = MONTH)) + geom_histogram()
@@ -488,7 +526,7 @@ df1 %>% ggplot(aes(x = MONTH)) + geom_histogram()
 
     ## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
 
-![](README-final-_files/figure-gfm/unnamed-chunk-17-1.png)<!-- -->
+![](README-final-_files/figure-gfm/unnamed-chunk-20-1.png)<!-- -->
 
 It appears that fatal crashes occur the most in the beginning of the
 year, and decrease heavily until December for all of the years.
@@ -497,7 +535,7 @@ year, and decrease heavily until December for all of the years.
 df1 %>% ggplot(aes(x = HOUR)) + geom_histogram(bins = 100)
 ```
 
-![](README-final-_files/figure-gfm/unnamed-chunk-18-1.png)<!-- -->
+![](README-final-_files/figure-gfm/unnamed-chunk-21-1.png)<!-- -->
 
 There is a strange outlier with hour, so I will remove that.
 
@@ -509,7 +547,7 @@ df1 %>% filter(HOUR <=24) %>% ggplot(aes(x = HOUR)) + geom_histogram() + scale_x
 
     ## Warning: Removed 2 rows containing missing values (`geom_bar()`).
 
-![](README-final-_files/figure-gfm/unnamed-chunk-19-1.png)<!-- --> It
+![](README-final-_files/figure-gfm/unnamed-chunk-22-1.png)<!-- --> It
 appears that the peak is around 17:00 military time, which is 5pm. Thus,
 crashes appear to be increasingly likely as the day goes on, peaks at
 5pm, and has a minimum at around 4pm.
@@ -528,7 +566,7 @@ master <- master %>% mutate(
 master %>% ggplot(aes(x = Impairment)) + geom_bar()
 ```
 
-![](README-final-_files/figure-gfm/unnamed-chunk-20-1.png)<!-- -->
+![](README-final-_files/figure-gfm/unnamed-chunk-23-1.png)<!-- -->
 
 ``` r
 master %>% filter(Impairment == TRUE) %>%
@@ -537,7 +575,7 @@ master %>% filter(Impairment == TRUE) %>%
 
     ## Warning in geom_bar(bins = 24): Ignoring unknown parameters: `bins`
 
-![](README-final-_files/figure-gfm/unnamed-chunk-21-1.png)<!-- -->
+![](README-final-_files/figure-gfm/unnamed-chunk-24-1.png)<!-- -->
 
 ### What regions of the United States have the most fatal crashes? What conditions are present in those regions?
 
