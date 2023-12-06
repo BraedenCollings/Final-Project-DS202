@@ -28,12 +28,26 @@ library(tidyverse)
 
 Selecting the variables we need.
 ```{r}
-accident_2017 <- accident_2017 %>% select(STATENAME, ST_CASE, PERNOTMVIT, VE_FORMS, PVH_INVL, PERMVIT, COUNTY, CITY, MONTH, DAY, YEAR, HOUR, MINUTE, RUR_URBNAME, LATITUDE, LONGITUD, HARM_EVNAME, MAN_COLLNAME, RELJCT2NAME, WRK_ZONENAME, LGT_CONDNAME, WEATHER1NAME, SCH_BUSNAME, FATALS, DRUNK_DR)
-accident_2018 <- accident_2018 %>% select(STATENAME, ST_CASE, PERNOTMVIT, VE_FORMS, PVH_INVL, PERMVIT, COUNTY, CITY, MONTH, DAY, YEAR, HOUR, MINUTE, RUR_URBNAME, LATITUDE, LONGITUD, HARM_EVNAME, MAN_COLLNAME, RELJCT2NAME, WRK_ZONENAME, LGT_CONDNAME, WEATHER1NAME, SCH_BUSNAME, FATALS, DRUNK_DR)
-accident_2019 <- accident_2019 %>% select(STATENAME, ST_CASE, PERNOTMVIT, VE_FORMS, PVH_INVL, PERMVIT, COUNTY, CITY, MONTH, DAY, YEAR, HOUR, MINUTE, RUR_URBNAME, LATITUDE, LONGITUD, HARM_EVNAME, MAN_COLLNAME, RELJCT2NAME, WRK_ZONENAME, LGT_CONDNAME, WEATHER1NAME, SCH_BUSNAME, FATALS, DRUNK_DR)
-accident_2020 <- accident_2020 %>% select(STATENAME, ST_CASE, PERNOTMVIT, VE_FORMS, PVH_INVL, PERMVIT, COUNTY, CITY, MONTH, DAY, YEAR, HOUR, MINUTE, RUR_URBNAME, LATITUDE, LONGITUD, HARM_EVNAME, MAN_COLLNAME, RELJCT2NAME, WRK_ZONENAME, LGT_CONDNAME, WEATHERNAME, SCH_BUSNAME, FATALS, DRUNK_DR)
-accident_2021 <- accident_2021 %>% select(STATENAME, ST_CASE, PERNOTMVIT, VE_FORMS, PVH_INVL, PERMVIT, COUNTY, CITY, MONTH, DAY, YEAR, HOUR, MINUTE, RUR_URBNAME, LATITUDE, LONGITUD, HARM_EVNAME, MAN_COLLNAME, RELJCT2NAME, WRK_ZONENAME, LGT_CONDNAME, WEATHERNAME, SCH_BUSNAME, FATALS)
+accident_2017 <- accident_2017 %>% select(STATENAME, ST_CASE, MONTH, DAY, YEAR, HOUR, MINUTE, RUR_URBNAME, LATITUDE, LONGITUD, LGT_CONDNAME, WEATHER1NAME, FATALS, DRUNK_DR)
+accident_2018 <- accident_2018 %>% select(STATENAME, ST_CASE, MONTH, DAY, YEAR, HOUR, MINUTE, RUR_URBNAME, LATITUDE, LONGITUD, LGT_CONDNAME, WEATHER1NAME, FATALS, DRUNK_DR)
+accident_2019 <- accident_2019 %>% select(STATENAME, ST_CASE, MONTH, DAY, YEAR, HOUR, MINUTE, RUR_URBNAME, LATITUDE, LONGITUD, LGT_CONDNAME, WEATHER1NAME, FATALS, DRUNK_DR)
+accident_2020 <- accident_2020 %>% select(STATENAME, ST_CASE, MONTH, DAY, YEAR, HOUR, MINUTE, RUR_URBNAME, LATITUDE, LONGITUD, LGT_CONDNAME, WEATHERNAME, FATALS, DRUNK_DR)
+accident_2021 <- accident_2021 %>% select(STATENAME, ST_CASE, MONTH, DAY, YEAR, HOUR, MINUTE, RUR_URBNAME, LATITUDE, LONGITUD, LGT_CONDNAME, WEATHERNAME, FATALS)
+
+
+accident_2017$WEATHERNAME <- accident_2017$WEATHER1NAME
+accident_2018$WEATHERNAME <- accident_2018$WEATHER1NAME
+accident_2019$WEATHERNAME <- accident_2019$WEATHER1NAME
+
+accident_2017 <- accident_2017 %>% select(-WEATHER1NAME)
+accident_2018 <- accident_2018 %>% select(-WEATHER1NAME)
+accident_2019 <- accident_2019 %>% select(-WEATHER1NAME)
 ```
+
+```{r}
+View(accident_2019)
+```
+
 
 Importing the person datasets.
 ```{r}
@@ -43,6 +57,16 @@ person_2019 <- read_csv("2019_person.csv")
 person_2020 <- read_csv("2020_person.csv")
 person_2021 <- read_csv("2021_person.csv")
 ```
+
+Selecting person variables.
+```{r}
+person_2017 <- person_2017 %>% select(AGE, SEXNAME, DRINKINGNAME, DRUGSNAME, LAG_HRSNAME, ST_CASE, VEH_NO, PER_NO)
+person_2018 <- person_2018 %>% select(AGE, SEXNAME, DRINKINGNAME, DRUGSNAME, LAG_HRSNAME, ST_CASE, VEH_NO, PER_NO)
+person_2019 <- person_2019 %>% select(AGE, SEXNAME, DRINKINGNAME, DRUGSNAME, LAG_HRSNAME, ST_CASE, VEH_NO, PER_NO)
+person_2020 <- person_2020 %>% select(AGE, SEXNAME, DRINKINGNAME, DRUGSNAME, LAG_HRSNAME, ST_CASE, VEH_NO, PER_NO)
+person_2021 <- person_2021 %>% select(AGE, SEXNAME, DRINKINGNAME, DRUGSNAME, LAG_HRSNAME, ST_CASE, VEH_NO, PER_NO)
+```
+
 
 Adding year variable to the datasets.
 ```{r}
@@ -54,6 +78,29 @@ person_2021$YEAR = 2021
 ```
 
 
+```{r}
+View(person_2017)
+```
+
+
+Importing Vehicle Datasets
+```{r}
+vehicle_2017 <- read_csv("2017_vehicle.csv")
+vehicle_2018 <- read_csv("2018_vehicle.csv")
+vehicle_2019 <- read_csv("2019_vehicle.csv")
+vehicle_2020 <- read_csv("2020_vehicle.csv")
+vehicle_2021 <- read_csv("2021_vehicle.csv")
+```
+
+Adding year variable to the datasets.
+```{r}
+vehicle_2017$YEAR = 2017
+vehicle_2018$YEAR = 2018
+vehicle_2019$YEAR = 2019
+vehicle_2020$YEAR = 2020
+vehicle_2021$YEAR = 2021
+```
+
 Merging the datasets.
 ```{r}
 df_2017 <- left_join(accident_2017, person_2017, by=c('YEAR', 'ST_CASE'))
@@ -61,24 +108,37 @@ df_2018 <- left_join(accident_2018, person_2018, by=c('YEAR', 'ST_CASE'))
 df_2019 <- left_join(accident_2019, person_2019, by=c('YEAR', 'ST_CASE'))
 df_2020 <- left_join(accident_2020, person_2020, by=c('YEAR', 'ST_CASE'))
 df_2021 <- left_join(accident_2021, person_2021, by=c('YEAR', 'ST_CASE'))
+
+
+df_2017 <- left_join(df_2017, vehicle_2017, by=c('YEAR', 'ST_CASE', 'VEH_NO'))
+df_2018 <- left_join(df_2018, vehicle_2018, by=c('YEAR', 'ST_CASE', 'VEH_NO'))
+df_2019 <- left_join(df_2019, vehicle_2019, by=c('YEAR', 'ST_CASE', 'VEH_NO'))
+df_2020 <- left_join(df_2020, vehicle_2020, by=c('YEAR', 'ST_CASE', 'VEH_NO'))
+df_2021 <- left_join(df_2021, vehicle_2021, by=c('YEAR', 'ST_CASE', 'VEH_NO'))
 ```
 
 Creating one dataset with all years.
 ```{r}
 df <- bind_rows(df_2017, df_2018,df_2019,df_2020,df_2021)
-df1 <- df %>% group_by(STATENAME, YEAR) %>% filter()
+df1 <- df %>% group_by(STATENAME, YEAR) %>% filter(VEH_NO == 1 & ST_CASE %% 2 == 0) #add & ST_CASE %% 2 == 0
 ```
+```{r}
+colnames(df1)
+df1 <- df1 %>% select(-one_of('...22', '...21'))
+```
+
 
 Saving the final dataset to 'master.csv'
 
 ```{r}
-write.csv(df1, 'master2.csv')
+View(df1)
+write.csv(df1, 'master.csv')
 ```
 
 ## Discription of Data
 The data we chose to work with is from the National Highway Traffic Safety Administration. The administration has a system called FARS or the Fatality Analysis Reporting System in which vehicle crashes are noted. The data is comprised from police reports, death certificates, various medical reports, and department data. We chose to look at the years from 2017-2021 for our report. 
 ```{r}
-master <- read_csv('master2.csv')
+master <- read_csv('master.csv')
 head(master)
 
 ```
@@ -167,19 +227,6 @@ It appears that the peak is around 17:00 military time, which is 5pm. Thus, cras
 
 ### Does seatbelt use reduce injuries? Are people more likely to be ejected without wearing a seatbelt, and does seatbelt use prolong the time between the crash and the death of the driver?
 
-```{r}
-master$REST_USENAME %>% unique()
-master$RESTRAINT <- ifelse(master$REST_USENAME %in% c("None Used / Not Applicable", "Not Reported", "Reported as Unknown", "None Used/Not Applicable", "No Helmet"), "No", "Yes")
-master %>% ggplot(aes(x = RESTRAINT)) + geom_bar()
-```
-
-Difficult to see if this is a result of the strange types of variables possible. It isn't possible to determine whether the person was wearing the seatbelt or not in each individual crash.
-
-```{r}
-master %>% filter(REST_USENAME == "Shoulder and Lap Belt Used") %>% ggplot(aes(x = YEAR)) + geom_histogram()
-```
-
-It apppears that seat belt use has not changed over the years.
 
 
 

@@ -78,23 +78,37 @@ accident_2021 <- read_csv("2021.csv")
 library(tidyverse)
 ```
 
-    ## ── Attaching packages ─────────────────────────────────────── tidyverse 1.3.2 ──
-    ## ✔ ggplot2 3.4.0     ✔ dplyr   1.1.0
-    ## ✔ tibble  3.1.8     ✔ stringr 1.5.0
-    ## ✔ tidyr   1.3.0     ✔ forcats 1.0.0
-    ## ✔ purrr   1.0.1     
+    ## ── Attaching core tidyverse packages ──────────────────────── tidyverse 2.0.0 ──
+    ## ✔ dplyr     1.1.2     ✔ purrr     1.0.2
+    ## ✔ forcats   1.0.0     ✔ stringr   1.5.0
+    ## ✔ ggplot2   3.4.3     ✔ tibble    3.2.1
+    ## ✔ lubridate 1.9.2     ✔ tidyr     1.3.0
     ## ── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──
     ## ✖ dplyr::filter() masks stats::filter()
     ## ✖ dplyr::lag()    masks stats::lag()
+    ## ℹ Use the conflicted package (<http://conflicted.r-lib.org/>) to force all conflicts to become errors
 
 Selecting the variables we need.
 
 ``` r
-accident_2017 <- accident_2017 %>% select(STATENAME, ST_CASE, PERNOTMVIT, VE_FORMS, PVH_INVL, PERMVIT, COUNTY, CITY, MONTH, DAY, YEAR, HOUR, MINUTE, RUR_URBNAME, LATITUDE, LONGITUD, HARM_EVNAME, MAN_COLLNAME, RELJCT2NAME, WRK_ZONENAME, LGT_CONDNAME, WEATHER1NAME, SCH_BUSNAME, FATALS, DRUNK_DR)
-accident_2018 <- accident_2018 %>% select(STATENAME, ST_CASE, PERNOTMVIT, VE_FORMS, PVH_INVL, PERMVIT, COUNTY, CITY, MONTH, DAY, YEAR, HOUR, MINUTE, RUR_URBNAME, LATITUDE, LONGITUD, HARM_EVNAME, MAN_COLLNAME, RELJCT2NAME, WRK_ZONENAME, LGT_CONDNAME, WEATHER1NAME, SCH_BUSNAME, FATALS, DRUNK_DR)
-accident_2019 <- accident_2019 %>% select(STATENAME, ST_CASE, PERNOTMVIT, VE_FORMS, PVH_INVL, PERMVIT, COUNTY, CITY, MONTH, DAY, YEAR, HOUR, MINUTE, RUR_URBNAME, LATITUDE, LONGITUD, HARM_EVNAME, MAN_COLLNAME, RELJCT2NAME, WRK_ZONENAME, LGT_CONDNAME, WEATHER1NAME, SCH_BUSNAME, FATALS, DRUNK_DR)
-accident_2020 <- accident_2020 %>% select(STATENAME, ST_CASE, PERNOTMVIT, VE_FORMS, PVH_INVL, PERMVIT, COUNTY, CITY, MONTH, DAY, YEAR, HOUR, MINUTE, RUR_URBNAME, LATITUDE, LONGITUD, HARM_EVNAME, MAN_COLLNAME, RELJCT2NAME, WRK_ZONENAME, LGT_CONDNAME, WEATHERNAME, SCH_BUSNAME, FATALS, DRUNK_DR)
-accident_2021 <- accident_2021 %>% select(STATENAME, ST_CASE, PERNOTMVIT, VE_FORMS, PVH_INVL, PERMVIT, COUNTY, CITY, MONTH, DAY, YEAR, HOUR, MINUTE, RUR_URBNAME, LATITUDE, LONGITUD, HARM_EVNAME, MAN_COLLNAME, RELJCT2NAME, WRK_ZONENAME, LGT_CONDNAME, WEATHERNAME, SCH_BUSNAME, FATALS)
+accident_2017 <- accident_2017 %>% select(STATENAME, ST_CASE, MONTH, DAY, YEAR, HOUR, MINUTE, RUR_URBNAME, LATITUDE, LONGITUD, LGT_CONDNAME, WEATHER1NAME, FATALS, DRUNK_DR)
+accident_2018 <- accident_2018 %>% select(STATENAME, ST_CASE, MONTH, DAY, YEAR, HOUR, MINUTE, RUR_URBNAME, LATITUDE, LONGITUD, LGT_CONDNAME, WEATHER1NAME, FATALS, DRUNK_DR)
+accident_2019 <- accident_2019 %>% select(STATENAME, ST_CASE, MONTH, DAY, YEAR, HOUR, MINUTE, RUR_URBNAME, LATITUDE, LONGITUD, LGT_CONDNAME, WEATHER1NAME, FATALS, DRUNK_DR)
+accident_2020 <- accident_2020 %>% select(STATENAME, ST_CASE, MONTH, DAY, YEAR, HOUR, MINUTE, RUR_URBNAME, LATITUDE, LONGITUD, LGT_CONDNAME, WEATHERNAME, FATALS, DRUNK_DR)
+accident_2021 <- accident_2021 %>% select(STATENAME, ST_CASE, MONTH, DAY, YEAR, HOUR, MINUTE, RUR_URBNAME, LATITUDE, LONGITUD, LGT_CONDNAME, WEATHERNAME, FATALS)
+
+
+accident_2017$WEATHERNAME <- accident_2017$WEATHER1NAME
+accident_2018$WEATHERNAME <- accident_2018$WEATHER1NAME
+accident_2019$WEATHERNAME <- accident_2019$WEATHER1NAME
+
+accident_2017 <- accident_2017 %>% select(-WEATHER1NAME)
+accident_2018 <- accident_2018 %>% select(-WEATHER1NAME)
+accident_2019 <- accident_2019 %>% select(-WEATHER1NAME)
+```
+
+``` r
+View(accident_2019)
 ```
 
 Importing the person datasets.
@@ -169,6 +183,16 @@ person_2021 <- read_csv("2021_person.csv")
     ## Specify the column types or set `show_col_types = FALSE` to quiet this message.
     ## • `` -> `...1`
 
+Selecting person variables.
+
+``` r
+person_2017 <- person_2017 %>% select(AGE, SEXNAME, DRINKINGNAME, DRUGSNAME, LAG_HRSNAME, ST_CASE, VEH_NO, PER_NO)
+person_2018 <- person_2018 %>% select(AGE, SEXNAME, DRINKINGNAME, DRUGSNAME, LAG_HRSNAME, ST_CASE, VEH_NO, PER_NO)
+person_2019 <- person_2019 %>% select(AGE, SEXNAME, DRINKINGNAME, DRUGSNAME, LAG_HRSNAME, ST_CASE, VEH_NO, PER_NO)
+person_2020 <- person_2020 %>% select(AGE, SEXNAME, DRINKINGNAME, DRUGSNAME, LAG_HRSNAME, ST_CASE, VEH_NO, PER_NO)
+person_2021 <- person_2021 %>% select(AGE, SEXNAME, DRINKINGNAME, DRUGSNAME, LAG_HRSNAME, ST_CASE, VEH_NO, PER_NO)
+```
+
 Adding year variable to the datasets.
 
 ``` r
@@ -179,52 +203,108 @@ person_2020$YEAR = 2020
 person_2021$YEAR = 2021
 ```
 
+``` r
+View(person_2017)
+```
+
+Importing Vehicle Datasets
+
+``` r
+vehicle_2017 <- read_csv("2017_vehicle.csv")
+```
+
+    ## New names:
+    ## Rows: 53128 Columns: 8
+    ## ── Column specification
+    ## ──────────────────────────────────────────────────────── Delimiter: "," chr
+    ## (4): HIT_RUNNAME, NUMOCCSNAME, L_STATENAME, SPEEDRELNAME dbl (4): ...1,
+    ## ST_CASE, VEH_NO, VSPD_LIM
+    ## ℹ Use `spec()` to retrieve the full column specification for this data. ℹ
+    ## Specify the column types or set `show_col_types = FALSE` to quiet this message.
+    ## • `` -> `...1`
+
+``` r
+vehicle_2018 <- read_csv("2018_vehicle.csv")
+```
+
+    ## New names:
+    ## Rows: 52286 Columns: 8
+    ## ── Column specification
+    ## ──────────────────────────────────────────────────────── Delimiter: "," chr
+    ## (4): HIT_RUNNAME, NUMOCCSNAME, L_STATENAME, SPEEDRELNAME dbl (4): ...1,
+    ## ST_CASE, VEH_NO, VSPD_LIM
+    ## ℹ Use `spec()` to retrieve the full column specification for this data. ℹ
+    ## Specify the column types or set `show_col_types = FALSE` to quiet this message.
+    ## • `` -> `...1`
+
+``` r
+vehicle_2019 <- read_csv("2019_vehicle.csv")
+```
+
+    ## New names:
+    ## Rows: 51623 Columns: 8
+    ## ── Column specification
+    ## ──────────────────────────────────────────────────────── Delimiter: "," chr
+    ## (4): HIT_RUNNAME, NUMOCCSNAME, L_STATENAME, SPEEDRELNAME dbl (4): ...1,
+    ## ST_CASE, VEH_NO, VSPD_LIM
+    ## ℹ Use `spec()` to retrieve the full column specification for this data. ℹ
+    ## Specify the column types or set `show_col_types = FALSE` to quiet this message.
+    ## • `` -> `...1`
+
+``` r
+vehicle_2020 <- read_csv("2020_vehicle.csv")
+```
+
+    ## New names:
+    ## Rows: 54552 Columns: 8
+    ## ── Column specification
+    ## ──────────────────────────────────────────────────────── Delimiter: "," chr
+    ## (4): HIT_RUNNAME, NUMOCCSNAME, L_STATENAME, SPEEDRELNAME dbl (4): ...1,
+    ## ST_CASE, VEH_NO, VSPD_LIM
+    ## ℹ Use `spec()` to retrieve the full column specification for this data. ℹ
+    ## Specify the column types or set `show_col_types = FALSE` to quiet this message.
+    ## • `` -> `...1`
+
+``` r
+vehicle_2021 <- read_csv("2021_vehicle.csv")
+```
+
+    ## New names:
+    ## Rows: 61332 Columns: 8
+    ## ── Column specification
+    ## ──────────────────────────────────────────────────────── Delimiter: "," chr
+    ## (4): HIT_RUNNAME, NUMOCCSNAME, L_STATENAME, SPEEDRELNAME dbl (4): ...1,
+    ## ST_CASE, VEH_NO, VSPD_LIM
+    ## ℹ Use `spec()` to retrieve the full column specification for this data. ℹ
+    ## Specify the column types or set `show_col_types = FALSE` to quiet this message.
+    ## • `` -> `...1`
+
+Adding year variable to the datasets.
+
+``` r
+vehicle_2017$YEAR = 2017
+vehicle_2018$YEAR = 2018
+vehicle_2019$YEAR = 2019
+vehicle_2020$YEAR = 2020
+vehicle_2021$YEAR = 2021
+```
+
 Merging the datasets.
 
 ``` r
 df_2017 <- left_join(accident_2017, person_2017, by=c('YEAR', 'ST_CASE'))
-```
-
-    ## Warning in left_join(accident_2017, person_2017, by = c("YEAR", "ST_CASE")): Each row in `x` is expected to match at most 1 row in `y`.
-    ## ℹ Row 3 of `x` matches multiple rows.
-    ## ℹ If multiple matches are expected, set `multiple = "all"` to silence this
-    ##   warning.
-
-``` r
 df_2018 <- left_join(accident_2018, person_2018, by=c('YEAR', 'ST_CASE'))
-```
-
-    ## Warning in left_join(accident_2018, person_2018, by = c("YEAR", "ST_CASE")): Each row in `x` is expected to match at most 1 row in `y`.
-    ## ℹ Row 3 of `x` matches multiple rows.
-    ## ℹ If multiple matches are expected, set `multiple = "all"` to silence this
-    ##   warning.
-
-``` r
 df_2019 <- left_join(accident_2019, person_2019, by=c('YEAR', 'ST_CASE'))
-```
-
-    ## Warning in left_join(accident_2019, person_2019, by = c("YEAR", "ST_CASE")): Each row in `x` is expected to match at most 1 row in `y`.
-    ## ℹ Row 1 of `x` matches multiple rows.
-    ## ℹ If multiple matches are expected, set `multiple = "all"` to silence this
-    ##   warning.
-
-``` r
 df_2020 <- left_join(accident_2020, person_2020, by=c('YEAR', 'ST_CASE'))
-```
-
-    ## Warning in left_join(accident_2020, person_2020, by = c("YEAR", "ST_CASE")): Each row in `x` is expected to match at most 1 row in `y`.
-    ## ℹ Row 2 of `x` matches multiple rows.
-    ## ℹ If multiple matches are expected, set `multiple = "all"` to silence this
-    ##   warning.
-
-``` r
 df_2021 <- left_join(accident_2021, person_2021, by=c('YEAR', 'ST_CASE'))
-```
 
-    ## Warning in left_join(accident_2021, person_2021, by = c("YEAR", "ST_CASE")): Each row in `x` is expected to match at most 1 row in `y`.
-    ## ℹ Row 1 of `x` matches multiple rows.
-    ## ℹ If multiple matches are expected, set `multiple = "all"` to silence this
-    ##   warning.
+
+df_2017 <- left_join(df_2017, vehicle_2017, by=c('YEAR', 'ST_CASE', 'VEH_NO'))
+df_2018 <- left_join(df_2018, vehicle_2018, by=c('YEAR', 'ST_CASE', 'VEH_NO'))
+df_2019 <- left_join(df_2019, vehicle_2019, by=c('YEAR', 'ST_CASE', 'VEH_NO'))
+df_2020 <- left_join(df_2020, vehicle_2020, by=c('YEAR', 'ST_CASE', 'VEH_NO'))
+df_2021 <- left_join(df_2021, vehicle_2021, by=c('YEAR', 'ST_CASE', 'VEH_NO'))
+```
 
 Creating one dataset with all years.
 
@@ -237,15 +317,31 @@ df <- bind_rows(df_2017, df_2018,df_2019,df_2020,df_2021)
     ## New names:
     ## New names:
     ## New names:
-    ## • `...1` -> `...26`
+    ## • `...1` -> `...22`
 
 ``` r
-df1 <- df %>% group_by(STATENAME, YEAR) %>% filter(ST_CASE %% 10000 <= 200)
+df1 <- df %>% group_by(STATENAME, YEAR) %>% filter(VEH_NO == 1 & ST_CASE %% 2 == 0) #add & ST_CASE %% 2 == 0
+```
+
+``` r
+colnames(df1)
+```
+
+    ##  [1] "STATENAME"    "ST_CASE"      "MONTH"        "DAY"          "YEAR"        
+    ##  [6] "HOUR"         "MINUTE"       "RUR_URBNAME"  "LATITUDE"     "LONGITUD"    
+    ## [11] "LGT_CONDNAME" "FATALS"       "DRUNK_DR"     "WEATHERNAME"  "AGE"         
+    ## [16] "SEXNAME"      "DRINKINGNAME" "DRUGSNAME"    "LAG_HRSNAME"  "VEH_NO"      
+    ## [21] "PER_NO"       "...22"        "HIT_RUNNAME"  "NUMOCCSNAME"  "L_STATENAME" 
+    ## [26] "SPEEDRELNAME" "VSPD_LIM"     "...21"
+
+``` r
+df1 <- df1 %>% select(-one_of('...22', '...21'))
 ```
 
 Saving the final dataset to ‘master.csv’
 
 ``` r
+View(df1)
 write.csv(df1, 'master.csv')
 ```
 
@@ -263,37 +359,33 @@ master <- read_csv('master.csv')
 ```
 
     ## New names:
-    ## Rows: 66042 Columns: 41
+    ## Rows: 88163 Columns: 27
     ## ── Column specification
     ## ──────────────────────────────────────────────────────── Delimiter: "," chr
-    ## (19): STATENAME, RUR_URBNAME, HARM_EVNAME, MAN_COLLNAME, RELJCT2NAME, WR... dbl
-    ## (22): ...1, ST_CASE, PERNOTMVIT, VE_FORMS, PVH_INVL, PERMVIT, COUNTY, CI...
+    ## (12): STATENAME, RUR_URBNAME, LGT_CONDNAME, WEATHERNAME, SEXNAME, DRINKI... dbl
+    ## (15): ...1, ST_CASE, MONTH, DAY, YEAR, HOUR, MINUTE, LATITUDE, LONGITUD,...
     ## ℹ Use `spec()` to retrieve the full column specification for this data. ℹ
     ## Specify the column types or set `show_col_types = FALSE` to quiet this message.
     ## • `` -> `...1`
-    ## • `...26` -> `...27`
-    ## • `...25` -> `...41`
 
 ``` r
 head(master)
 ```
 
-    ## # A tibble: 6 × 41
-    ##    ...1 STATENAME ST_CASE PERNOTMVIT VE_FORMS PVH_INVL PERMVIT COUNTY  CITY
-    ##   <dbl> <chr>       <dbl>      <dbl>    <dbl>    <dbl>   <dbl>  <dbl> <dbl>
-    ## 1     1 Alabama     10001          0        1        0       1     73   330
-    ## 2     2 Alabama     10002          0        1        0       1     89  1730
-    ## 3     3 Alabama     10003          0        3        0       3    101  2130
-    ## 4     4 Alabama     10003          0        3        0       3    101  2130
-    ## 5     5 Alabama     10003          0        3        0       3    101  2130
-    ## 6     6 Alabama     10004          0        1        0       1     73   350
-    ## # ℹ 32 more variables: MONTH <dbl>, DAY <dbl>, YEAR <dbl>, HOUR <dbl>,
-    ## #   MINUTE <dbl>, RUR_URBNAME <chr>, LATITUDE <dbl>, LONGITUD <dbl>,
-    ## #   HARM_EVNAME <chr>, MAN_COLLNAME <chr>, RELJCT2NAME <chr>,
-    ## #   WRK_ZONENAME <chr>, LGT_CONDNAME <chr>, WEATHER1NAME <chr>,
-    ## #   SCH_BUSNAME <chr>, FATALS <dbl>, DRUNK_DR <dbl>, ...27 <dbl>, AGE <dbl>,
-    ## #   SEXNAME <chr>, INJ_SEVNAME <chr>, REST_USENAME <chr>, EJECTIONNAME <chr>,
-    ## #   DRINKINGNAME <chr>, DRUGSNAME <chr>, DOANAME <chr>, LAG_HRSNAME <chr>, …
+    ## # A tibble: 6 × 27
+    ##    ...1 STATENAME ST_CASE MONTH   DAY  YEAR  HOUR MINUTE RUR_URBNAME LATITUDE
+    ##   <dbl> <chr>       <dbl> <dbl> <dbl> <dbl> <dbl>  <dbl> <chr>          <dbl>
+    ## 1     1 Alabama     10002     2    14  2017    14     59 Urban           34.7
+    ## 2     2 Alabama     10004     1     1  2017    16     55 Urban           33.5
+    ## 3     3 Alabama     10006     1     6  2017    18     40 Rural           34.4
+    ## 4     4 Alabama     10008     1    11  2017    16     50 Rural           31.0
+    ## 5     5 Alabama     10010     1    14  2017     4      0 Urban           33.7
+    ## 6     6 Alabama     10012     1    19  2017    21     50 Rural           32.1
+    ## # ℹ 17 more variables: LONGITUD <dbl>, LGT_CONDNAME <chr>, FATALS <dbl>,
+    ## #   DRUNK_DR <dbl>, WEATHERNAME <chr>, AGE <dbl>, SEXNAME <chr>,
+    ## #   DRINKINGNAME <chr>, DRUGSNAME <chr>, LAG_HRSNAME <chr>, VEH_NO <dbl>,
+    ## #   PER_NO <dbl>, HIT_RUNNAME <chr>, NUMOCCSNAME <chr>, L_STATENAME <chr>,
+    ## #   SPEEDRELNAME <chr>, VSPD_LIM <dbl>
 
 ## Marginal Summaries
 
@@ -383,89 +475,46 @@ In pursuit of the stated goal, we will explore the following questions:
 ### When are crashes most likely? Are there any seasonal effects, and are night crashes more likely than in the morning or afternoon?
 
 ``` r
-master %>% ggplot(aes(x = DAY)) + geom_histogram() + facet_wrap(~MONTH)
+df1 %>% ggplot(aes(x = DAY)) + geom_histogram() + facet_wrap(~MONTH)
 ```
 
     ## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
 
-![](README_files/figure-gfm/unnamed-chunk-10-1.png)<!-- -->
+![](README_files/figure-gfm/unnamed-chunk-16-1.png)<!-- -->
 
 ``` r
-master %>% ggplot(aes(x = MONTH)) + geom_histogram()
+df1 %>% ggplot(aes(x = MONTH)) + geom_histogram()
 ```
 
     ## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
 
-![](README_files/figure-gfm/unnamed-chunk-11-1.png)<!-- -->
+![](README_files/figure-gfm/unnamed-chunk-17-1.png)<!-- -->
 
 It appears that fatal crashes occur the most in the beginning of the
 year, and decrease heavily until December for all of the years.
 
 ``` r
-master %>% ggplot(aes(x = HOUR)) + geom_histogram(bins = 100)
+df1 %>% ggplot(aes(x = HOUR)) + geom_histogram(bins = 100)
 ```
 
-![](README_files/figure-gfm/unnamed-chunk-12-1.png)<!-- -->
+![](README_files/figure-gfm/unnamed-chunk-18-1.png)<!-- -->
 
 There is a strange outlier with hour, so I will remove that.
 
 ``` r
-master %>% filter(HOUR <=24) %>% ggplot(aes(x = HOUR)) + geom_histogram() + scale_x_continuous(name="Hour", limits=c(0, 24))
+df1 %>% filter(HOUR <=24) %>% ggplot(aes(x = HOUR)) + geom_histogram() + scale_x_continuous(name="Hour", limits=c(0, 24))
 ```
 
     ## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
 
     ## Warning: Removed 2 rows containing missing values (`geom_bar()`).
 
-![](README_files/figure-gfm/unnamed-chunk-13-1.png)<!-- --> It appears
+![](README_files/figure-gfm/unnamed-chunk-19-1.png)<!-- --> It appears
 that the peak is around 17:00 military time, which is 5pm. Thus, crashes
 appear to be increasingly likely as the day goes on, peaks at 5pm, and
 has a minimum at around 4pm.
 
 ### Does seatbelt use reduce injuries? Are people more likely to be ejected without wearing a seatbelt, and does seatbelt use prolong the time between the crash and the death of the driver?
-
-``` r
-master$REST_USENAME %>% unique()
-```
-
-    ##  [1] "None Used / Not Applicable"                        
-    ##  [2] "Shoulder and Lap Belt Used"                        
-    ##  [3] "Unknown"                                           
-    ##  [4] "DOT-Compliant Motorcycle Helmet"                   
-    ##  [5] "No Helmet"                                         
-    ##  [6] "Helmet, Other than DOT-Compliant Motorcycle Helmet"
-    ##  [7] "Not Reported"                                      
-    ##  [8] "Restraint Used - Type Unknown"                     
-    ##  [9] "Helmet, Unknown if DOT Compliant"                  
-    ## [10] "Unknown if Helmet Worn"                            
-    ## [11] NA                                                  
-    ## [12] "Lap Belt Only Used"                                
-    ## [13] "Shoulder Belt Only Used"                           
-    ## [14] "Other"                                             
-    ## [15] "Reported as Unknown"                               
-    ## [16] "None Used/Not Applicable"                          
-    ## [17] "Racing-Style Harness Used"
-
-``` r
-master$RESTRAINT <- ifelse(master$REST_USENAME %in% c("None Used / Not Applicable", "Not Reported", "Reported as Unknown", "None Used/Not Applicable", "No Helmet"), "No", "Yes")
-master %>% ggplot(aes(x = RESTRAINT)) + geom_bar()
-```
-
-![](README_files/figure-gfm/unnamed-chunk-14-1.png)<!-- -->
-
-Difficult to see if this is a result of the strange types of variables
-possible. It isn’t possible to determine whether the person was wearing
-the seatbelt or not in each individual crash.
-
-``` r
-master %>% filter(REST_USENAME == "Shoulder and Lap Belt Used") %>% ggplot(aes(x = YEAR)) + geom_histogram()
-```
-
-    ## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
-
-![](README_files/figure-gfm/unnamed-chunk-15-1.png)<!-- -->
-
-It apppears that seat belt use has not changed over the years.
 
 ### Does impairment affect fatality in crashes overall? When are impaired crashes most likely?
 
@@ -481,7 +530,7 @@ master <- master %>% mutate(
 master %>% ggplot(aes(x = Impairment)) + geom_bar()
 ```
 
-![](README_files/figure-gfm/unnamed-chunk-16-1.png)<!-- -->
+![](README_files/figure-gfm/unnamed-chunk-20-1.png)<!-- -->
 
 ``` r
 master %>% filter(Impairment == TRUE) %>%
@@ -490,7 +539,7 @@ master %>% filter(Impairment == TRUE) %>%
 
     ## Warning in geom_bar(bins = 24): Ignoring unknown parameters: `bins`
 
-![](README_files/figure-gfm/unnamed-chunk-17-1.png)<!-- -->
+![](README_files/figure-gfm/unnamed-chunk-21-1.png)<!-- -->
 
 ### What regions of the United States have the most fatal crashes? What conditions are present in those regions?
 
