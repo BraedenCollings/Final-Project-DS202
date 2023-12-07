@@ -91,12 +91,12 @@ library(tidyverse)
 Selecting the variables we need.
 
 ``` r
-accident_2017 <- accident_2017 %>% select(STATENAME, ST_CASE, MONTH, DAY, YEAR, HOUR, MINUTE, RUR_URBNAME, LATITUDE, LONGITUD, LGT_CONDNAME, WEATHER1NAME, FATALS, DRUNK_DR)
-accident_2018 <- accident_2018 %>% select(STATENAME, ST_CASE, MONTH, DAY, YEAR, HOUR, MINUTE, RUR_URBNAME, LATITUDE, LONGITUD, LGT_CONDNAME, WEATHER1NAME, FATALS, DRUNK_DR)
-accident_2019 <- accident_2019 %>% select(STATENAME, ST_CASE, MONTH, DAY, YEAR, HOUR, MINUTE, RUR_URBNAME, LATITUDE, LONGITUD, LGT_CONDNAME, WEATHER1NAME, FATALS, DRUNK_DR)
-accident_2020 <- accident_2020 %>% select(STATENAME, ST_CASE, MONTH, DAY, YEAR, HOUR, MINUTE, RUR_URBNAME, LATITUDE, LONGITUD, LGT_CONDNAME, WEATHERNAME, FATALS, DRUNK_DR)
-accident_2021 <- accident_2021 %>% select(STATENAME, ST_CASE, MONTH, DAY, YEAR, HOUR, MINUTE, RUR_URBNAME, LATITUDE, LONGITUD, LGT_CONDNAME, WEATHERNAME, FATALS)
-
+accident_2017 <- accident_2017 %>% select(STATENAME, ST_CASE, MONTH, DAY, YEAR, HOUR, MINUTE, RUR_URBNAME, LATITUDE, LONGITUD, LGT_CONDNAME, WEATHER1NAME, FATALS, DRUNK_DR, DAY_WEEK)
+accident_2018 <- accident_2018 %>% select(STATENAME, ST_CASE, MONTH, DAY, YEAR, HOUR, MINUTE, RUR_URBNAME, LATITUDE, LONGITUD, LGT_CONDNAME, WEATHER1NAME, FATALS, DRUNK_DR, DAY_WEEK)
+accident_2019 <- accident_2019 %>% select(STATENAME, ST_CASE, MONTH, DAY, YEAR, HOUR, MINUTE, RUR_URBNAME, LATITUDE, LONGITUD, LGT_CONDNAME, WEATHER1NAME, FATALS, DRUNK_DR, DAY_WEEK)
+accident_2020 <- accident_2020 %>% select(STATENAME, ST_CASE, MONTH, DAY, YEAR, HOUR, MINUTE, RUR_URBNAME, LATITUDE, LONGITUD, LGT_CONDNAME, WEATHERNAME, FATALS, DRUNK_DR, DAY_WEEK)
+accident_2021 <- accident_2021 %>% select(STATENAME, ST_CASE, MONTH, DAY, YEAR, HOUR, MINUTE, RUR_URBNAME, LATITUDE, LONGITUD, LGT_CONDNAME, WEATHERNAME, FATALS, DAY_WEEK)
+#2021 does not have drunk driving variable
 
 accident_2017$WEATHERNAME <- accident_2017$WEATHER1NAME
 accident_2018$WEATHERNAME <- accident_2018$WEATHER1NAME
@@ -309,7 +309,7 @@ df <- bind_rows(df_2017, df_2018,df_2019,df_2020,df_2021)
     ## New names:
     ## New names:
     ## New names:
-    ## • `...1` -> `...22`
+    ## • `...1` -> `...23`
 
 ``` r
 df1 <- df %>% group_by(STATENAME, YEAR) %>% filter(VEH_NO == 1 & ST_CASE %% 2 == 0) #add & ST_CASE %% 2 == 0
@@ -321,14 +321,16 @@ colnames(df1)
 
     ##  [1] "STATENAME"    "ST_CASE"      "MONTH"        "DAY"          "YEAR"        
     ##  [6] "HOUR"         "MINUTE"       "RUR_URBNAME"  "LATITUDE"     "LONGITUD"    
-    ## [11] "LGT_CONDNAME" "FATALS"       "DRUNK_DR"     "WEATHERNAME"  "AGE"         
-    ## [16] "SEXNAME"      "DRINKINGNAME" "DRUGSNAME"    "LAG_HRSNAME"  "VEH_NO"      
-    ## [21] "PER_NO"       "...22"        "HIT_RUNNAME"  "NUMOCCSNAME"  "L_STATENAME" 
-    ## [26] "SPEEDRELNAME" "VSPD_LIM"     "...21"
+    ## [11] "LGT_CONDNAME" "FATALS"       "DRUNK_DR"     "DAY_WEEK"     "WEATHERNAME" 
+    ## [16] "AGE"          "SEXNAME"      "DRINKINGNAME" "DRUGSNAME"    "LAG_HRSNAME" 
+    ## [21] "VEH_NO"       "PER_NO"       "...23"        "HIT_RUNNAME"  "NUMOCCSNAME" 
+    ## [26] "L_STATENAME"  "SPEEDRELNAME" "VSPD_LIM"     "...22"
 
 ``` r
 df1 <- df1 %>% select(-one_of('...22', '...21'))
 ```
+
+    ## Warning: Unknown columns: `...21`
 
 Saving the final dataset to ‘master.csv’
 
@@ -350,20 +352,21 @@ master <- read_csv('master.csv')
 ```
 
     ## New names:
-    ## Rows: 88163 Columns: 27
+    ## Rows: 88163 Columns: 29
     ## ── Column specification
     ## ──────────────────────────────────────────────────────── Delimiter: "," chr
     ## (12): STATENAME, RUR_URBNAME, LGT_CONDNAME, WEATHERNAME, SEXNAME, DRINKI... dbl
-    ## (15): ...1, ST_CASE, MONTH, DAY, YEAR, HOUR, MINUTE, LATITUDE, LONGITUD,...
+    ## (17): ...1, ST_CASE, MONTH, DAY, YEAR, HOUR, MINUTE, LATITUDE, LONGITUD,...
     ## ℹ Use `spec()` to retrieve the full column specification for this data. ℹ
     ## Specify the column types or set `show_col_types = FALSE` to quiet this message.
     ## • `` -> `...1`
+    ## • `...23` -> `...24`
 
 ``` r
 head(master)
 ```
 
-    ## # A tibble: 6 × 27
+    ## # A tibble: 6 × 29
     ##    ...1 STATENAME ST_CASE MONTH   DAY  YEAR  HOUR MINUTE RUR_URBNAME LATITUDE
     ##   <dbl> <chr>       <dbl> <dbl> <dbl> <dbl> <dbl>  <dbl> <chr>          <dbl>
     ## 1     1 Alabama     10002     2    14  2017    14     59 Urban           34.7
@@ -372,11 +375,11 @@ head(master)
     ## 4     4 Alabama     10008     1    11  2017    16     50 Rural           31.0
     ## 5     5 Alabama     10010     1    14  2017     4      0 Urban           33.7
     ## 6     6 Alabama     10012     1    19  2017    21     50 Rural           32.1
-    ## # ℹ 17 more variables: LONGITUD <dbl>, LGT_CONDNAME <chr>, FATALS <dbl>,
-    ## #   DRUNK_DR <dbl>, WEATHERNAME <chr>, AGE <dbl>, SEXNAME <chr>,
-    ## #   DRINKINGNAME <chr>, DRUGSNAME <chr>, LAG_HRSNAME <chr>, VEH_NO <dbl>,
-    ## #   PER_NO <dbl>, HIT_RUNNAME <chr>, NUMOCCSNAME <chr>, L_STATENAME <chr>,
-    ## #   SPEEDRELNAME <chr>, VSPD_LIM <dbl>
+    ## # ℹ 19 more variables: LONGITUD <dbl>, LGT_CONDNAME <chr>, FATALS <dbl>,
+    ## #   DRUNK_DR <dbl>, DAY_WEEK <dbl>, WEATHERNAME <chr>, AGE <dbl>,
+    ## #   SEXNAME <chr>, DRINKINGNAME <chr>, DRUGSNAME <chr>, LAG_HRSNAME <chr>,
+    ## #   VEH_NO <dbl>, PER_NO <dbl>, ...24 <dbl>, HIT_RUNNAME <chr>,
+    ## #   NUMOCCSNAME <chr>, L_STATENAME <chr>, SPEEDRELNAME <chr>, VSPD_LIM <dbl>
 
 ## Marginal Summaries
 
@@ -442,19 +445,59 @@ In pursuit of the stated goal, we will explore the following questions:
 5.  When are crashes most likely? Are there any seasonal effects, and
     are night crashes more likely than in the morning or afternoon?
 
-6.  Does seatbelt use reduce injuries? Are people more likely to be
-    ejected without wearing a seatbelt, and does seatbelt use prolong
-    the time between the crash and the death of the driver?
+6.  How is speeding related to the number of fatalities? Are younger
+    drivers more prone to speeding? Is higher speeding limits associated
+    with more fatalities?
 
 ### When are crashes most likely? Are there any seasonal effects, and are night crashes more likely than in the morning or afternoon?
 
 ``` r
-df1 %>% ggplot(aes(x = DAY)) + geom_histogram() + facet_wrap(~MONTH)
+master %>% group_by(YEAR) %>% ggplot(aes(x = YEAR, weight = FATALS)) + geom_bar() + ggtitle("Fatalities Over Last 5 Years") + ylab("Fatalities") + xlab("Year")
 ```
 
-    ## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
-
 ![](README_files/figure-gfm/unnamed-chunk-14-1.png)<!-- -->
+
+``` r
+df %>% group_by(MONTH) %>% summarise(count = sum(FATALS)) %>% arrange(desc(count))
+```
+
+    ## # A tibble: 12 × 2
+    ##    MONTH count
+    ##    <dbl> <dbl>
+    ##  1    10 27965
+    ##  2     7 27845
+    ##  3     8 27582
+    ##  4     6 27579
+    ##  5     9 27564
+    ##  6     5 25770
+    ##  7    11 25437
+    ##  8    12 24720
+    ##  9     4 22626
+    ## 10     3 22608
+    ## 11     1 21837
+    ## 12     2 20478
+
+``` r
+farb <- c("#4100f3", "#1e00ff", "#5700e7", "#6900d9", "#9100ac", "#a70085", "#ba004d", "#b1006d", "#9d009a", "#c30004", "#8500bc", "#7800cb")
+farb <- c("#4100f3", "#1e00ff", "#5700e7", "#6900d9", "#dd00de", "#d3007f", "#c80028", "#ce0053", "#d900ae", "#c91e1e", "#b500e4", "#8a00e9")
+
+plot_names <- c('1' = "January",
+                '2' = "February",
+                '3' = "March",
+                '4' = "April",
+                '5' = "May",
+                '6' = "June",
+                '7' = "July",
+                '8' = "August",
+                '9' = "September",
+                '10' = "October",
+                '11' = "November",
+                '12' = "December")
+
+master %>% group_by(DAY) %>% ggplot(aes(x = DAY, weight = FATALS)) + geom_bar(aes(fill = as.factor(MONTH))) + facet_wrap(~MONTH, labeller = as_labeller(plot_names))+geom_hline(yintercept = 200, color='RED') + theme(legend.position="bottom") + scale_fill_manual(values= farb)
+```
+
+![](README_files/figure-gfm/unnamed-chunk-16-1.png)<!-- -->
 
 ``` r
 df1 %>% ggplot(aes(x = MONTH)) + geom_histogram()
@@ -462,7 +505,7 @@ df1 %>% ggplot(aes(x = MONTH)) + geom_histogram()
 
     ## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
 
-![](README_files/figure-gfm/unnamed-chunk-15-1.png)<!-- -->
+![](README_files/figure-gfm/unnamed-chunk-17-1.png)<!-- -->
 
 It appears that fatal crashes occur the most in the beginning of the
 year, and decrease heavily until December for all of the years.
@@ -471,7 +514,21 @@ year, and decrease heavily until December for all of the years.
 df1 %>% ggplot(aes(x = HOUR)) + geom_histogram(bins = 100)
 ```
 
-![](README_files/figure-gfm/unnamed-chunk-16-1.png)<!-- -->
+![](README_files/figure-gfm/unnamed-chunk-18-1.png)<!-- -->
+
+``` r
+summary(df1$FATALS)
+```
+
+    ##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+    ##   1.000   1.000   1.000   1.087   1.000  20.000
+
+``` r
+df1 %>% ggplot(aes(x = as.factor(DAY_WEEK), weight = FATALS)) + geom_bar() + scale_x_discrete(
+                      labels=c("Sunday","Monday", "Tuesday", "Wednesday","Thursday","Friday", "Saturday")) 
+```
+
+![](README_files/figure-gfm/unnamed-chunk-20-1.png)<!-- -->
 
 There is a strange outlier with hour, so I will remove that.
 
@@ -483,7 +540,7 @@ df1 %>% filter(HOUR <=24) %>% ggplot(aes(x = HOUR)) + geom_histogram() + scale_x
 
     ## Warning: Removed 2 rows containing missing values (`geom_bar()`).
 
-![](README_files/figure-gfm/unnamed-chunk-17-1.png)<!-- --> It appears
+![](README_files/figure-gfm/unnamed-chunk-21-1.png)<!-- --> It appears
 that the peak is around 17:00 military time, which is 5pm. Thus, crashes
 appear to be increasingly likely as the day goes on, peaks at 5pm, and
 has a minimum at around 4pm.
@@ -504,7 +561,7 @@ master <- master %>% mutate(
 master %>% ggplot(aes(x = Impairment)) + geom_bar()
 ```
 
-![](README_files/figure-gfm/unnamed-chunk-18-1.png)<!-- -->
+![](README_files/figure-gfm/unnamed-chunk-22-1.png)<!-- -->
 
 ``` r
 master %>% filter(Impairment == TRUE) %>%
@@ -513,7 +570,7 @@ master %>% filter(Impairment == TRUE) %>%
 
     ## Warning in geom_bar(bins = 24): Ignoring unknown parameters: `bins`
 
-![](README_files/figure-gfm/unnamed-chunk-19-1.png)<!-- -->
+![](README_files/figure-gfm/unnamed-chunk-23-1.png)<!-- -->
 
 ### What regions of the United States have the most fatal crashes? What conditions are present in those regions?
 
