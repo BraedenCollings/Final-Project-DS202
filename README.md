@@ -478,9 +478,8 @@ df %>% group_by(MONTH) %>% summarise(count = sum(FATALS)) %>% arrange(desc(count
     ## 12     2 20478
 
 ``` r
-farb <- c("#4100f3", "#1e00ff", "#5700e7", "#6900d9", "#9100ac", "#a70085", "#ba004d", "#b1006d", "#9d009a", "#c30004", "#8500bc", "#7800cb")
 farb <- c("#4100f3", "#1e00ff", "#5700e7", "#6900d9", "#dd00de", "#d3007f", "#c80028", "#ce0053", "#d900ae", "#c91e1e", "#b500e4", "#8a00e9")
-
+farb<-c("#c91e1e","#c80028","#ce0053","#d3007f","#d900ae","#dd00de","#b500e4", "#8a00e9","#6900d9","#5700e7","#4100f3", "#1e00ff")
 plot_names <- c('1' = "January",
                 '2' = "February",
                 '3' = "March",
@@ -494,7 +493,7 @@ plot_names <- c('1' = "January",
                 '11' = "November",
                 '12' = "December")
 
-master %>% group_by(DAY) %>% ggplot(aes(x = DAY, weight = FATALS)) + geom_bar(aes(fill = as.factor(MONTH))) + facet_wrap(~MONTH, labeller = as_labeller(plot_names))+geom_hline(yintercept = 200, color='RED') + theme(legend.position="bottom") + scale_fill_manual(values= farb)
+master %>% group_by(DAY) %>% ggplot(aes(x = DAY, weight = FATALS)) + geom_bar(aes(fill = factor(MONTH, levels = c("10","7","8","6","9","5","11","12","4","3","1","2"))))+ facet_wrap(~MONTH, labeller = as_labeller(plot_names)) +geom_hline(yintercept = 200, color='RED') + theme(legend.position="bottom") + scale_fill_manual(values= farb)+ theme( legend.position="right")+labs(fill='Monthly Fatalities') + ylab("Fatalities") + ggtitle("Fatalities by Day and Month")
 ```
 
 ![](README_files/figure-gfm/unnamed-chunk-16-1.png)<!-- -->
@@ -511,10 +510,41 @@ It appears that fatal crashes occur the most in the beginning of the
 year, and decrease heavily until December for all of the years.
 
 ``` r
-df1 %>% ggplot(aes(x = HOUR)) + geom_histogram(bins = 100)
+df1 %>% ggplot(aes(x = HOUR)) + geom_histogram(bins = 100) + ylab("Fatalities") + ggtitle("Fatalities by Hour")
 ```
 
 ![](README_files/figure-gfm/unnamed-chunk-18-1.png)<!-- -->
+
+``` r
+df1 %>% filter(HOUR >24)
+```
+
+    ## # A tibble: 617 × 28
+    ## # Groups:   STATENAME, YEAR [109]
+    ##    STATENAME  ST_CASE MONTH   DAY  YEAR  HOUR MINUTE RUR_URBNAME LATITUDE
+    ##    <chr>        <dbl> <dbl> <dbl> <dbl> <dbl>  <dbl> <chr>          <dbl>
+    ##  1 Alabama      10224     4    14  2017    99     99 Rural           30.3
+    ##  2 Alabama      10624    10     2  2017    99     99 Urban           30.6
+    ##  3 Alaska       20026     6     1  2017    99     99 Rural           55.4
+    ##  4 Alaska       20044     8    22  2017    99     99 Rural           64.7
+    ##  5 Arizona      40410     1     8  2017    99     99 Rural          100. 
+    ##  6 Arizona      40812    12     5  2017    99     99 Urban           32.1
+    ##  7 Arizona      40930    12    29  2017    99     99 Rural           32.7
+    ##  8 Arkansas     50452     5    27  2017    99     99 Rural           36.2
+    ##  9 California   60004     1    14  2017    99     99 Rural           38.1
+    ## 10 California   60174     3     6  2017    99     99 Rural           34.9
+    ## # ℹ 607 more rows
+    ## # ℹ 19 more variables: LONGITUD <dbl>, LGT_CONDNAME <chr>, FATALS <dbl>,
+    ## #   DRUNK_DR <dbl>, DAY_WEEK <dbl>, WEATHERNAME <chr>, AGE <dbl>,
+    ## #   SEXNAME <chr>, DRINKINGNAME <chr>, DRUGSNAME <chr>, LAG_HRSNAME <chr>,
+    ## #   VEH_NO <dbl>, PER_NO <dbl>, ...23 <dbl>, HIT_RUNNAME <chr>,
+    ## #   NUMOCCSNAME <chr>, L_STATENAME <chr>, SPEEDRELNAME <chr>, VSPD_LIM <dbl>
+
+``` r
+df1 %>% filter(HOUR <= 24) %>% ggplot(aes(x = as.factor(HOUR), weight = FATALS)) + geom_bar() + ylab("Fatalities") + ggtitle("Fatalities by Hour") 
+```
+
+![](README_files/figure-gfm/unnamed-chunk-18-2.png)<!-- -->
 
 ``` r
 summary(df1$FATALS)
@@ -525,7 +555,7 @@ summary(df1$FATALS)
 
 ``` r
 df1 %>% ggplot(aes(x = as.factor(DAY_WEEK), weight = FATALS)) + geom_bar() + scale_x_discrete(
-                      labels=c("Sunday","Monday", "Tuesday", "Wednesday","Thursday","Friday", "Saturday")) 
+                      labels=c("Sunday","Monday", "Tuesday", "Wednesday","Thursday","Friday", "Saturday")) + xlab("Weekday") + ylab("Fatalities") + ggtitle("Fatalities by Weekday")
 ```
 
 ![](README_files/figure-gfm/unnamed-chunk-20-1.png)<!-- -->

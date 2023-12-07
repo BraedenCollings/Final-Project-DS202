@@ -190,11 +190,9 @@ master %>% group_by(YEAR) %>% ggplot(aes(x = YEAR, weight = FATALS)) + geom_bar(
 df %>% group_by(MONTH) %>% summarise(count = sum(FATALS)) %>% arrange(desc(count))
 ```
 
-
 ```{r}
-farb <- c("#4100f3", "#1e00ff", "#5700e7", "#6900d9", "#9100ac", "#a70085", "#ba004d", "#b1006d", "#9d009a", "#c30004", "#8500bc", "#7800cb")
 farb <- c("#4100f3", "#1e00ff", "#5700e7", "#6900d9", "#dd00de", "#d3007f", "#c80028", "#ce0053", "#d900ae", "#c91e1e", "#b500e4", "#8a00e9")
-
+farb<-c("#c91e1e","#c80028","#ce0053","#d3007f","#d900ae","#dd00de","#b500e4", "#8a00e9","#6900d9","#5700e7","#4100f3", "#1e00ff")
 plot_names <- c('1' = "January",
                 '2' = "February",
                 '3' = "March",
@@ -208,7 +206,7 @@ plot_names <- c('1' = "January",
                 '11' = "November",
                 '12' = "December")
 
-master %>% group_by(DAY) %>% ggplot(aes(x = DAY, weight = FATALS)) + geom_bar(aes(fill = as.factor(MONTH))) + facet_wrap(~MONTH, labeller = as_labeller(plot_names))+geom_hline(yintercept = 200, color='RED') + theme(legend.position="bottom") + scale_fill_manual(values= farb)
+master %>% group_by(DAY) %>% ggplot(aes(x = DAY, weight = FATALS)) + geom_bar(aes(fill = factor(MONTH, levels = c("10","7","8","6","9","5","11","12","4","3","1","2"))))+ facet_wrap(~MONTH, labeller = as_labeller(plot_names)) +geom_hline(yintercept = 200, color='RED') + theme(legend.position="bottom") + scale_fill_manual(values= farb)+ theme( legend.position="right")+labs(fill='Monthly Fatalities') + ylab("Fatalities") + ggtitle("Fatalities by Day and Month")
 ```
 
 ```{r}
@@ -218,7 +216,9 @@ df1 %>% ggplot(aes(x = MONTH)) + geom_histogram()
 It appears that fatal crashes occur the most in the beginning of the year, and decrease heavily until December for all of the years.
 
 ```{r}
-df1 %>% ggplot(aes(x = HOUR)) + geom_histogram(bins = 100)
+df1 %>% ggplot(aes(x = HOUR)) + geom_histogram(bins = 100) + ylab("Fatalities") + ggtitle("Fatalities by Hour")
+df1 %>% filter(HOUR >24)
+df1 %>% filter(HOUR <= 24) %>% ggplot(aes(x = as.factor(HOUR), weight = FATALS)) + geom_bar() + ylab("Fatalities") + ggtitle("Fatalities by Hour") 
 ```
 
 ```{r}
@@ -229,7 +229,7 @@ summary(df1$FATALS)
 
 ```{r}
 df1 %>% ggplot(aes(x = as.factor(DAY_WEEK), weight = FATALS)) + geom_bar() + scale_x_discrete(
-                      labels=c("Sunday","Monday", "Tuesday", "Wednesday","Thursday","Friday", "Saturday")) 
+                      labels=c("Sunday","Monday", "Tuesday", "Wednesday","Thursday","Friday", "Saturday")) + xlab("Weekday") + ylab("Fatalities") + ggtitle("Fatalities by Weekday")
 ```
 
 There is a strange outlier with hour, so I will remove that.
