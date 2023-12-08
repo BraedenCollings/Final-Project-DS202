@@ -1,6 +1,4 @@
 
-git add/rm <file>
-
 # Final Project DS202
 
 #### Marissa Baietto, Ryan Dorle, Braeden Collings
@@ -287,44 +285,27 @@ write.csv(df1, 'master.csv')
 
 - Methods utilized, if used
 
-\<\<\<\<\<\<\< HEAD \## Results \* All results and graphics + For each
-graphic, - Motivation for making the graphic - Insights obtained from
-the graphics - Necessary explanations + Formatting - Axis Labels, Title,
-Captions, Color Scheme if necessary - Each graphic illustrates one
-point - Make color scheme cohesive - Avoid repetition \* List trials and
-errors + Critical of findings + Multiple approaches and techniques used
-to verify unintuitive results \* Any additional research used to help
-understand/explain findings ======= \# Research Goals and Questions
+## Results
 
-The goal of the project is to explore the data set to better understand
-vehicle crashes. Understanding this topic better can lead to increased
-awareness, targeted policing efforts, and identification of common
-trends for accidents. Ultimately, the goal is the circumstances in which
-individuals get into vehicular accidents, and how to avoid fatal
-crashes.
-
-In pursuit of the stated goal, we will explore the following questions:
-
-1.  Does impairment affect fatality in crashes overall? When are
-    impaired crashes most likely?
-
-2.  What regions of the United States have the most fatal crashes? What
-    conditions are present in those regions?
-
-3.  How does the demographics of the driver affect crashes?
-
-4.  Are crashes affected by lighting and road conditions? How so, and
-    what conditions are most impact?
-
-5.  When are crashes most likely? Are there any seasonal effects, and
-    are night crashes more likely than in the morning or afternoon?
-
-6.  How is speeding related to the number of fatalities? Are younger
-    drivers more prone to speeding? Is higher speeding limits associated
-    with more fatalities? \>\>\>\>\>\>\>
-    182d478010ca1008a6c9d06e1630cb10715d4509
+- All results and graphics
+  - For each graphic,
+    - Motivation for making the graphic
+    - Insights obtained from the graphics
+    - Necessary explanations
+  - Formatting
+    - Axis Labels, Title, Captions, Color Scheme if necessary
+    - Each graphic illustrates one point
+    - Make color scheme cohesive
+    - Avoid repetition
+- List trials and errors
+  - Critical of findings
+  - Multiple approaches and techniques used to verify unintuitive
+    results
+- Any additional research used to help understand/explain findings
 
 ``` r
+library(readr)
+library(tidyverse)
 master <- read_csv('master.csv')
 head(master)
 ```
@@ -346,12 +327,42 @@ head(master)
 
 ### When are crashes most likely? Are there any seasonal effects, and are night crashes more likely than in the morning or afternoon?
 
+#### Year
+
 ``` r
-library(tidyverse)
 master %>% group_by(YEAR) %>% ggplot(aes(x = YEAR, weight = FATALS)) + geom_bar() + ggtitle("Fatalities Over Last 5 Years") + ylab("Fatalities") + xlab("Year")
 ```
 
 ![](README_files/figure-gfm/unnamed-chunk-11-1.png)<!-- -->
+
+#### Month and Season
+
+``` r
+master <- master %>% 
+
+  mutate(Season = case_when( 
+
+    MONTH %in% c("3","4","5") ~ "Spring", 
+
+    MONTH %in% c("6","7","8") ~ "Summer", 
+
+    MONTH %in% c("9","10","11") ~ "Autumn", 
+
+    MONTH %in% c("12","1","2") ~ "Winter", 
+
+    TRUE ~ "Other" 
+
+  ))
+```
+
+``` r
+master %>% ggplot(aes(x = MONTH, weight = FATALS, fill = Season)) + geom_bar() + scale_x_discrete(limits = c("January","February","March","April","May","June","July","August","September","October","November","December"))+
+  theme(axis.text.x = element_text(angle=45, vjust=1, hjust=1)) + ylab("Fatalities") + ggtitle("Fatalities by Month and Season")
+```
+
+![](README_files/figure-gfm/unnamed-chunk-13-1.png)<!-- -->
+
+#### Month and Day
 
 ``` r
 df %>% group_by(MONTH) %>% summarise(count = sum(FATALS)) %>% arrange(desc(count))
@@ -374,7 +385,6 @@ df %>% group_by(MONTH) %>% summarise(count = sum(FATALS)) %>% arrange(desc(count
     ## 12     2 20478
 
 ``` r
-farb <- c("#4100f3", "#1e00ff", "#5700e7", "#6900d9", "#dd00de", "#d3007f", "#c80028", "#ce0053", "#d900ae", "#c91e1e", "#b500e4", "#8a00e9")
 farb<-c("#c91e1e","#c80028","#ce0053","#d3007f","#d900ae","#dd00de","#b500e4", "#8a00e9","#6900d9","#5700e7","#4100f3", "#1e00ff")
 plot_names <- c('1' = "January",
                 '2' = "February",
@@ -392,26 +402,27 @@ plot_names <- c('1' = "January",
 master %>% group_by(DAY) %>% ggplot(aes(x = DAY, weight = FATALS)) + geom_bar(aes(fill = factor(MONTH, levels = c("10","7","8","6","9","5","11","12","4","3","1","2"))))+ facet_wrap(~MONTH, labeller = as_labeller(plot_names)) +geom_hline(yintercept = 200, color='RED') + theme(legend.position="bottom") + scale_fill_manual(values= farb)+ theme( legend.position="right")+labs(fill='Monthly Fatalities') + ylab("Fatalities") + ggtitle("Fatalities by Day and Month")
 ```
 
-![](README_files/figure-gfm/unnamed-chunk-13-1.png)<!-- --> Originally
-showed same pattern for every month. Originally showed high in January
-and Feburary and low for rest of year.
+![](README_files/figure-gfm/unnamed-chunk-15-1.png)<!-- -->
+
+Originally showed same pattern for every month. Originally showed high
+in January and Feburary and low for rest of year.
+
+#### Weekday
 
 ``` r
-df1 %>% ggplot(aes(x = MONTH)) + geom_histogram()
+df1 %>% ggplot(aes(x = as.factor(DAY_WEEK), weight = FATALS)) + geom_bar() + scale_x_discrete(
+                      labels=c("Sunday","Monday", "Tuesday", "Wednesday","Thursday","Friday", "Saturday")) + xlab("Weekday") + ylab("Fatalities") + ggtitle("Fatalities by Weekday")
 ```
 
-    ## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
+![](README_files/figure-gfm/unnamed-chunk-16-1.png)<!-- -->
 
-![](README_files/figure-gfm/unnamed-chunk-14-1.png)<!-- -->
-
-It appears that fatal crashes occur the most in the beginning of the
-year, and decrease heavily until December for all of the years.
+#### Hour
 
 ``` r
 df1 %>% ggplot(aes(x = HOUR)) + geom_histogram(bins = 100) + ylab("Fatalities") + ggtitle("Fatalities by Hour")
 ```
 
-![](README_files/figure-gfm/unnamed-chunk-15-1.png)<!-- -->
+![](README_files/figure-gfm/unnamed-chunk-17-1.png)<!-- -->
 
 ``` r
 df1 %>% filter(HOUR >24)
@@ -442,38 +453,19 @@ df1 %>% filter(HOUR >24)
 df1 %>% filter(HOUR <= 24) %>% ggplot(aes(x = as.factor(HOUR), weight = FATALS)) + geom_bar() + ylab("Fatalities") + ggtitle("Fatalities by Hour") + xlab("HOUR")
 ```
 
-![](README_files/figure-gfm/unnamed-chunk-15-2.png)<!-- -->
-
-``` r
-summary(df1$FATALS)
-```
-
-    ##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
-    ##   1.000   1.000   1.000   1.087   1.000  20.000
-
-``` r
-df1 %>% ggplot(aes(x = as.factor(DAY_WEEK), weight = FATALS)) + geom_bar() + scale_x_discrete(
-                      labels=c("Sunday","Monday", "Tuesday", "Wednesday","Thursday","Friday", "Saturday")) + xlab("Weekday") + ylab("Fatalities") + ggtitle("Fatalities by Weekday")
-```
-
-![](README_files/figure-gfm/unnamed-chunk-17-1.png)<!-- -->
+![](README_files/figure-gfm/unnamed-chunk-17-2.png)<!-- -->
 
 There is a strange outlier with hour, so I will remove that.
 
-``` r
-df1 %>% filter(HOUR <=24) %>% ggplot(aes(x = HOUR)) + geom_histogram() + scale_x_continuous(name="Hour", limits=c(0, 24))
-```
-
-    ## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
-
-    ## Warning: Removed 2 rows containing missing values (`geom_bar()`).
-
-![](README_files/figure-gfm/unnamed-chunk-18-1.png)<!-- --> It appears
-that the peak is around 17:00 military time, which is 5pm. Thus, crashes
-appear to be increasingly likely as the day goes on, peaks at 5pm, and
-has a minimum at around 4pm.
-
 ### How is speeding related to the number of fatalities? Are younger drivers more prone to speeding? Is higher speeding limits associated with more fatalities?
+
+#### Speeding
+
+#### Speeding and Weekday
+
+#### Speeding and Age
+
+#### Speedlimits
 
 ### Does impairment affect fatality in crashes overall? When are impaired crashes most likely?
 
@@ -489,7 +481,7 @@ master <- master %>% mutate(
 master %>% ggplot(aes(x = Impairment)) + geom_bar()
 ```
 
-![](README_files/figure-gfm/unnamed-chunk-19-1.png)<!-- -->
+![](README_files/figure-gfm/unnamed-chunk-18-1.png)<!-- -->
 
 ``` r
 master %>% filter(Impairment == TRUE) %>%
@@ -498,7 +490,7 @@ master %>% filter(Impairment == TRUE) %>%
 
     ## Warning in geom_bar(bins = 24): Ignoring unknown parameters: `bins`
 
-![](README_files/figure-gfm/unnamed-chunk-20-1.png)<!-- -->
+![](README_files/figure-gfm/unnamed-chunk-19-1.png)<!-- -->
 
 ### What regions of the United States have the most fatal crashes? What conditions are present in those regions?
 
@@ -522,16 +514,9 @@ master <- master %>%
 master %>% ggplot(aes(x = Region)) + geom_bar()
 ```
 
-![](README_files/figure-gfm/unnamed-chunk-21-1.png)<!-- -->
+![](README_files/figure-gfm/unnamed-chunk-20-1.png)<!-- -->
 
-## Conclusion
-
-- Overall idea
-- Interesting further questions
-- Ideas for future research
-
-\#How does the demographics of the driver affect crashes? Are changes
-based on occupants more prevalent for younger drivers?
+### How does the demographics of the driver affect crashes? Are changes based on occupants more prevalent for younger drivers?
 
 ``` r
 master %>% ggplot(aes(x=AGE, fill = SEXNAME)) + geom_histogram()
@@ -539,8 +524,9 @@ master %>% ggplot(aes(x=AGE, fill = SEXNAME)) + geom_histogram()
 
     ## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
 
-![](README_files/figure-gfm/unnamed-chunk-22-1.png)<!-- --> Similar to
-the hour, there is a stange outlier that we will eliminate
+![](README_files/figure-gfm/unnamed-chunk-21-1.png)<!-- -->
+
+Similar to the hour, there is a stange outlier that we will eliminate
 
 ``` r
 master %>% ggplot(aes(x=AGE, fill = SEXNAME)) + geom_histogram() + scale_x_continuous(name="AGE", limits=c(0, 100)) + xlab("Age - Colored by Sex") + ylab("Number of Crashes") + ggtitle("Crashes per Demographic")
@@ -552,32 +538,42 @@ master %>% ggplot(aes(x=AGE, fill = SEXNAME)) + geom_histogram() + scale_x_conti
 
     ## Warning: Removed 8 rows containing missing values (`geom_bar()`).
 
-![](README_files/figure-gfm/unnamed-chunk-23-1.png)<!-- --> This data
-clearly shows that driver age and sex are largely impactful in fatal car
-crashes.
+![](README_files/figure-gfm/unnamed-chunk-22-1.png)<!-- -->
+
+This data clearly shows that driver age and sex are largely impactful in
+fatal car crashes.
 
 ``` r
 master %>% ggplot(aes(x=LGT_CONDNAME)) + geom_bar() + theme(axis.text.x = element_text(angle = 30, vjust = 0.5)) + ggtitle("Count of Crashes based on Lighting Conditions") + ylab("Number of Crashes") + xlab("Lighting Condition")
 ```
 
-![](README_files/figure-gfm/unnamed-chunk-24-1.png)<!-- --> Looking at
-the time of day, it makes sense that daylight would have significantly
-more crashes than dark. It is important to not that when dark, there are
-significantly more when the area is not lighted.
+![](README_files/figure-gfm/unnamed-chunk-23-1.png)<!-- -->
+
+Looking at the time of day, it makes sense that daylight would have
+significantly more crashes than dark. It is important to not that when
+dark, there are significantly more when the area is not lighted.
 
 ``` r
 master %>% ggplot(aes(y=STATENAME, fill = WEATHERNAME)) + geom_bar() + xlab("Number of Crashes") + ylab("State Name") + labs(fill = "Weather Condition") + ggtitle("Weather Conditions for each Crash per State")
 ```
 
-![](README_files/figure-gfm/unnamed-chunk-25-1.png)<!-- --> Looking at
-crashes per state, it is clear even in colder states, where snow is
-common, clear or cloudy conditions are the most common conditions for
-crashes
+![](README_files/figure-gfm/unnamed-chunk-24-1.png)<!-- -->
+
+Looking at crashes per state, it is clear even in colder states, where
+snow is common, clear or cloudy conditions are the most common
+conditions for crashes
 
 ``` r
 master %>% ggplot(aes(x=WEATHERNAME, fill = LGT_CONDNAME)) + geom_bar() + theme(axis.text.x = element_text(angle = 30, vjust = 0.5)) + ggtitle("Count of Crashes based on Weather Conditions") + ylab("Number of Crashes") + xlab("Weather Condition") + labs(fill = "Lighting Condition")
 ```
 
-![](README_files/figure-gfm/unnamed-chunk-26-1.png)<!-- --> This
-seemingly unimportant data suggests the conditions to be most careful
-for are cloudy or clear days when the area is lighted.
+![](README_files/figure-gfm/unnamed-chunk-25-1.png)<!-- -->
+
+This seemingly unimportant data suggests the conditions to be most
+careful for are cloudy or clear days when the area is lighted.
+
+## Conclusion
+
+- Overall idea
+- Interesting further questions
+- Ideas for future research
