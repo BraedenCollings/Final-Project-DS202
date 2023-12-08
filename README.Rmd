@@ -1,6 +1,7 @@
 ---
 output: github_document
 ---
+git add/rm <file>
 
 
 ```{r setup, include=FALSE}
@@ -290,6 +291,7 @@ master %>% filter(Impairment == TRUE) %>%
 
 ### What regions of the United States have the most fatal crashes? What conditions are present in those regions?
 
+
 ```{r}
 master <- master %>% 
 
@@ -297,15 +299,9 @@ master <- master %>%
 
     STATENAME %in% c("Connecticut", "Maine", "Massachusetts", "New Hampshire", "Rhode Island", "Vermont", "District of Columbia", "New Jersey", "New York", "Pennsylvania") ~ "Northeast", 
 
-
-
     STATENAME %in% c("Illinois", "Indiana", "Iowa", "Kansas", "Michigan", "Minnesota", "Missouri", "Nebraska", "North Dakota", "Ohio", "South Dakota", "Wisconsin") ~ "Midwest", 
 
-
-
     STATENAME %in% c("Alabama", "Arkansas", "Delaware", "Florida", "Georgia", "Kentucky", "Louisiana", "Maryland", "Mississippi", "North Carolina", "Oklahoma", "South Carolina", "Tennessee", "Texas", "Virginia", "West Virginia") ~ "South", 
-
-
 
     STATENAME %in% c("Alaska", "Arizona", "California", "Colorado", "Hawaii", "Idaho", "Montana", "Nevada", "New Mexico", "Oregon", "Utah", "Washington", "Wyoming") ~ "West", 
 
@@ -314,6 +310,9 @@ master <- master %>%
   )) 
 
 master %>% ggplot(aes(x = Region)) + geom_bar()
+
+```
+```{r}
 head(master)
 
 ```
