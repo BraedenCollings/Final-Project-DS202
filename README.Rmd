@@ -178,6 +178,7 @@ write.csv(df1, 'master.csv')
 ## Methods
 * Methods utilized, if used
 
+<<<<<<< HEAD
 ## Results
 * All results and graphics
     + For each graphic, 
@@ -193,6 +194,25 @@ write.csv(df1, 'master.csv')
     + Critical of findings
     + Multiple approaches and techniques used to verify unintuitive results
 * Any additional research used to help understand/explain findings
+=======
+# Research Goals and Questions
+
+The goal of the project is to explore the data set to better understand vehicle crashes. Understanding this topic better can lead to increased awareness, targeted policing efforts, and identification of common trends for accidents. Ultimately, the goal is the circumstances in which individuals get into vehicular accidents, and how to avoid fatal crashes.
+
+In pursuit of the stated goal, we will explore the following questions:
+
+1. Does impairment affect fatality in crashes overall? When are impaired crashes most likely?
+
+2. What regions of the United States have the most fatal crashes? What conditions are present in those regions?
+
+3. How does the demographics of the driver affect crashes?
+
+4. Are crashes affected by lighting and road conditions? How so, and what conditions are most impact? 
+
+5. When are crashes most likely? Are there any seasonal effects, and are night crashes more likely than in the morning or afternoon?
+
+6. How is speeding related to the number of fatalities? Are younger drivers more prone to speeding? Is higher speeding limits associated with more fatalities?
+>>>>>>> 182d478010ca1008a6c9d06e1630cb10715d4509
 
 ```{r, warning=FALSE,message=FALSE}
 master <- read_csv('master.csv')
@@ -310,11 +330,6 @@ master <- master %>%
   )) 
 
 master %>% ggplot(aes(x = Region)) + geom_bar()
-
-```
-```{r}
-head(master)
-
 ```
 
 ## Conclusion
@@ -322,3 +337,37 @@ head(master)
 * Interesting further questions
 * Ideas for future research
 
+#How does the demographics of the driver affect crashes? Are changes based on occupants more prevalent for younger drivers?
+
+``` {r}
+
+master %>% ggplot(aes(x=AGE, fill = SEXNAME)) + geom_histogram()
+
+```
+Similar to the hour, there is a stange outlier that we will eliminate
+
+```{r}
+
+master %>% ggplot(aes(x=AGE, fill = SEXNAME)) + geom_histogram() + scale_x_continuous(name="AGE", limits=c(0, 100)) + xlab("Age - Colored by Sex") + ylab("Number of Crashes") + ggtitle("Crashes per Demographic")
+
+```
+This data clearly shows that driver age and sex are largely impactful in fatal car crashes. 
+
+```{r}
+
+master %>% ggplot(aes(x=LGT_CONDNAME)) + geom_bar() + theme(axis.text.x = element_text(angle = 30, vjust = 0.5)) + ggtitle("Count of Crashes based on Lighting Conditions") + ylab("Number of Crashes") + xlab("Lighting Condition")
+
+```
+Looking at the time of day, it makes sense that daylight would have significantly more crashes than dark. It is important to not that when dark, there are significantly more when the area is not lighted. 
+
+```{r}
+
+master %>% ggplot(aes(y=STATENAME, fill = WEATHERNAME)) + geom_bar() + xlab("Number of Crashes") + ylab("State Name") + labs(fill = "Weather Condition") + ggtitle("Weather Conditions for each Crash per State")
+
+```
+Looking at crashes per state, it is clear even in colder states, where snow is common, clear or cloudy conditions are the most common conditions for crashes
+
+```{r}
+master %>% ggplot(aes(x=WEATHERNAME, fill = LGT_CONDNAME)) + geom_bar() + theme(axis.text.x = element_text(angle = 30, vjust = 0.5)) + ggtitle("Count of Crashes based on Weather Conditions") + ylab("Number of Crashes") + xlab("Weather Condition") + labs(fill = "Lighting Condition")
+```
+This seemingly unimportant data suggests the conditions to be most careful for are cloudy or clear days when the area is lighted. 

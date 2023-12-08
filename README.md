@@ -287,23 +287,42 @@ write.csv(df1, 'master.csv')
 
 - Methods utilized, if used
 
-## Results
+\<\<\<\<\<\<\< HEAD \## Results \* All results and graphics + For each
+graphic, - Motivation for making the graphic - Insights obtained from
+the graphics - Necessary explanations + Formatting - Axis Labels, Title,
+Captions, Color Scheme if necessary - Each graphic illustrates one
+point - Make color scheme cohesive - Avoid repetition \* List trials and
+errors + Critical of findings + Multiple approaches and techniques used
+to verify unintuitive results \* Any additional research used to help
+understand/explain findings ======= \# Research Goals and Questions
 
-- All results and graphics
-  - For each graphic,
-    - Motivation for making the graphic
-    - Insights obtained from the graphics
-    - Necessary explanations
-  - Formatting
-    - Axis Labels, Title, Captions, Color Scheme if necessary
-    - Each graphic illustrates one point
-    - Make color scheme cohesive
-    - Avoid repetition
-- List trials and errors
-  - Critical of findings
-  - Multiple approaches and techniques used to verify unintuitive
-    results
-- Any additional research used to help understand/explain findings
+The goal of the project is to explore the data set to better understand
+vehicle crashes. Understanding this topic better can lead to increased
+awareness, targeted policing efforts, and identification of common
+trends for accidents. Ultimately, the goal is the circumstances in which
+individuals get into vehicular accidents, and how to avoid fatal
+crashes.
+
+In pursuit of the stated goal, we will explore the following questions:
+
+1.  Does impairment affect fatality in crashes overall? When are
+    impaired crashes most likely?
+
+2.  What regions of the United States have the most fatal crashes? What
+    conditions are present in those regions?
+
+3.  How does the demographics of the driver affect crashes?
+
+4.  Are crashes affected by lighting and road conditions? How so, and
+    what conditions are most impact?
+
+5.  When are crashes most likely? Are there any seasonal effects, and
+    are night crashes more likely than in the morning or afternoon?
+
+6.  How is speeding related to the number of fatalities? Are younger
+    drivers more prone to speeding? Is higher speeding limits associated
+    with more fatalities? \>\>\>\>\>\>\>
+    182d478010ca1008a6c9d06e1630cb10715d4509
 
 ``` r
 master <- read_csv('master.csv')
@@ -505,29 +524,60 @@ master %>% ggplot(aes(x = Region)) + geom_bar()
 
 ![](README_files/figure-gfm/unnamed-chunk-21-1.png)<!-- -->
 
-``` r
-head(master)
-```
-
-    ## # A tibble: 6 × 33
-    ##    ...1 STATENAME ST_CASE MONTH   DAY  YEAR  HOUR MINUTE RUR_URBNAME LATITUDE
-    ##   <dbl> <chr>       <dbl> <dbl> <dbl> <dbl> <dbl>  <dbl> <chr>          <dbl>
-    ## 1     1 Alabama     10002     2    14  2017    14     59 Urban           34.7
-    ## 2     2 Alabama     10004     1     1  2017    16     55 Urban           33.5
-    ## 3     3 Alabama     10006     1     6  2017    18     40 Rural           34.4
-    ## 4     4 Alabama     10008     1    11  2017    16     50 Rural           31.0
-    ## 5     5 Alabama     10010     1    14  2017     4      0 Urban           33.7
-    ## 6     6 Alabama     10012     1    19  2017    21     50 Rural           32.1
-    ## # ℹ 23 more variables: LONGITUD <dbl>, LGT_CONDNAME <chr>, FATALS <dbl>,
-    ## #   DRUNK_DR <dbl>, DAY_WEEK <dbl>, WEATHERNAME <chr>, AGE <dbl>,
-    ## #   SEXNAME <chr>, DRINKINGNAME <chr>, DRUGSNAME <chr>, LAG_HRSNAME <chr>,
-    ## #   VEH_NO <dbl>, PER_NO <dbl>, ...24 <dbl>, HIT_RUNNAME <chr>,
-    ## #   NUMOCCSNAME <chr>, L_STATENAME <chr>, SPEEDRELNAME <chr>, VSPD_LIM <dbl>,
-    ## #   ImpairmentAlcohol <lgl>, ImpairmentDrugs <lgl>, Impairment <lgl>,
-    ## #   Region <chr>
-
 ## Conclusion
 
 - Overall idea
 - Interesting further questions
 - Ideas for future research
+
+\#How does the demographics of the driver affect crashes? Are changes
+based on occupants more prevalent for younger drivers?
+
+``` r
+master %>% ggplot(aes(x=AGE, fill = SEXNAME)) + geom_histogram()
+```
+
+    ## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
+
+![](README_files/figure-gfm/unnamed-chunk-22-1.png)<!-- --> Similar to
+the hour, there is a stange outlier that we will eliminate
+
+``` r
+master %>% ggplot(aes(x=AGE, fill = SEXNAME)) + geom_histogram() + scale_x_continuous(name="AGE", limits=c(0, 100)) + xlab("Age - Colored by Sex") + ylab("Number of Crashes") + ggtitle("Crashes per Demographic")
+```
+
+    ## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
+
+    ## Warning: Removed 2779 rows containing non-finite values (`stat_bin()`).
+
+    ## Warning: Removed 8 rows containing missing values (`geom_bar()`).
+
+![](README_files/figure-gfm/unnamed-chunk-23-1.png)<!-- --> This data
+clearly shows that driver age and sex are largely impactful in fatal car
+crashes.
+
+``` r
+master %>% ggplot(aes(x=LGT_CONDNAME)) + geom_bar() + theme(axis.text.x = element_text(angle = 30, vjust = 0.5)) + ggtitle("Count of Crashes based on Lighting Conditions") + ylab("Number of Crashes") + xlab("Lighting Condition")
+```
+
+![](README_files/figure-gfm/unnamed-chunk-24-1.png)<!-- --> Looking at
+the time of day, it makes sense that daylight would have significantly
+more crashes than dark. It is important to not that when dark, there are
+significantly more when the area is not lighted.
+
+``` r
+master %>% ggplot(aes(y=STATENAME, fill = WEATHERNAME)) + geom_bar() + xlab("Number of Crashes") + ylab("State Name") + labs(fill = "Weather Condition") + ggtitle("Weather Conditions for each Crash per State")
+```
+
+![](README_files/figure-gfm/unnamed-chunk-25-1.png)<!-- --> Looking at
+crashes per state, it is clear even in colder states, where snow is
+common, clear or cloudy conditions are the most common conditions for
+crashes
+
+``` r
+master %>% ggplot(aes(x=WEATHERNAME, fill = LGT_CONDNAME)) + geom_bar() + theme(axis.text.x = element_text(angle = 30, vjust = 0.5)) + ggtitle("Count of Crashes based on Weather Conditions") + ylab("Number of Crashes") + xlab("Weather Condition") + labs(fill = "Lighting Condition")
+```
+
+![](README_files/figure-gfm/unnamed-chunk-26-1.png)<!-- --> This
+seemingly unimportant data suggests the conditions to be most careful
+for are cloudy or clear days when the area is lighted.
