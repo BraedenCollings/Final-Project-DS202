@@ -8,12 +8,48 @@ knitr::opts_chunk$set(echo = TRUE)
 ```
 
 # Final Project DS202
-## Marissa Baietto, Ryan Dorle, Braeden Collings
+#### Marissa Baietto, Ryan Dorle, Braeden Collings
+
+## Introduction
+* Describe topic
+* Why topic is important
+* Research question
+
+## Data
+* Structure
+* How it was cleaned
+* Variables
+
+## Methods
+* Methods utilized, if used
+
+## Results
+* All results and graphics
+    + For each graphic, 
+        - Motivation for making the graphic
+        - Insights obtained from the graphics
+        - Necessary explanations
+    + Formatting
+        - Axis Labels, Title, Captions, Color Scheme if necessary
+        - Each graphic illustrates one point
+        - Make color scheme cohesive
+        - Avoid repetition
+* List trials and errors
+    + Critical of findings
+    + Multiple approaches and techniques used to verify unintuitive results
+* Any additional research used to help understand/explain findings
+
+### Conclusion
+* Overall idea
+* Interesting further questions
+* Ideas for future research
+
+
 
 Here is the link to all of the csv files we used: https://www.nhtsa.gov/file-downloads?p=nhtsa/downloads/FARS/
 
 Importing the accident datasets.
-```{r}
+```{r, echo=FALSE, warning=FALSE,message=FALSE}
 library(readr)
 accident_2017 <- read_csv("2017.csv")
 accident_2018 <- read_csv("2018.csv")
@@ -22,12 +58,12 @@ accident_2020 <- read_csv("2020.csv")
 accident_2021 <- read_csv("2021.csv")
 ```
 
-```{r}
+```{r, warning=FALSE,message=FALSE}
 library(tidyverse)
 ```
 
 Selecting the variables we need.
-```{r}
+```{r, warning=FALSE,message=FALSE}
 accident_2017 <- accident_2017 %>% select(STATENAME, ST_CASE, MONTH, DAY, YEAR, HOUR, MINUTE, RUR_URBNAME, LATITUDE, LONGITUD, LGT_CONDNAME, WEATHER1NAME, FATALS, DRUNK_DR, DAY_WEEK)
 accident_2018 <- accident_2018 %>% select(STATENAME, ST_CASE, MONTH, DAY, YEAR, HOUR, MINUTE, RUR_URBNAME, LATITUDE, LONGITUD, LGT_CONDNAME, WEATHER1NAME, FATALS, DRUNK_DR, DAY_WEEK)
 accident_2019 <- accident_2019 %>% select(STATENAME, ST_CASE, MONTH, DAY, YEAR, HOUR, MINUTE, RUR_URBNAME, LATITUDE, LONGITUD, LGT_CONDNAME, WEATHER1NAME, FATALS, DRUNK_DR, DAY_WEEK)
@@ -46,7 +82,7 @@ accident_2019 <- accident_2019 %>% select(-WEATHER1NAME)
 
 
 Importing the person datasets.
-```{r}
+```{r, warning=FALSE,message=FALSE}
 person_2017 <- read_csv("2017_person.csv")
 person_2018 <- read_csv("2018_person.csv")
 person_2019 <- read_csv("2019_person.csv")
@@ -55,7 +91,7 @@ person_2021 <- read_csv("2021_person.csv")
 ```
 
 Selecting person variables.
-```{r}
+```{r, warning=FALSE,message=FALSE}
 person_2017 <- person_2017 %>% select(AGE, SEXNAME, DRINKINGNAME, DRUGSNAME, LAG_HRSNAME, ST_CASE, VEH_NO, PER_NO)
 person_2018 <- person_2018 %>% select(AGE, SEXNAME, DRINKINGNAME, DRUGSNAME, LAG_HRSNAME, ST_CASE, VEH_NO, PER_NO)
 person_2019 <- person_2019 %>% select(AGE, SEXNAME, DRINKINGNAME, DRUGSNAME, LAG_HRSNAME, ST_CASE, VEH_NO, PER_NO)
@@ -65,7 +101,7 @@ person_2021 <- person_2021 %>% select(AGE, SEXNAME, DRINKINGNAME, DRUGSNAME, LAG
 
 
 Adding year variable to the datasets.
-```{r}
+```{r, warning=FALSE,message=FALSE}
 person_2017$YEAR = 2017
 person_2018$YEAR = 2018
 person_2019$YEAR = 2019
@@ -74,7 +110,7 @@ person_2021$YEAR = 2021
 ```
 
 Importing Vehicle Datasets
-```{r}
+```{r, warning=FALSE,message=FALSE}
 vehicle_2017 <- read_csv("2017_vehicle.csv")
 vehicle_2018 <- read_csv("2018_vehicle.csv")
 vehicle_2019 <- read_csv("2019_vehicle.csv")
@@ -83,7 +119,7 @@ vehicle_2021 <- read_csv("2021_vehicle.csv")
 ```
 
 Adding year variable to the datasets.
-```{r}
+```{r, warning=FALSE,message=FALSE}
 vehicle_2017$YEAR = 2017
 vehicle_2018$YEAR = 2018
 vehicle_2019$YEAR = 2019
@@ -92,7 +128,7 @@ vehicle_2021$YEAR = 2021
 ```
 
 Merging the datasets.
-```{r}
+```{r, warning=FALSE,message=FALSE}
 df_2017 <- left_join(accident_2017, person_2017, by=c('YEAR', 'ST_CASE'))
 df_2018 <- left_join(accident_2018, person_2018, by=c('YEAR', 'ST_CASE'))
 df_2019 <- left_join(accident_2019, person_2019, by=c('YEAR', 'ST_CASE'))
@@ -108,11 +144,11 @@ df_2021 <- left_join(df_2021, vehicle_2021, by=c('YEAR', 'ST_CASE', 'VEH_NO'))
 ```
 
 Creating one dataset with all years.
-```{r}
+```{r, warning=FALSE,message=FALSE}
 df <- bind_rows(df_2017, df_2018,df_2019,df_2020,df_2021)
 df1 <- df %>% group_by(STATENAME, YEAR) %>% filter(VEH_NO == 1 & ST_CASE %% 2 == 0) #add & ST_CASE %% 2 == 0
 ```
-```{r}
+```{r, warning=FALSE,message=FALSE}
 colnames(df1)
 df1 <- df1 %>% select(-one_of('...22', '...21'))
 ```
@@ -120,14 +156,15 @@ df1 <- df1 %>% select(-one_of('...22', '...21'))
 
 Saving the final dataset to 'master.csv'
 
-```{r}
+```{r, warning=FALSE,message=FALSE}
 write.csv(df1, 'master.csv')
 ```
 
 
 ## Discription of Data
 The data we chose to work with is from the National Highway Traffic Safety Administration. The administration has a system called FARS or the Fatality Analysis Reporting System in which vehicle crashes are noted. The data is comprised from police reports, death certificates, various medical reports, and department data. We chose to look at the years from 2017-2021 for our report. 
-```{r}
+```{r, warning=FALSE,message=FALSE}
+library(readr)
 master <- read_csv('master.csv')
 head(master)
 
@@ -184,6 +221,7 @@ In pursuit of the stated goal, we will explore the following questions:
 ### When are crashes most likely? Are there any seasonal effects, and are night crashes more likely than in the morning or afternoon?
 
 ```{r}
+library(tidyverse)
 master %>% group_by(YEAR) %>% ggplot(aes(x = YEAR, weight = FATALS)) + geom_bar() + ggtitle("Fatalities Over Last 5 Years") + ylab("Fatalities") + xlab("Year")
 ```
 ```{r}
@@ -208,6 +246,9 @@ plot_names <- c('1' = "January",
 
 master %>% group_by(DAY) %>% ggplot(aes(x = DAY, weight = FATALS)) + geom_bar(aes(fill = factor(MONTH, levels = c("10","7","8","6","9","5","11","12","4","3","1","2"))))+ facet_wrap(~MONTH, labeller = as_labeller(plot_names)) +geom_hline(yintercept = 200, color='RED') + theme(legend.position="bottom") + scale_fill_manual(values= farb)+ theme( legend.position="right")+labs(fill='Monthly Fatalities') + ylab("Fatalities") + ggtitle("Fatalities by Day and Month")
 ```
+Originally showed same pattern for every month.
+Originally showed high in January and Feburary and low for rest of year.
+
 
 ```{r}
 df1 %>% ggplot(aes(x = MONTH)) + geom_histogram()
@@ -218,7 +259,7 @@ It appears that fatal crashes occur the most in the beginning of the year, and d
 ```{r}
 df1 %>% ggplot(aes(x = HOUR)) + geom_histogram(bins = 100) + ylab("Fatalities") + ggtitle("Fatalities by Hour")
 df1 %>% filter(HOUR >24)
-df1 %>% filter(HOUR <= 24) %>% ggplot(aes(x = as.factor(HOUR), weight = FATALS)) + geom_bar() + ylab("Fatalities") + ggtitle("Fatalities by Hour") 
+df1 %>% filter(HOUR <= 24) %>% ggplot(aes(x = as.factor(HOUR), weight = FATALS)) + geom_bar() + ylab("Fatalities") + ggtitle("Fatalities by Hour") + xlab("HOUR")
 ```
 
 ```{r}

@@ -1,7 +1,47 @@
 
 # Final Project DS202
 
-## Marissa Baietto, Ryan Dorle, Braeden Collings
+#### Marissa Baietto, Ryan Dorle, Braeden Collings
+
+## Introduction
+
+- Describe topic
+- Why topic is important
+- Research question
+
+## Data
+
+- Structure
+- How it was cleaned
+- Variables
+
+## Methods
+
+- Methods utilized, if used
+
+## Results
+
+- All results and graphics
+  - For each graphic,
+    - Motivation for making the graphic
+    - Insights obtained from the graphics
+    - Necessary explanations
+  - Formatting
+    - Axis Labels, Title, Captions, Color Scheme if necessary
+    - Each graphic illustrates one point
+    - Make color scheme cohesive
+    - Avoid repetition
+- List trials and errors
+  - Critical of findings
+  - Multiple approaches and techniques used to verify unintuitive
+    results
+- Any additional research used to help understand/explain findings
+
+### Conclusion
+
+- Overall idea
+- Interesting further questions
+- Ideas for future research
 
 Here is the link to all of the csv files we used:
 <https://www.nhtsa.gov/file-downloads?p=nhtsa/downloads/FARS/>
@@ -9,84 +49,8 @@ Here is the link to all of the csv files we used:
 Importing the accident datasets.
 
 ``` r
-library(readr)
-accident_2017 <- read_csv("2017.csv")
-```
-
-    ## Rows: 34560 Columns: 91
-    ## ── Column specification ────────────────────────────────────────────────────────
-    ## Delimiter: ","
-    ## chr (41): STATENAME, COUNTYNAME, CITYNAME, MONTHNAME, DAY_WEEKNAME, HOURNAME...
-    ## dbl (50): STATE, ST_CASE, VE_TOTAL, VE_FORMS, PVH_INVL, PEDS, PERSONS, PERMV...
-    ## 
-    ## ℹ Use `spec()` to retrieve the full column specification for this data.
-    ## ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.
-
-``` r
-accident_2018 <- read_csv("2018.csv")
-```
-
-    ## Rows: 33919 Columns: 91
-    ## ── Column specification ────────────────────────────────────────────────────────
-    ## Delimiter: ","
-    ## chr (41): STATENAME, COUNTYNAME, CITYNAME, MONTHNAME, DAY_WEEKNAME, HOURNAME...
-    ## dbl (50): STATE, ST_CASE, VE_TOTAL, VE_FORMS, PVH_INVL, PEDS, PERSONS, PERMV...
-    ## 
-    ## ℹ Use `spec()` to retrieve the full column specification for this data.
-    ## ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.
-
-``` r
-accident_2019 <- read_csv("2019.csv")
-```
-
-    ## Rows: 33487 Columns: 91
-    ## ── Column specification ────────────────────────────────────────────────────────
-    ## Delimiter: ","
-    ## chr (41): STATENAME, COUNTYNAME, CITYNAME, MONTHNAME, DAY_WEEKNAME, HOURNAME...
-    ## dbl (50): STATE, ST_CASE, VE_TOTAL, VE_FORMS, PVH_INVL, PEDS, PERSONS, PERMV...
-    ## 
-    ## ℹ Use `spec()` to retrieve the full column specification for this data.
-    ## ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.
-
-``` r
-accident_2020 <- read_csv("2020.csv")
-```
-
-    ## Rows: 35935 Columns: 81
-    ## ── Column specification ────────────────────────────────────────────────────────
-    ## Delimiter: ","
-    ## chr (34): STATENAME, COUNTYNAME, CITYNAME, MONTHNAME, DAY_WEEKNAME, HOURNAME...
-    ## dbl (47): STATE, ST_CASE, VE_TOTAL, VE_FORMS, PVH_INVL, PEDS, PERNOTMVIT, PE...
-    ## 
-    ## ℹ Use `spec()` to retrieve the full column specification for this data.
-    ## ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.
-
-``` r
-accident_2021 <- read_csv("2021.csv")
-```
-
-    ## Rows: 39508 Columns: 80
-    ## ── Column specification ────────────────────────────────────────────────────────
-    ## Delimiter: ","
-    ## chr (34): STATENAME, COUNTYNAME, CITYNAME, MONTHNAME, DAY_WEEKNAME, HOURNAME...
-    ## dbl (46): STATE, ST_CASE, PEDS, PERNOTMVIT, VE_TOTAL, VE_FORMS, PVH_INVL, PE...
-    ## 
-    ## ℹ Use `spec()` to retrieve the full column specification for this data.
-    ## ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.
-
-``` r
 library(tidyverse)
 ```
-
-    ## ── Attaching core tidyverse packages ──────────────────────── tidyverse 2.0.0 ──
-    ## ✔ dplyr     1.1.2     ✔ purrr     1.0.2
-    ## ✔ forcats   1.0.0     ✔ stringr   1.5.0
-    ## ✔ ggplot2   3.4.3     ✔ tibble    3.2.1
-    ## ✔ lubridate 1.9.2     ✔ tidyr     1.3.0
-    ## ── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──
-    ## ✖ dplyr::filter() masks stats::filter()
-    ## ✖ dplyr::lag()    masks stats::lag()
-    ## ℹ Use the conflicted package (<http://conflicted.r-lib.org/>) to force all conflicts to become errors
 
 Selecting the variables we need.
 
@@ -111,73 +75,11 @@ Importing the person datasets.
 
 ``` r
 person_2017 <- read_csv("2017_person.csv")
-```
-
-    ## New names:
-    ## Rows: 52752 Columns: 14
-    ## ── Column specification
-    ## ──────────────────────────────────────────────────────── Delimiter: "," chr
-    ## (9): SEXNAME, INJ_SEVNAME, REST_USENAME, EJECTIONNAME, DRINKINGNAME, DRU... dbl
-    ## (5): ...1, AGE, ST_CASE, VEH_NO, PER_NO
-    ## ℹ Use `spec()` to retrieve the full column specification for this data. ℹ
-    ## Specify the column types or set `show_col_types = FALSE` to quiet this message.
-    ## • `` -> `...1`
-
-``` r
 person_2018 <- read_csv("2018_person.csv")
-```
-
-    ## New names:
-    ## Rows: 51905 Columns: 14
-    ## ── Column specification
-    ## ──────────────────────────────────────────────────────── Delimiter: "," chr
-    ## (9): SEXNAME, INJ_SEVNAME, REST_USENAME, EJECTIONNAME, DRINKINGNAME, DRU... dbl
-    ## (5): ...1, AGE, ST_CASE, VEH_NO, PER_NO
-    ## ℹ Use `spec()` to retrieve the full column specification for this data. ℹ
-    ## Specify the column types or set `show_col_types = FALSE` to quiet this message.
-    ## • `` -> `...1`
-
-``` r
 person_2019 <- read_csv("2019_person.csv")
-```
-
-    ## New names:
-    ## Rows: 51302 Columns: 14
-    ## ── Column specification
-    ## ──────────────────────────────────────────────────────── Delimiter: "," chr
-    ## (9): SEXNAME, INJ_SEVNAME, REST_USENAME, EJECTIONNAME, DRINKINGNAME, DRU... dbl
-    ## (5): ...1, AGE, ST_CASE, VEH_NO, PER_NO
-    ## ℹ Use `spec()` to retrieve the full column specification for this data. ℹ
-    ## Specify the column types or set `show_col_types = FALSE` to quiet this message.
-    ## • `` -> `...1`
-
-``` r
 person_2020 <- read_csv("2020_person.csv")
-```
-
-    ## New names:
-    ## Rows: 54165 Columns: 14
-    ## ── Column specification
-    ## ──────────────────────────────────────────────────────── Delimiter: "," chr
-    ## (9): SEXNAME, INJ_SEVNAME, REST_USENAME, EJECTIONNAME, DRINKINGNAME, DRU... dbl
-    ## (5): ...1, AGE, ST_CASE, VEH_NO, PER_NO
-    ## ℹ Use `spec()` to retrieve the full column specification for this data. ℹ
-    ## Specify the column types or set `show_col_types = FALSE` to quiet this message.
-    ## • `` -> `...1`
-
-``` r
 person_2021 <- read_csv("2021_person.csv")
 ```
-
-    ## New names:
-    ## Rows: 60904 Columns: 14
-    ## ── Column specification
-    ## ──────────────────────────────────────────────────────── Delimiter: "," chr
-    ## (9): SEXNAME, INJ_SEVNAME, REST_USENAME, EJECTIONNAME, DRINKINGNAME, DRU... dbl
-    ## (5): ...1, AGE, ST_CASE, VEH_NO, PER_NO
-    ## ℹ Use `spec()` to retrieve the full column specification for this data. ℹ
-    ## Specify the column types or set `show_col_types = FALSE` to quiet this message.
-    ## • `` -> `...1`
 
 Selecting person variables.
 
@@ -203,73 +105,11 @@ Importing Vehicle Datasets
 
 ``` r
 vehicle_2017 <- read_csv("2017_vehicle.csv")
-```
-
-    ## New names:
-    ## Rows: 53128 Columns: 8
-    ## ── Column specification
-    ## ──────────────────────────────────────────────────────── Delimiter: "," chr
-    ## (4): HIT_RUNNAME, NUMOCCSNAME, L_STATENAME, SPEEDRELNAME dbl (4): ...1,
-    ## ST_CASE, VEH_NO, VSPD_LIM
-    ## ℹ Use `spec()` to retrieve the full column specification for this data. ℹ
-    ## Specify the column types or set `show_col_types = FALSE` to quiet this message.
-    ## • `` -> `...1`
-
-``` r
 vehicle_2018 <- read_csv("2018_vehicle.csv")
-```
-
-    ## New names:
-    ## Rows: 52286 Columns: 8
-    ## ── Column specification
-    ## ──────────────────────────────────────────────────────── Delimiter: "," chr
-    ## (4): HIT_RUNNAME, NUMOCCSNAME, L_STATENAME, SPEEDRELNAME dbl (4): ...1,
-    ## ST_CASE, VEH_NO, VSPD_LIM
-    ## ℹ Use `spec()` to retrieve the full column specification for this data. ℹ
-    ## Specify the column types or set `show_col_types = FALSE` to quiet this message.
-    ## • `` -> `...1`
-
-``` r
 vehicle_2019 <- read_csv("2019_vehicle.csv")
-```
-
-    ## New names:
-    ## Rows: 51623 Columns: 8
-    ## ── Column specification
-    ## ──────────────────────────────────────────────────────── Delimiter: "," chr
-    ## (4): HIT_RUNNAME, NUMOCCSNAME, L_STATENAME, SPEEDRELNAME dbl (4): ...1,
-    ## ST_CASE, VEH_NO, VSPD_LIM
-    ## ℹ Use `spec()` to retrieve the full column specification for this data. ℹ
-    ## Specify the column types or set `show_col_types = FALSE` to quiet this message.
-    ## • `` -> `...1`
-
-``` r
 vehicle_2020 <- read_csv("2020_vehicle.csv")
-```
-
-    ## New names:
-    ## Rows: 54552 Columns: 8
-    ## ── Column specification
-    ## ──────────────────────────────────────────────────────── Delimiter: "," chr
-    ## (4): HIT_RUNNAME, NUMOCCSNAME, L_STATENAME, SPEEDRELNAME dbl (4): ...1,
-    ## ST_CASE, VEH_NO, VSPD_LIM
-    ## ℹ Use `spec()` to retrieve the full column specification for this data. ℹ
-    ## Specify the column types or set `show_col_types = FALSE` to quiet this message.
-    ## • `` -> `...1`
-
-``` r
 vehicle_2021 <- read_csv("2021_vehicle.csv")
 ```
-
-    ## New names:
-    ## Rows: 61332 Columns: 8
-    ## ── Column specification
-    ## ──────────────────────────────────────────────────────── Delimiter: "," chr
-    ## (4): HIT_RUNNAME, NUMOCCSNAME, L_STATENAME, SPEEDRELNAME dbl (4): ...1,
-    ## ST_CASE, VEH_NO, VSPD_LIM
-    ## ℹ Use `spec()` to retrieve the full column specification for this data. ℹ
-    ## Specify the column types or set `show_col_types = FALSE` to quiet this message.
-    ## • `` -> `...1`
 
 Adding year variable to the datasets.
 
@@ -302,16 +142,6 @@ Creating one dataset with all years.
 
 ``` r
 df <- bind_rows(df_2017, df_2018,df_2019,df_2020,df_2021)
-```
-
-    ## New names:
-    ## New names:
-    ## New names:
-    ## New names:
-    ## New names:
-    ## • `...1` -> `...23`
-
-``` r
 df1 <- df %>% group_by(STATENAME, YEAR) %>% filter(VEH_NO == 1 & ST_CASE %% 2 == 0) #add & ST_CASE %% 2 == 0
 ```
 
@@ -330,8 +160,6 @@ colnames(df1)
 df1 <- df1 %>% select(-one_of('...22', '...21'))
 ```
 
-    ## Warning: Unknown columns: `...21`
-
 Saving the final dataset to ‘master.csv’
 
 ``` r
@@ -348,21 +176,8 @@ various medical reports, and department data. We chose to look at the
 years from 2017-2021 for our report.
 
 ``` r
+library(readr)
 master <- read_csv('master.csv')
-```
-
-    ## New names:
-    ## Rows: 88163 Columns: 29
-    ## ── Column specification
-    ## ──────────────────────────────────────────────────────── Delimiter: "," chr
-    ## (12): STATENAME, RUR_URBNAME, LGT_CONDNAME, WEATHERNAME, SEXNAME, DRINKI... dbl
-    ## (17): ...1, ST_CASE, MONTH, DAY, YEAR, HOUR, MINUTE, LATITUDE, LONGITUD,...
-    ## ℹ Use `spec()` to retrieve the full column specification for this data. ℹ
-    ## Specify the column types or set `show_col_types = FALSE` to quiet this message.
-    ## • `` -> `...1`
-    ## • `...23` -> `...24`
-
-``` r
 head(master)
 ```
 
@@ -452,6 +267,7 @@ In pursuit of the stated goal, we will explore the following questions:
 ### When are crashes most likely? Are there any seasonal effects, and are night crashes more likely than in the morning or afternoon?
 
 ``` r
+library(tidyverse)
 master %>% group_by(YEAR) %>% ggplot(aes(x = YEAR, weight = FATALS)) + geom_bar() + ggtitle("Fatalities Over Last 5 Years") + ylab("Fatalities") + xlab("Year")
 ```
 
@@ -496,7 +312,9 @@ plot_names <- c('1' = "January",
 master %>% group_by(DAY) %>% ggplot(aes(x = DAY, weight = FATALS)) + geom_bar(aes(fill = factor(MONTH, levels = c("10","7","8","6","9","5","11","12","4","3","1","2"))))+ facet_wrap(~MONTH, labeller = as_labeller(plot_names)) +geom_hline(yintercept = 200, color='RED') + theme(legend.position="bottom") + scale_fill_manual(values= farb)+ theme( legend.position="right")+labs(fill='Monthly Fatalities') + ylab("Fatalities") + ggtitle("Fatalities by Day and Month")
 ```
 
-![](README_files/figure-gfm/unnamed-chunk-16-1.png)<!-- -->
+![](README_files/figure-gfm/unnamed-chunk-16-1.png)<!-- --> Originally
+showed same pattern for every month. Originally showed high in January
+and Feburary and low for rest of year.
 
 ``` r
 df1 %>% ggplot(aes(x = MONTH)) + geom_histogram()
@@ -541,7 +359,7 @@ df1 %>% filter(HOUR >24)
     ## #   NUMOCCSNAME <chr>, L_STATENAME <chr>, SPEEDRELNAME <chr>, VSPD_LIM <dbl>
 
 ``` r
-df1 %>% filter(HOUR <= 24) %>% ggplot(aes(x = as.factor(HOUR), weight = FATALS)) + geom_bar() + ylab("Fatalities") + ggtitle("Fatalities by Hour") 
+df1 %>% filter(HOUR <= 24) %>% ggplot(aes(x = as.factor(HOUR), weight = FATALS)) + geom_bar() + ylab("Fatalities") + ggtitle("Fatalities by Hour") + xlab("HOUR")
 ```
 
 ![](README_files/figure-gfm/unnamed-chunk-18-2.png)<!-- -->
