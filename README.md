@@ -423,16 +423,44 @@ master %>% filter(Impairment == TRUE) %>%
 ### What regions of the United States have the most fatal crashes? What conditions are present in those regions?
 
 ``` r
-master$West <- ifelse(master$STATENAME %in% c("Alaska", "Arizona", "California","Colorado", "Hawaii", "Idaho", "Montana", "Nevada", "New Mexico", "Oregon", "Utah", "Washington", "Wyoming"), "West", NA)
+master <- master %>% 
 
-  
-master$NorthEast <- ifelse(master$STATENAME %in% c("Connecticut", "Maine", "Massachusetts", "New Hampshire", "Rhode Island", "Vermont", "New Jersey", "New York", "Pennsylvania"), "NorthEast", NA)
+  mutate(Region = case_when( 
 
-master$South <- ifelse(master$STATENAME %in% c("Alabama", "Arkansas", "Delaware", "Florida", "Georgia", "Kentucky", "Louisiana", "Maryland", "Mississippi", "North Carolina", "Oklahoma", "South Carolina", "Tennessee", "Texas", "Virginia", "West Virginia"), "South", NA)
+    STATENAME %in% c("Connecticut", "Maine", "Massachusetts", "New Hampshire", "Rhode Island", "Vermont", "District of Columbia", "New Jersey", "New York", "Pennsylvania") ~ "Northeast", 
 
-master$MidWest <- ifelse(master$STATENAME %in% c("Illinois", "Indiana", "Iowa", "Kansas", "Michigan", "Minnesota", "Missouri", "Nebraska", "North Dakota", "Ohio", "South Dakota", "Wisconsin"), "MidWest", NA)
+    STATENAME %in% c("Illinois", "Indiana", "Iowa", "Kansas", "Michigan", "Minnesota", "Missouri", "Nebraska", "North Dakota", "Ohio", "South Dakota", "Wisconsin") ~ "Midwest", 
 
-master <- master %>% mutate(
-  Region = as.logical(pmax(NorthEast, West, South, MidWest))
-)
+    STATENAME %in% c("Alabama", "Arkansas", "Delaware", "Florida", "Georgia", "Kentucky", "Louisiana", "Maryland", "Mississippi", "North Carolina", "Oklahoma", "South Carolina", "Tennessee", "Texas", "Virginia", "West Virginia") ~ "South", 
+
+    STATENAME %in% c("Alaska", "Arizona", "California", "Colorado", "Hawaii", "Idaho", "Montana", "Nevada", "New Mexico", "Oregon", "Utah", "Washington", "Wyoming") ~ "West", 
+
+    TRUE ~ "Other" 
+
+  )) 
+
+master %>% ggplot(aes(x = Region)) + geom_bar()
 ```
+
+![](README_files/figure-gfm/unnamed-chunk-24-1.png)<!-- -->
+
+``` r
+head(master)
+```
+
+    ## # A tibble: 6 × 33
+    ##    ...1 STATENAME ST_CASE MONTH   DAY  YEAR  HOUR MINUTE RUR_URBNAME LATITUDE
+    ##   <dbl> <chr>       <dbl> <dbl> <dbl> <dbl> <dbl>  <dbl> <chr>          <dbl>
+    ## 1     1 Alabama     10002     2    14  2017    14     59 Urban           34.7
+    ## 2     2 Alabama     10004     1     1  2017    16     55 Urban           33.5
+    ## 3     3 Alabama     10006     1     6  2017    18     40 Rural           34.4
+    ## 4     4 Alabama     10008     1    11  2017    16     50 Rural           31.0
+    ## 5     5 Alabama     10010     1    14  2017     4      0 Urban           33.7
+    ## 6     6 Alabama     10012     1    19  2017    21     50 Rural           32.1
+    ## # ℹ 23 more variables: LONGITUD <dbl>, LGT_CONDNAME <chr>, FATALS <dbl>,
+    ## #   DRUNK_DR <dbl>, DAY_WEEK <dbl>, WEATHERNAME <chr>, AGE <dbl>,
+    ## #   SEXNAME <chr>, DRINKINGNAME <chr>, DRUGSNAME <chr>, LAG_HRSNAME <chr>,
+    ## #   VEH_NO <dbl>, PER_NO <dbl>, ...24 <dbl>, HIT_RUNNAME <chr>,
+    ## #   NUMOCCSNAME <chr>, L_STATENAME <chr>, SPEEDRELNAME <chr>, VSPD_LIM <dbl>,
+    ## #   ImpairmentAlcohol <lgl>, ImpairmentDrugs <lgl>, Impairment <lgl>,
+    ## #   Region <chr>
