@@ -137,7 +137,7 @@ df1 <- df %>% group_by(STATENAME, YEAR) %>% filter(VEH_NO == 1 & ST_CASE %% 2 ==
 We noticed that there were 2 strange columns in the final dataframe named '...22' and '...21'. We believe that these were created when we joined the 'accident', 'person', and 'vehicle' datasets, as there were so many variables that R was not able to show them all when we viewed the merged datasets. We took these columns out, as they had no value to our analysis. 
 ```{r, warning=FALSE,message=FALSE}
 colnames(df1)
-df1 <- df1 %>% select(-one_of('...22', '...21'))
+df1 <- df1 %>% select(-one_of('...22', '...21', '...23'))
 ```
 
 To ease running the code, we saved the final dataset to "master.csv" so that we could then only run the line importing "master.csv" rather than run the code above repeatedly.
@@ -256,6 +256,12 @@ master %>% group_by(DAY) %>% ggplot(aes(x = DAY, weight = FATALS)) + geom_bar(ae
 
 Originally showed same pattern for every month.
 Originally showed high in January and Feburary and low for rest of year.
+
+```{r}
+master %>% filter(AGE < 900) %>% filter(AGE == min(AGE))
+```
+
+
 
 #### Weekday
 ```{r}
