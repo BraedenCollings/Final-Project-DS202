@@ -3,56 +3,112 @@
 
 #### Marissa Baietto, Ryan Dorle, Braeden Collings
 
-## Introduction
+## Introduction (ANYONE CAN FIX THIS SECTION TO MAKE IT CLEANER)
 
-- Describe topic
+- Describe topic The goal of the project is to explore multiple datasets
+  to better understand vehicle crashes. Understanding this topic better
+  can lead to increased awareness, targeted policing efforts, and
+  identification of common trends for accidents. Ultimately, the goal is
+  the circumstances in which individuals get into vehicular accidents,
+  and how to avoid fatal crashes.
 - Why topic is important
-- Research question
+- Research question In pursuit of the stated goal, we will explore the
+  following questions:
+
+1.  Does impairment affect fatality in crashes overall? When are
+    impaired crashes most likely?
+
+2.  What regions of the United States have the most fatal crashes? What
+    conditions are present in those regions?
+
+3.  How does the demographics of the driver affect crashes? Are changes
+    based on occupants more prevalent for younger drivers?
+
+4.  Are crashes affected by lighting and road conditions? How so, and
+    what conditions are most impact?
+
+5.  When are crashes most likely? Are there any seasonal effects, and
+    are night crashes more likely than in the morning or afternoon?
+
+6.  How is speeding related to the number of fatalities? Are younger
+    drivers more prone to speeding? Is higher speeding limits associated
+    with more fatalities?
 
 ## Data
 
-- Structure
-- How it was cleaned
-- Variables
+### Structure
 
-## Methods
+The link to the dataset is
+<https://www.nhtsa.gov/file-downloads?p=nhtsa/downloads/FARS/> . The
+NHTSA website contains a zip file containing the FARS report for every
+year between 1975 and 2021. Each zip file contains 33 different csv
+files for various aspects of a vehicle crash - data on the accident
+itself, the vehicles driven, damage to the vehicles, the persons in each
+vehicle, etc. The number of variables in these csv files ranges from 6
+to 81+, and there are over 40,000 rows for each csv.
 
-- Methods utilized, if used
+In creating a cohesive dataset, we first chose to analyze the years
+2017-2021. The variables reported and elephant for the values of each
+variable have been through multiple changes over the years, so selecting
+a recent time period ensures that the reporting systems are nearly the
+same for each year. In addition, having a 5 year time frame to analyze
+allows us to see changes over time, and keeps the dataset from being so
+large that it is unmanageable.
 
-## Results
+Utilizing all of the csvs would have introduced too many variables, so
+we selected the csvs named “accident”, “person”, and “vehicle”.
+“Accident” gives information on the time, place, and general aspects of
+the accident such as the number of fatalities and the weather and light
+conditions. “Person” contains data on the age and sex of each person in
+the crash, as well as other variables such as whether the person
+involved was drinking or under the influence of drugs at the time of the
+crash. Lastly, “vehicle” gives facts regarding the number of occupants
+in the vehicle, the state listed on the driver’s license, what the speed
+limit was and whether the driver was speeding, and whether the accident
+was a hit and run.
 
-- All results and graphics
-  - For each graphic,
-    - Motivation for making the graphic
-    - Insights obtained from the graphics
-    - Necessary explanations
-  - Formatting
-    - Axis Labels, Title, Captions, Color Scheme if necessary
-    - Each graphic illustrates one point
-    - Make color scheme cohesive
-    - Avoid repetition
-- List trials and errors
-  - Critical of findings
-  - Multiple approaches and techniques used to verify unintuitive
-    results
-- Any additional research used to help understand/explain findings
+The “accident” csv has separate rows for each case, while the “person”
+csv has separate rows for each person involved in the crash, both
+passengers and drivers, and the “vehicle” csv has separate rows for each
+vehicle involved in the crash. As seen in the code, we made decisions to
+limit the number of rows for each accident to ensure that the dataset
+would not be too large.
 
-### Conclusion
+### Cleaning
 
-- Overall idea
-- Interesting further questions
-- Ideas for future research
-
-Here is the link to all of the csv files we used:
-<https://www.nhtsa.gov/file-downloads?p=nhtsa/downloads/FARS/>
-
-Importing the accident datasets.
+First, we read in the 3 types of csv files for the years 2017 - 2021.
 
 ``` r
-library(tidyverse)
+accident_2017 <- read_csv("2017.csv")
+accident_2018 <- read_csv("2018.csv")
+accident_2019 <- read_csv("2019.csv")
+accident_2020 <- read_csv("2020.csv")
+accident_2021 <- read_csv("2021.csv")
+
+person_2017 <- read_csv("2017_person.csv")
+person_2018 <- read_csv("2018_person.csv")
+person_2019 <- read_csv("2019_person.csv")
+person_2020 <- read_csv("2020_person.csv")
+person_2021 <- read_csv("2021_person.csv")
+
+vehicle_2017 <- read_csv("2017_vehicle.csv")
+vehicle_2018 <- read_csv("2018_vehicle.csv")
+vehicle_2019 <- read_csv("2019_vehicle.csv")
+vehicle_2020 <- read_csv("2020_vehicle.csv")
+vehicle_2021 <- read_csv("2021_vehicle.csv")
 ```
 
-Selecting the variables we need.
+Originally, the “person” csv files were 24.1 MB large for each year.
+GitHub’s size limit for uploading files to the reposirory is 24MB, which
+meant that we could not upload the “person” csvs to GitHub. To overcome
+this problem, we created a separate R Script and slimmed the csv files
+there. We did so by opening the csv files for each year and filtering
+such that (PER_NO == 1), meaning that only the driver is included in the
+csv files. This brought the size of the csv down to meet the limits. We
+then saved the new csv files as “(YEAR)\_person.csv”, and uploaded the
+modified csv files to this project report.
+
+Then, we selected the variables we needed for each type of csv.
 
 ``` r
 accident_2017 <- accident_2017 %>% select(STATENAME, ST_CASE, MONTH, DAY, YEAR, HOUR, MINUTE, RUR_URBNAME, LATITUDE, LONGITUD, LGT_CONDNAME, WEATHER1NAME, FATALS, DRUNK_DR, DAY_WEEK)
@@ -60,8 +116,24 @@ accident_2018 <- accident_2018 %>% select(STATENAME, ST_CASE, MONTH, DAY, YEAR, 
 accident_2019 <- accident_2019 %>% select(STATENAME, ST_CASE, MONTH, DAY, YEAR, HOUR, MINUTE, RUR_URBNAME, LATITUDE, LONGITUD, LGT_CONDNAME, WEATHER1NAME, FATALS, DRUNK_DR, DAY_WEEK)
 accident_2020 <- accident_2020 %>% select(STATENAME, ST_CASE, MONTH, DAY, YEAR, HOUR, MINUTE, RUR_URBNAME, LATITUDE, LONGITUD, LGT_CONDNAME, WEATHERNAME, FATALS, DRUNK_DR, DAY_WEEK)
 accident_2021 <- accident_2021 %>% select(STATENAME, ST_CASE, MONTH, DAY, YEAR, HOUR, MINUTE, RUR_URBNAME, LATITUDE, LONGITUD, LGT_CONDNAME, WEATHERNAME, FATALS, DAY_WEEK)
-#2021 does not have drunk driving variable
 
+person_2017 <- person_2017 %>% select(AGE, SEXNAME, DRINKINGNAME, DRUGSNAME, LAG_HRSNAME, ST_CASE, VEH_NO, PER_NO)
+person_2018 <- person_2018 %>% select(AGE, SEXNAME, DRINKINGNAME, DRUGSNAME, LAG_HRSNAME, ST_CASE, VEH_NO, PER_NO)
+person_2019 <- person_2019 %>% select(AGE, SEXNAME, DRINKINGNAME, DRUGSNAME, LAG_HRSNAME, ST_CASE, VEH_NO, PER_NO)
+person_2020 <- person_2020 %>% select(AGE, SEXNAME, DRINKINGNAME, DRUGSNAME, LAG_HRSNAME, ST_CASE, VEH_NO, PER_NO)
+person_2021 <- person_2021 %>% select(AGE, SEXNAME, DRINKINGNAME, DRUGSNAME, LAG_HRSNAME, ST_CASE, VEH_NO, PER_NO)
+```
+
+There were 2 disreptencies between the years in the accident files.
+First, “accident_2021” did not have a variable for “DRUNK_DR”. Second,
+the naming of the variable containing information on the weather changed
+in 2020 and 2021 from “WEATHER1NAME” to “WEATHERNAME”. (THIS WAS A GRAPH
+THAT DIDN”T MAKE SENSE IN RYAN”S SECTION) We accounted for the
+disreptency in weather by creating a duplicate variable named
+“WEATHERNAME” in the 2017,2018,2019 dataframes and deleting the
+“WEATHER1NAME” variables in those same dataframes.
+
+``` r
 accident_2017$WEATHERNAME <- accident_2017$WEATHER1NAME
 accident_2018$WEATHERNAME <- accident_2018$WEATHER1NAME
 accident_2019$WEATHERNAME <- accident_2019$WEATHER1NAME
@@ -71,27 +143,8 @@ accident_2018 <- accident_2018 %>% select(-WEATHER1NAME)
 accident_2019 <- accident_2019 %>% select(-WEATHER1NAME)
 ```
 
-Importing the person datasets.
-
-``` r
-person_2017 <- read_csv("2017_person.csv")
-person_2018 <- read_csv("2018_person.csv")
-person_2019 <- read_csv("2019_person.csv")
-person_2020 <- read_csv("2020_person.csv")
-person_2021 <- read_csv("2021_person.csv")
-```
-
-Selecting person variables.
-
-``` r
-person_2017 <- person_2017 %>% select(AGE, SEXNAME, DRINKINGNAME, DRUGSNAME, LAG_HRSNAME, ST_CASE, VEH_NO, PER_NO)
-person_2018 <- person_2018 %>% select(AGE, SEXNAME, DRINKINGNAME, DRUGSNAME, LAG_HRSNAME, ST_CASE, VEH_NO, PER_NO)
-person_2019 <- person_2019 %>% select(AGE, SEXNAME, DRINKINGNAME, DRUGSNAME, LAG_HRSNAME, ST_CASE, VEH_NO, PER_NO)
-person_2020 <- person_2020 %>% select(AGE, SEXNAME, DRINKINGNAME, DRUGSNAME, LAG_HRSNAME, ST_CASE, VEH_NO, PER_NO)
-person_2021 <- person_2021 %>% select(AGE, SEXNAME, DRINKINGNAME, DRUGSNAME, LAG_HRSNAME, ST_CASE, VEH_NO, PER_NO)
-```
-
-Adding year variable to the datasets.
+To enable us to merge the datasets for each year, we created a “YEAR”
+variable for the “person” and “vehicle” datasets.
 
 ``` r
 person_2017$YEAR = 2017
@@ -99,21 +152,7 @@ person_2018$YEAR = 2018
 person_2019$YEAR = 2019
 person_2020$YEAR = 2020
 person_2021$YEAR = 2021
-```
 
-Importing Vehicle Datasets
-
-``` r
-vehicle_2017 <- read_csv("2017_vehicle.csv")
-vehicle_2018 <- read_csv("2018_vehicle.csv")
-vehicle_2019 <- read_csv("2019_vehicle.csv")
-vehicle_2020 <- read_csv("2020_vehicle.csv")
-vehicle_2021 <- read_csv("2021_vehicle.csv")
-```
-
-Adding year variable to the datasets.
-
-``` r
 vehicle_2017$YEAR = 2017
 vehicle_2018$YEAR = 2018
 vehicle_2019$YEAR = 2019
@@ -121,7 +160,27 @@ vehicle_2020$YEAR = 2020
 vehicle_2021$YEAR = 2021
 ```
 
-Merging the datasets.
+To merge the datasets together, we first created 5 dataframes for each
+year, with each dataframe being a merge of the year’s accident, person,
+and year dataframes. This was performed with a left_join with “accident”
+as the main dataframe. After “accident” and “person” were merged by year
+and st_case.
+
+ST_CASE is a unique identifier for each accident that occured in the
+state. Vehicles and persons involved in the same crash have identical
+ST_CASE numbers. For each state, ST_CASE starts with a new number, but
+has the same format. For example, Alabama’s ST_CASE numbers are in the
+10,000s, Alaska’s ST_CASE numbers are in the 20,000s, and so on with the
+states in order alphabetically. ST_CASE numbers reset each year, meaning
+that the first case in Alabama in 2017, 2018, 2019, 2020, and 2021 have
+the ST_CASE number 10001.
+
+We merged the new dataframes with the vehicle dataframes for each year
+by performing a left merge by year, st_case, and veh_no. VEH_NO is a
+unique identifier for each vehicle involved in the crash, and it resets
+to 1 for each new accident. Merging on VEH_No ensured that we were
+matching each driver to the vehicle they drove, as the “person” file
+included the vehicle number as well for each individual.
 
 ``` r
 df_2017 <- left_join(accident_2017, person_2017, by=c('YEAR', 'ST_CASE'))
@@ -138,12 +197,28 @@ df_2020 <- left_join(df_2020, vehicle_2020, by=c('YEAR', 'ST_CASE', 'VEH_NO'))
 df_2021 <- left_join(df_2021, vehicle_2021, by=c('YEAR', 'ST_CASE', 'VEH_NO'))
 ```
 
-Creating one dataset with all years.
+To merge all of the years together, we used the bind_rows function and
+put the years in order from 2017 to 2021. Again, we confronted the
+problem that the file was too large to upload to GitHub. So, we selected
+one vehicle per crash, by filtering such that VEH_NO == 1. There is
+always a vehicle with number equal to 1 for each accident because the
+first vehicle listed for each accident has a vehicle number equal to
+one. We also only chose the even state case numbers. This ensured that
+each state would have the same proportion of accidents that they had in
+the original file, and choosing odd state case numbers gave us a smaller
+random sample from the original dataset.
 
 ``` r
 df <- bind_rows(df_2017, df_2018,df_2019,df_2020,df_2021)
 df1 <- df %>% group_by(STATENAME, YEAR) %>% filter(VEH_NO == 1 & ST_CASE %% 2 == 0) #add & ST_CASE %% 2 == 0
 ```
+
+We noticed that there were 2 strange columns in the final dataframe
+named ‘…22’ and ‘…21’. We believe that these were created when we joined
+the ‘accident’, ‘person’, and ‘vehicle’ datasets, as there were so many
+variables that R was not able to show them all when we viewed the merged
+datasets. We took these columns out, as they had no value to our
+analysis.
 
 ``` r
 colnames(df1)
@@ -160,43 +235,15 @@ colnames(df1)
 df1 <- df1 %>% select(-one_of('...22', '...21'))
 ```
 
-Saving the final dataset to ‘master.csv’
+To ease running the code, we saved the final dataset to “master.csv” so
+that we could then only run the line importing “master.csv” rather than
+run the code above repeatedly.
 
 ``` r
 write.csv(df1, 'master.csv')
 ```
 
-## Discription of Data
-
-The data we chose to work with is from the National Highway Traffic
-Safety Administration. The administration has a system called FARS or
-the Fatality Analysis Reporting System in which vehicle crashes are
-noted. The data is comprised from police reports, death certificates,
-various medical reports, and department data. We chose to look at the
-years from 2017-2021 for our report.
-
-``` r
-library(readr)
-master <- read_csv('master.csv')
-head(master)
-```
-
-    ## # A tibble: 6 × 29
-    ##    ...1 STATENAME ST_CASE MONTH   DAY  YEAR  HOUR MINUTE RUR_URBNAME LATITUDE
-    ##   <dbl> <chr>       <dbl> <dbl> <dbl> <dbl> <dbl>  <dbl> <chr>          <dbl>
-    ## 1     1 Alabama     10002     2    14  2017    14     59 Urban           34.7
-    ## 2     2 Alabama     10004     1     1  2017    16     55 Urban           33.5
-    ## 3     3 Alabama     10006     1     6  2017    18     40 Rural           34.4
-    ## 4     4 Alabama     10008     1    11  2017    16     50 Rural           31.0
-    ## 5     5 Alabama     10010     1    14  2017     4      0 Urban           33.7
-    ## 6     6 Alabama     10012     1    19  2017    21     50 Rural           32.1
-    ## # ℹ 19 more variables: LONGITUD <dbl>, LGT_CONDNAME <chr>, FATALS <dbl>,
-    ## #   DRUNK_DR <dbl>, DAY_WEEK <dbl>, WEATHERNAME <chr>, AGE <dbl>,
-    ## #   SEXNAME <chr>, DRINKINGNAME <chr>, DRUGSNAME <chr>, LAG_HRSNAME <chr>,
-    ## #   VEH_NO <dbl>, PER_NO <dbl>, ...24 <dbl>, HIT_RUNNAME <chr>,
-    ## #   NUMOCCSNAME <chr>, L_STATENAME <chr>, SPEEDRELNAME <chr>, VSPD_LIM <dbl>
-
-## Marginal Summaries
+### Variables
 
 - STATENAME: The state the fatal crash occured in
 - WEATHERNAME: The type of weather outside at the time and location of
@@ -234,35 +281,47 @@ head(master)
 - SPEEDREL: Whether the crash was speeding related.
 - VSPD_LIM: What the speeding limit was.
 
-# Research Goals and Questions
+## Methods
 
-The goal of the project is to explore the data set to better understand
-vehicle crashes. Understanding this topic better can lead to increased
-awareness, targeted policing efforts, and identification of common
-trends for accidents. Ultimately, the goal is the circumstances in which
-individuals get into vehicular accidents, and how to avoid fatal
-crashes.
+- Methods utilized, if used
 
-In pursuit of the stated goal, we will explore the following questions:
+## Results
 
-1.  Does impairment affect fatality in crashes overall? When are
-    impaired crashes most likely?
+- All results and graphics
+  - For each graphic,
+    - Motivation for making the graphic
+    - Insights obtained from the graphics
+    - Necessary explanations
+  - Formatting
+    - Axis Labels, Title, Captions, Color Scheme if necessary
+    - Each graphic illustrates one point
+    - Make color scheme cohesive
+    - Avoid repetition
+- List trials and errors
+  - Critical of findings
+  - Multiple approaches and techniques used to verify unintuitive
+    results
+- Any additional research used to help understand/explain findings
 
-2.  What regions of the United States have the most fatal crashes? What
-    conditions are present in those regions?
+``` r
+master <- read_csv('master.csv')
+head(master)
+```
 
-3.  How does the demographics of the driver affect crashes? Are changes
-    based on occupants more prevalent for younger drivers?
-
-4.  Are crashes affected by lighting and road conditions? How so, and
-    what conditions are most impact?
-
-5.  When are crashes most likely? Are there any seasonal effects, and
-    are night crashes more likely than in the morning or afternoon?
-
-6.  How is speeding related to the number of fatalities? Are younger
-    drivers more prone to speeding? Is higher speeding limits associated
-    with more fatalities?
+    ## # A tibble: 6 × 29
+    ##    ...1 STATENAME ST_CASE MONTH   DAY  YEAR  HOUR MINUTE RUR_URBNAME LATITUDE
+    ##   <dbl> <chr>       <dbl> <dbl> <dbl> <dbl> <dbl>  <dbl> <chr>          <dbl>
+    ## 1     1 Alabama     10002     2    14  2017    14     59 Urban           34.7
+    ## 2     2 Alabama     10004     1     1  2017    16     55 Urban           33.5
+    ## 3     3 Alabama     10006     1     6  2017    18     40 Rural           34.4
+    ## 4     4 Alabama     10008     1    11  2017    16     50 Rural           31.0
+    ## 5     5 Alabama     10010     1    14  2017     4      0 Urban           33.7
+    ## 6     6 Alabama     10012     1    19  2017    21     50 Rural           32.1
+    ## # ℹ 19 more variables: LONGITUD <dbl>, LGT_CONDNAME <chr>, FATALS <dbl>,
+    ## #   DRUNK_DR <dbl>, DAY_WEEK <dbl>, WEATHERNAME <chr>, AGE <dbl>,
+    ## #   SEXNAME <chr>, DRINKINGNAME <chr>, DRUGSNAME <chr>, LAG_HRSNAME <chr>,
+    ## #   VEH_NO <dbl>, PER_NO <dbl>, ...24 <dbl>, HIT_RUNNAME <chr>,
+    ## #   NUMOCCSNAME <chr>, L_STATENAME <chr>, SPEEDRELNAME <chr>, VSPD_LIM <dbl>
 
 ### When are crashes most likely? Are there any seasonal effects, and are night crashes more likely than in the morning or afternoon?
 
@@ -271,7 +330,7 @@ library(tidyverse)
 master %>% group_by(YEAR) %>% ggplot(aes(x = YEAR, weight = FATALS)) + geom_bar() + ggtitle("Fatalities Over Last 5 Years") + ylab("Fatalities") + xlab("Year")
 ```
 
-![](README_files/figure-gfm/unnamed-chunk-14-1.png)<!-- -->
+![](README_files/figure-gfm/unnamed-chunk-11-1.png)<!-- -->
 
 ``` r
 df %>% group_by(MONTH) %>% summarise(count = sum(FATALS)) %>% arrange(desc(count))
@@ -312,7 +371,7 @@ plot_names <- c('1' = "January",
 master %>% group_by(DAY) %>% ggplot(aes(x = DAY, weight = FATALS)) + geom_bar(aes(fill = factor(MONTH, levels = c("10","7","8","6","9","5","11","12","4","3","1","2"))))+ facet_wrap(~MONTH, labeller = as_labeller(plot_names)) +geom_hline(yintercept = 200, color='RED') + theme(legend.position="bottom") + scale_fill_manual(values= farb)+ theme( legend.position="right")+labs(fill='Monthly Fatalities') + ylab("Fatalities") + ggtitle("Fatalities by Day and Month")
 ```
 
-![](README_files/figure-gfm/unnamed-chunk-16-1.png)<!-- --> Originally
+![](README_files/figure-gfm/unnamed-chunk-13-1.png)<!-- --> Originally
 showed same pattern for every month. Originally showed high in January
 and Feburary and low for rest of year.
 
@@ -322,7 +381,7 @@ df1 %>% ggplot(aes(x = MONTH)) + geom_histogram()
 
     ## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
 
-![](README_files/figure-gfm/unnamed-chunk-17-1.png)<!-- -->
+![](README_files/figure-gfm/unnamed-chunk-14-1.png)<!-- -->
 
 It appears that fatal crashes occur the most in the beginning of the
 year, and decrease heavily until December for all of the years.
@@ -331,7 +390,7 @@ year, and decrease heavily until December for all of the years.
 df1 %>% ggplot(aes(x = HOUR)) + geom_histogram(bins = 100) + ylab("Fatalities") + ggtitle("Fatalities by Hour")
 ```
 
-![](README_files/figure-gfm/unnamed-chunk-18-1.png)<!-- -->
+![](README_files/figure-gfm/unnamed-chunk-15-1.png)<!-- -->
 
 ``` r
 df1 %>% filter(HOUR >24)
@@ -362,7 +421,7 @@ df1 %>% filter(HOUR >24)
 df1 %>% filter(HOUR <= 24) %>% ggplot(aes(x = as.factor(HOUR), weight = FATALS)) + geom_bar() + ylab("Fatalities") + ggtitle("Fatalities by Hour") + xlab("HOUR")
 ```
 
-![](README_files/figure-gfm/unnamed-chunk-18-2.png)<!-- -->
+![](README_files/figure-gfm/unnamed-chunk-15-2.png)<!-- -->
 
 ``` r
 summary(df1$FATALS)
@@ -376,7 +435,7 @@ df1 %>% ggplot(aes(x = as.factor(DAY_WEEK), weight = FATALS)) + geom_bar() + sca
                       labels=c("Sunday","Monday", "Tuesday", "Wednesday","Thursday","Friday", "Saturday")) + xlab("Weekday") + ylab("Fatalities") + ggtitle("Fatalities by Weekday")
 ```
 
-![](README_files/figure-gfm/unnamed-chunk-20-1.png)<!-- -->
+![](README_files/figure-gfm/unnamed-chunk-17-1.png)<!-- -->
 
 There is a strange outlier with hour, so I will remove that.
 
@@ -388,7 +447,7 @@ df1 %>% filter(HOUR <=24) %>% ggplot(aes(x = HOUR)) + geom_histogram() + scale_x
 
     ## Warning: Removed 2 rows containing missing values (`geom_bar()`).
 
-![](README_files/figure-gfm/unnamed-chunk-21-1.png)<!-- --> It appears
+![](README_files/figure-gfm/unnamed-chunk-18-1.png)<!-- --> It appears
 that the peak is around 17:00 military time, which is 5pm. Thus, crashes
 appear to be increasingly likely as the day goes on, peaks at 5pm, and
 has a minimum at around 4pm.
@@ -409,7 +468,7 @@ master <- master %>% mutate(
 master %>% ggplot(aes(x = Impairment)) + geom_bar()
 ```
 
-![](README_files/figure-gfm/unnamed-chunk-22-1.png)<!-- -->
+![](README_files/figure-gfm/unnamed-chunk-19-1.png)<!-- -->
 
 ``` r
 master %>% filter(Impairment == TRUE) %>%
@@ -418,7 +477,7 @@ master %>% filter(Impairment == TRUE) %>%
 
     ## Warning in geom_bar(bins = 24): Ignoring unknown parameters: `bins`
 
-![](README_files/figure-gfm/unnamed-chunk-23-1.png)<!-- -->
+![](README_files/figure-gfm/unnamed-chunk-20-1.png)<!-- -->
 
 ### What regions of the United States have the most fatal crashes? What conditions are present in those regions?
 
@@ -436,3 +495,9 @@ master <- master %>% mutate(
   Region = as.logical(pmax(NorthEast, West, South, MidWest))
 )
 ```
+
+## Conclusion
+
+- Overall idea
+- Interesting further questions
+- Ideas for future research
