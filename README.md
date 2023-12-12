@@ -6,12 +6,17 @@
 ## Introduction (ANYONE CAN FIX THIS SECTION TO MAKE IT CLEANER)
 
 - Describe topic The goal of the project is to explore multiple datasets
-  to better understand vehicle crashes. Understanding this topic better
-  can lead to increased awareness, targeted policing efforts, and
+  to better understand fatal vehicle crashes. Understanding this topic
+  better can lead to increased awareness, targeted policing efforts, and
   identification of common trends for accidents. Ultimately, the goal is
   the circumstances in which individuals get into vehicular accidents,
   and how to avoid fatal crashes.
-- Why topic is important
+- Why topic is important Fatal car crashes are a part of daily life due
+  to the high volume of drivers in the united states. We want to
+  investigate the data of multiple variables to see if there are trends
+  that tend to happen. With the discovery of trends or common occurance
+  the knowledge can be used to help citizens as well as law enforcment
+  to better saftey on the roads.
 - Research question In pursuit of the stated goal, we will explore the
   following questions:
 
@@ -492,19 +497,24 @@ master <- master %>% mutate(
   Impairment = as.logical(pmax(ImpairmentDrugs, ImpairmentAlcohol))
 )
 
-master %>% ggplot(aes(x = Impairment)) + geom_bar()
+master %>% ggplot(aes(x = Impairment)) + geom_bar() + ggtitle("Was the Deceased party Impaired")
 ```
 
-![](README_files/figure-gfm/unnamed-chunk-19-1.png)<!-- -->
+![](README_files/figure-gfm/unnamed-chunk-19-1.png)<!-- --> A graph just
+to get an idea of what amount of fatal crashes had a form of drugs or
+alcohol in there system at the time of the crash.
 
 ``` r
 master %>% filter(Impairment == TRUE) %>%
-  filter(HOUR <=24) %>% ggplot(aes(x = HOUR), fill = factor(MONTH)) + geom_bar(bins = 24)
+  filter(HOUR <=24) %>% ggplot(aes(x = HOUR), fill = factor(MONTH)) + geom_bar(bins = 24) + ggtitle("Hours of Death with Impairment Involved")
 ```
 
     ## Warning in geom_bar(bins = 24): Ignoring unknown parameters: `bins`
 
-![](README_files/figure-gfm/unnamed-chunk-20-1.png)<!-- -->
+![](README_files/figure-gfm/unnamed-chunk-20-1.png)<!-- --> A graph to
+look at what hours of the day had the highest rate of fatalities when
+impairment was involved. We can see that at the times from 9pm - 2am
+where the highest rates.
 
 ### What regions of the United States have the most fatal crashes? What conditions are present in those regions?
 
@@ -525,10 +535,28 @@ master <- master %>%
 
   )) 
 
-master %>% ggplot(aes(x = Region)) + geom_bar()
+master %>% ggplot(aes(x = Region, fill = Impairment)) + geom_bar() + ggtitle("Region of Death")
 ```
 
-![](README_files/figure-gfm/unnamed-chunk-21-1.png)<!-- -->
+![](README_files/figure-gfm/unnamed-chunk-21-1.png)<!-- --> This graph
+gives us a chance to see what regions had the most deaths, as well as a
+color change for when impairment was involved in the crash.
+
+``` r
+master %>% ggplot(aes(x = Region, fill = RUR_URBNAME)) + geom_bar() + ggtitle("Population Density")
+```
+
+![](README_files/figure-gfm/unnamed-chunk-22-1.png)<!-- --> We can bring
+in another variable to see if the population density of a region plays a
+roll in fatal crashes and we find that it does not.
+
+``` r
+master %>% ggplot(aes(x = Impairment, fill = RUR_URBNAME)) + geom_bar() + ggtitle("Population Density & Impairment")
+```
+
+![](README_files/figure-gfm/unnamed-chunk-23-1.png)<!-- --> Just another
+graph for reference to see if deaths due to impairment are affected by
+population denstity and again we find that they are not.
 
 ### How does the demographics of the driver affect crashes? Are changes based on occupants more prevalent for younger drivers?
 
@@ -538,7 +566,7 @@ master %>% ggplot(aes(x=AGE, fill = SEXNAME)) + geom_histogram()
 
     ## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
 
-![](README_files/figure-gfm/unnamed-chunk-22-1.png)<!-- -->
+![](README_files/figure-gfm/unnamed-chunk-24-1.png)<!-- -->
 
 Similar to the hour, there is a stange outlier that we will eliminate
 
@@ -552,7 +580,7 @@ master %>% ggplot(aes(x=AGE, fill = SEXNAME)) + geom_histogram() + scale_x_conti
 
     ## Warning: Removed 8 rows containing missing values (`geom_bar()`).
 
-![](README_files/figure-gfm/unnamed-chunk-23-1.png)<!-- -->
+![](README_files/figure-gfm/unnamed-chunk-25-1.png)<!-- -->
 
 This data clearly shows that driver age and sex are largely impactful in
 fatal car crashes.
@@ -561,7 +589,7 @@ fatal car crashes.
 master %>% ggplot(aes(x=LGT_CONDNAME)) + geom_bar() + theme(axis.text.x = element_text(angle = 30, vjust = 0.5)) + ggtitle("Count of Crashes based on Lighting Conditions") + ylab("Number of Crashes") + xlab("Lighting Condition")
 ```
 
-![](README_files/figure-gfm/unnamed-chunk-24-1.png)<!-- -->
+![](README_files/figure-gfm/unnamed-chunk-26-1.png)<!-- -->
 
 Looking at the time of day, it makes sense that daylight would have
 significantly more crashes than dark. It is important to not that when
@@ -571,7 +599,7 @@ dark, there are significantly more when the area is not lighted.
 master %>% ggplot(aes(y=STATENAME, fill = WEATHERNAME)) + geom_bar() + xlab("Number of Crashes") + ylab("State Name") + labs(fill = "Weather Condition") + ggtitle("Weather Conditions for each Crash per State")
 ```
 
-![](README_files/figure-gfm/unnamed-chunk-25-1.png)<!-- -->
+![](README_files/figure-gfm/unnamed-chunk-27-1.png)<!-- -->
 
 Looking at crashes per state, it is clear even in colder states, where
 snow is common, clear or cloudy conditions are the most common
@@ -581,7 +609,7 @@ conditions for crashes
 master %>% ggplot(aes(x=WEATHERNAME, fill = LGT_CONDNAME)) + geom_bar() + theme(axis.text.x = element_text(angle = 30, vjust = 0.5)) + ggtitle("Count of Crashes based on Weather Conditions") + ylab("Number of Crashes") + xlab("Weather Condition") + labs(fill = "Lighting Condition")
 ```
 
-![](README_files/figure-gfm/unnamed-chunk-26-1.png)<!-- -->
+![](README_files/figure-gfm/unnamed-chunk-28-1.png)<!-- -->
 
 This seemingly unimportant data suggests the conditions to be most
 careful for are cloudy or clear days when the area is lighted.
