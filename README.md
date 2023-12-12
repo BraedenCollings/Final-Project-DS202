@@ -500,9 +500,10 @@ master <- master %>% mutate(
 master %>% ggplot(aes(x = Impairment)) + geom_bar() + ggtitle("Was the Deceased party Impaired")
 ```
 
-![](README_files/figure-gfm/unnamed-chunk-19-1.png)<!-- --> A graph just
-to get an idea of what amount of fatal crashes had a form of drugs or
-alcohol in there system at the time of the crash.
+![](README_files/figure-gfm/unnamed-chunk-19-1.png)<!-- -->
+
+A graph just to get an idea of what amount of fatal crashes had a form
+of drugs or alcohol in there system at the time of the crash.
 
 ``` r
 master %>% filter(Impairment == TRUE) %>%
@@ -511,10 +512,11 @@ master %>% filter(Impairment == TRUE) %>%
 
     ## Warning in geom_bar(bins = 24): Ignoring unknown parameters: `bins`
 
-![](README_files/figure-gfm/unnamed-chunk-20-1.png)<!-- --> A graph to
-look at what hours of the day had the highest rate of fatalities when
-impairment was involved. We can see that at the times from 9pm - 2am
-where the highest rates.
+![](README_files/figure-gfm/unnamed-chunk-20-1.png)<!-- -->
+
+A graph to look at what hours of the day had the highest rate of
+fatalities when impairment was involved. We can see that at the times
+from 9pm - 2am where the highest rates.
 
 ### What regions of the United States have the most fatal crashes? What conditions are present in those regions?
 
@@ -538,25 +540,28 @@ master <- master %>%
 master %>% ggplot(aes(x = Region, fill = Impairment)) + geom_bar() + ggtitle("Region of Death")
 ```
 
-![](README_files/figure-gfm/unnamed-chunk-21-1.png)<!-- --> This graph
-gives us a chance to see what regions had the most deaths, as well as a
-color change for when impairment was involved in the crash.
+![](README_files/figure-gfm/unnamed-chunk-21-1.png)<!-- -->
+
+This graph gives us a chance to see what regions had the most deaths, as
+well as a color change for when impairment was involved in the crash.
 
 ``` r
 master %>% ggplot(aes(x = Region, fill = RUR_URBNAME)) + geom_bar() + ggtitle("Population Density")
 ```
 
-![](README_files/figure-gfm/unnamed-chunk-22-1.png)<!-- --> We can bring
-in another variable to see if the population density of a region plays a
-roll in fatal crashes and we find that it does not.
+![](README_files/figure-gfm/unnamed-chunk-22-1.png)<!-- -->
+
+We can bring in another variable to see if the population density of a
+region plays a roll in fatal crashes and we find that it does not.
 
 ``` r
 master %>% ggplot(aes(x = Impairment, fill = RUR_URBNAME)) + geom_bar() + ggtitle("Population Density & Impairment")
 ```
 
-![](README_files/figure-gfm/unnamed-chunk-23-1.png)<!-- --> Just another
-graph for reference to see if deaths due to impairment are affected by
-population denstity and again we find that they are not.
+![](README_files/figure-gfm/unnamed-chunk-23-1.png)<!-- -->
+
+Just another graph for reference to see if deaths due to impairment are
+affected by population denstity and again we find that they are not.
 
 ### How does the demographics of the driver affect crashes? Are changes based on occupants more prevalent for younger drivers?
 

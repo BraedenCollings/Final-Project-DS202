@@ -304,11 +304,14 @@ master <- master %>% mutate(
 master %>% ggplot(aes(x = Impairment)) + geom_bar() + ggtitle("Was the Deceased party Impaired")
 
 ```
+
 A graph just to get an idea of what amount of fatal crashes had a form of drugs or alcohol in there system at the time of the crash.
 ```{r}
 master %>% filter(Impairment == TRUE) %>%
   filter(HOUR <=24) %>% ggplot(aes(x = HOUR), fill = factor(MONTH)) + geom_bar(bins = 24) + ggtitle("Hours of Death with Impairment Involved")
+
 ```
+
 A graph to look at what hours of the day had the highest rate of fatalities when impairment was involved. We can see that at the times from 9pm - 2am where the highest rates.
 
 
@@ -334,16 +337,19 @@ master <- master %>%
 
 master %>% ggplot(aes(x = Region, fill = Impairment)) + geom_bar() + ggtitle("Region of Death")
 ```
+
 This graph gives us a chance to see what regions had the most deaths, as well as a color change for when impairment was involved in the crash.
 
 ```{r}
 master %>% ggplot(aes(x = Region, fill = RUR_URBNAME)) + geom_bar() + ggtitle("Population Density")
 ```
+
 We can bring in another variable to see if the population density of a region plays a roll in fatal crashes and we find that it does not.
 
 ```{r}
 master %>% ggplot(aes(x = Impairment, fill = RUR_URBNAME)) + geom_bar() + ggtitle("Population Density & Impairment")
 ```
+
 Just another graph for reference to see if deaths due to impairment are affected by population denstity and again we find that they are not.
 
 
