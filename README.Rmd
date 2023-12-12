@@ -11,8 +11,9 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ## Introduction (ANYONE CAN FIX THIS SECTION TO MAKE IT CLEANER)
 * Describe topic
-The goal of the project is to explore multiple datasets to better understand vehicle crashes. Understanding this topic better can lead to increased awareness, targeted policing efforts, and identification of common trends for accidents. Ultimately, the goal is the circumstances in which individuals get into vehicular accidents, and how to avoid fatal crashes.
+The goal of the project is to explore multiple datasets to better understand fatal vehicle crashes. Understanding this topic better can lead to increased awareness, targeted policing efforts, and identification of common trends for accidents. Ultimately, the goal is the circumstances in which individuals get into vehicular accidents, and how to avoid fatal crashes.
 * Why topic is important
+Fatal car crashes are a part of daily life due to the high volume of drivers in the united states. We want to investigate the data of multiple variables to see if there are trends that tend to happen. With the discovery of trends or common occurance the knowledge can be used to help citizens as well as law enforcment to better saftey on the roads.
 * Research question
 In pursuit of the stated goal, we will explore the following questions:
 
@@ -348,17 +349,18 @@ master <- master %>% mutate(
   Impairment = as.logical(pmax(ImpairmentDrugs, ImpairmentAlcohol))
 )
 
-master %>% ggplot(aes(x = Impairment)) + geom_bar()
+master %>% ggplot(aes(x = Impairment)) + geom_bar() + ggtitle("Was the Deceased party Impaired")
 
 ```
 
+A graph just to get an idea of what amount of fatal crashes had a form of drugs or alcohol in there system at the time of the crash.
 ```{r}
 master %>% filter(Impairment == TRUE) %>%
-  filter(HOUR <=24) %>% ggplot(aes(x = HOUR), fill = factor(MONTH)) + geom_bar(bins = 24)
+  filter(HOUR <=24) %>% ggplot(aes(x = HOUR), fill = factor(MONTH)) + geom_bar(bins = 24) + ggtitle("Hours of Death with Impairment Involved")
+
 ```
 
-
-
+A graph to look at what hours of the day had the highest rate of fatalities when impairment was involved. We can see that at the times from 9pm - 2am where the highest rates.
 
 
 ### What regions of the United States have the most fatal crashes? What conditions are present in those regions?
@@ -381,8 +383,23 @@ master <- master %>%
 
   )) 
 
-master %>% ggplot(aes(x = Region)) + geom_bar()
+master %>% ggplot(aes(x = Region, fill = Impairment)) + geom_bar() + ggtitle("Region of Death")
 ```
+
+This graph gives us a chance to see what regions had the most deaths, as well as a color change for when impairment was involved in the crash.
+
+```{r}
+master %>% ggplot(aes(x = Region, fill = RUR_URBNAME)) + geom_bar() + ggtitle("Population Density")
+```
+
+We can bring in another variable to see if the population density of a region plays a roll in fatal crashes and we find that it does not.
+
+```{r}
+master %>% ggplot(aes(x = Impairment, fill = RUR_URBNAME)) + geom_bar() + ggtitle("Population Density & Impairment")
+```
+
+Just another graph for reference to see if deaths due to impairment are affected by population denstity and again we find that they are not.
+
 
 ### How does the demographics of the driver affect crashes? Are changes based on occupants more prevalent for younger drivers?
 
