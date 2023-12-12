@@ -32,7 +32,7 @@ In pursuit of the stated goal, we will explore the following questions:
 ### Structure
   The link to the dataset is https://www.nhtsa.gov/file-downloads?p=nhtsa/downloads/FARS/ . The NHTSA website contains a zip file containing the FARS report for every year between 1975 and 2021. Each zip file contains 33 different csv files for various aspects of a vehicle crash - data on the accident itself, the vehicles driven, damage to the vehicles, the persons in each vehicle, etc. The number of variables in these csv files ranges from 6 to 81+, and there are over 40,000 rows for each csv. 
   
-  In creating a cohesive dataset, we first chose to analyze the years 2017-2021. The variables reported and elephant for the values of each variable have been through multiple changes over the years, so selecting a recent time period ensures that the reporting systems are nearly the same for each year. In addition, having a 5 year time frame to analyze allows us to see changes over time, and keeps the dataset from being so large that it is unmanageable. 
+  In creating a cohesive dataset, we first chose to analyze the years 2017-2021. The variables reported and interpretations for the values of each variable have been through multiple changes over the years, so selecting a recent time period ensures that the reporting systems are nearly the same for each year. In addition, having a 5 year time frame to analyze allows us to see changes over time, and keeps the dataset from being so large that it is unmanageable. 
   
   Utilizing all of the csvs would have introduced too many variables, so we selected the csvs named "accident", "person", and "vehicle". "Accident" gives information on the time, place, and general aspects of the accident such as the number of fatalities and the weather and light conditions. "Person" contains data on the age and sex of each person in the crash, as well as other variables such as whether the person involved was drinking or under the influence of drugs at the time of the crash. Lastly, "vehicle" gives facts regarding the number of occupants in the vehicle, the state listed on the driver's license, what the speed limit was and whether the driver was speeding, and whether the accident was a hit and run. 
   
@@ -203,8 +203,10 @@ head(master)
 
 #### Year
 ```{r}
-master %>% group_by(YEAR) %>% ggplot(aes(x = YEAR, weight = FATALS)) + geom_bar() + ggtitle("Fatalities Over Last 5 Years") + ylab("Fatalities") + xlab("Year")
+master %>% group_by(YEAR) %>% summarise(Fatal_Accidents = n()) %>% ungroup() %>% ggplot(aes(x = YEAR, y = Fatal_Accidents)) + geom_line() + ggtitle("Number of Fatal Accidents Over Last 5 Years") + ylab("Fatal Accidents") + xlab("Year")+ ylim(0,23000)
 ```
+
+This graphic shows the changes in the number of fatal motor vehicle crashes over the last 5 years. We wanted to see if the number of fatal car crashes has been increasing, decreasing, or remaining constant over time. From this graph, we can see that the number of fatal car crashes decreased slightly from 2017 to 2019, but has been on an upward trend from 2019 to 2021. This does not encompass all of the fatal car crashes over time, as we are only looking at even cases, but we can still conclude that the fatal car crashes has been increasing in recent years, as the actual statistics are almost exactly double than what the graph depicts.
 
 #### Month and Season
 ```{r}
@@ -225,16 +227,22 @@ master <- master %>%
   ))
 ```
 
+The above code was used to pair each month with the appropriate season. Information from almanac.com was used to identify the meteorological start and end dates of each season.
 
 ```{r}
 master %>% ggplot(aes(x = MONTH, weight = FATALS, fill = Season)) + geom_bar() + scale_x_discrete(limits = c("January","February","March","April","May","June","July","August","September","October","November","December"))+
   theme(axis.text.x = element_text(angle=45, vjust=1, hjust=1)) + ylab("Fatalities") + ggtitle("Fatalities by Month and Season")
 ```
 
+This graph was created to see if car crashes are more prevalent in winter months, than in the summer. We predicted that car crashes would increase in the late autumn and winter months due to traveling for Thanksgiving and Christmas, as well as due to the increasing chances of driving in snow and other hazardous conditions in cold months. Instead, this graph depicts the opposite of our hypothesis: the most car crashes occur in the summer and early autumn. Since our analysis shows the opposite of our expectations, we went to the internet to see if other websites had found the same results. Multiple websites and reports affirmed our analysis, with one website, jcdelaw.com, inferring that the increased fatal accidents are caused by factors such as 
+road construction, tourism, heat-caused impaired driving, and increased drinking and driving. 
+
 #### Month and Day
 ```{r}
-df %>% group_by(MONTH) %>% summarise(count = sum(FATALS)) %>% arrange(desc(count))
+master %>% group_by(MONTH) %>% summarise(count = sum(FATALS)) %>% arrange(desc(count))
 ```
+
+The above code creates a list of the months in order of most to least fatal accidents. This list was then applied to the graph below for its fill.
 
 ```{r}
 farb<-c("#c91e1e","#c80028","#ce0053","#d3007f","#d900ae","#dd00de","#b500e4", "#8a00e9","#6900d9","#5700e7","#4100f3", "#1e00ff")
@@ -251,43 +259,83 @@ plot_names <- c('1' = "January",
                 '11' = "November",
                 '12' = "December")
 
-master %>% group_by(DAY) %>% ggplot(aes(x = DAY, weight = FATALS)) + geom_bar(aes(fill = factor(MONTH, levels = c("10","7","8","6","9","5","11","12","4","3","1","2"))))+ facet_wrap(~MONTH, labeller = as_labeller(plot_names)) +geom_hline(yintercept = 200, color='RED') + theme(legend.position="bottom") + scale_fill_manual(values= farb)+ theme( legend.position="right")+labs(fill='Monthly Fatalities') + ylab("Fatalities") + ggtitle("Fatalities by Day and Month")
+highlight_df <- master %>% filter((MONTH == 1 & DAY == 1) | (MONTH == 2 & DAY == 2) | (MONTH == 2 & DAY == 29) | (MONTH == 7 & DAY == 4) | (MONTH == 10 & DAY == 31) | (MONTH == 11 & (DAY == 23 | DAY == 22 | DAY == 28 | DAY == 26 | DAY == 25)) | (MONTH == 12 & DAY == 25))
+
+
+master %>% group_by(DAY) %>% ggplot(aes(x = DAY, weight = FATALS)) + geom_bar(aes(fill = factor(MONTH, levels = c("10","7","8","6","9","5","11","12","4","3","1","2")))) +facet_wrap(~MONTH, labeller = as_labeller(plot_names)) + theme(legend.position="bottom") + scale_fill_manual(values= farb)+geom_bar(data=highlight_df, fill='green') + theme( legend.position="right")+labs(fill='Monthly Fatalities') + ylab("Fatalities") + ggtitle("Fatalities by Day and Month")
 ```
 
-Originally showed same pattern for every month.
-Originally showed high in January and Feburary and low for rest of year.
+The purpose of the above graph is to identify trends in fatal accidents within each month. Red depicts months with the most number of fatal accidents, and blue depicts months with the least number of fatal accidents. We split the data into months so that we could identify trends in holidays and other periods that we thought would have interesting patterns. The green bars are holidays or special periods, such as New Years Day, Valentines Day, Halloween, Thanksgiving week, and Christmas day. 
 
-```{r}
-master %>% filter(AGE < 900) %>% filter(AGE == min(AGE))
-```
+Originally, this graph showed high fatalities in January and February, but little to no fatalities for rest of the year, with almost none in November and December. We knew that this could not be correct, as it was impossible for there to be no fatalities in December. This led us to the finding that we mistakenly skewed the data when originally downscaling the dataset. At first, we filtered the final dataframe such that we were selecting the first 500 cases for every state and year pair. It turned out that the state case numbers were created in chronological order, with the smallest case numbers being in January and the largest in December. To fix this, we changed the filter to select only the even numbered state cases. This way, we would be getting a random sample of the cases with all of the months having a representative proportion of cases. 
 
+It is interesting to note that some of the holidays are immediately apparent, such as New Years Day being the highest datapoint in January, while Valentines Day does not stand out from the rest of February. The last day in February, which is highlighted green, is February 29th, which is Leap Day. Since leap years come only every 4 years, our dataset has one leap year: 2020. This is why the data point is significantly lower than the rest of the year. Surprisingly, July 3rd and July 4th are the top highest days in July, with the third being higher than July 4th. This may be due to traveling to see family. While Halloween has around 250 deaths, it is not significantly different than the rest of October, as October was the month with the most fatal traffic accidents. Since Thanksgiving day changes every year, we highlighted each separate Thanksgiving day from 2017 to 2021. Since the day Thanksgiving occurred on was different for every year, it is difficult to see the exact affect Thanksgiving has on fatal traffic accidents. Yet, the Thanksgiving days in 2018 and 2018 appear to be higher than the rest in terms of fatality. Lastly, there is a drop-off from around 3 days before Christmas to two days after Christmas. The day after Christmas may be lower due to decreased travelling.
 
 
 #### Weekday
 ```{r}
-df1 %>% ggplot(aes(x = as.factor(DAY_WEEK), weight = FATALS)) + geom_bar() + scale_x_discrete(
+master %>% group_by(DAY_WEEK) %>% summarize(num = sum(FATALS))
+
+master %>% ggplot(aes(x = as.factor(DAY_WEEK), weight = FATALS)) + geom_bar() + scale_x_discrete(
                       labels=c("Sunday","Monday", "Tuesday", "Wednesday","Thursday","Friday", "Saturday")) + xlab("Weekday") + ylab("Fatalities") + ggtitle("Fatalities by Weekday")
 ```
 
+We created the bar chart showing fatalities for each day of the week to determine how fatal car accidents fluctuate throughout the week. We predicted that the maximum would be on Friday, and that we would see a positive trend of fatalities as the week moves from Monday to Friday. Surprisingly, Friday and Sunday have similar numbers of fatalities. Saturday has the most fatalities, while Monday, Tuesday, Wednesday, and Thursday have no discernible pattern among themselves. Saturday is significantly higher than Monday through Thursday, as well as having almost 1,000 more fatalities than Friday or Saturday. 
+
 #### Hour
 ```{r}
-df1 %>% ggplot(aes(x = HOUR)) + geom_histogram(bins = 100) + ylab("Fatalities") + ggtitle("Fatalities by Hour")
-df1 %>% filter(HOUR >24)
-df1 %>% filter(HOUR <= 24) %>% ggplot(aes(x = as.factor(HOUR), weight = FATALS)) + geom_bar() + ylab("Fatalities") + ggtitle("Fatalities by Hour") + xlab("HOUR")
+master %>% filter(HOUR <= 24) %>% ggplot(aes(x = as.factor(HOUR), weight = FATALS)) + geom_bar() + ylab("Fatalities") + ggtitle("Fatalities by Hour") + xlab("HOUR")
 ```
 
-There is a strange outlier with hour, so I will remove that.
-
+Lastly, we created a histogram showing the number of fatalities per hour. We were interested in whether more fatal car crashes occur at night. In this graph, HOUR 0 is midnight, and HOUR 23 is 11pm, as the dataset uses military time. There was an outlier that had HOUR equal to 99. Upon checking the manual, we saw that this meant that the hour was unknown, so we removed these observations from the graph. There is an increase in fatalities from 8am to 9pm, and then a decrease in fatalities from 10pm to 4am. The majority of the fatalities occur between 3pm and 9pm, which may be due to people driving home from school or work, or heading out to dinner or other nightlife activities. There is an interesting increase in fatalities between 5am and 7am, which could be the result of adults headed to work or dropping their children off at school. 
 
 ### How is speeding related to the number of fatalities? Are younger drivers more prone to speeding? Is higher speeding limits associated with more fatalities?
 
 #### Speeding
 
+```{r}
+master %>% ggplot(aes(x = SPEEDRELNAME, weight = FATALS)) + geom_bar() + coord_flip()
+```
+```{r, warning=FALSE,message=FALSE}
+master <- master %>% mutate(
+  WASSPEEDING = case_when(
+    SPEEDRELNAME %in% c("Yes, Specifics Unknown","Yes, Too Fast for Conditions","Yes, Racing","Yes, Exceeded Speed Limit") ~ "Yes",
+    SPEEDRELNAME %in% c("No") ~ "No",
+    TRUE ~ "Unknown"
+  ))
+```
+
+```{r}
+master %>% ggplot(aes(x = WASSPEEDING, weight = FATALS)) + geom_bar() + ggtitle("Distribution of Speeding Behavior (Condensed)") + xlab("Driver Was Speeding") + ylab("Fatalities")
+master %>% group_by((WASSPEEDING)) %>% mutate(num_cases = sum(VEH_NO)) %>% ungroup() %>% ggplot(aes(x = WASSPEEDING, weight = FATALS/num_cases)) + geom_bar() + ggtitle("Distribution of Speeding Behavior with Fatality Rate") + xlab("Driver Was Speeding") + ylab("Fatality Rate")
+```
+
+
 #### Speeding and Weekday
+
+```{r}
+master %>% ggplot(aes(x = as.factor(DAY_WEEK), weight = FATALS, fill=WASSPEEDING)) + geom_bar() + scale_x_discrete(
+                      labels=c("Sunday","Monday", "Tuesday", "Wednesday","Thursday","Friday", "Saturday")) + xlab("Weekday") + ylab("Fatalities") + ggtitle("Fatalities by Weekday")
+```
+
 
 #### Speeding and Age
 
+```{r}
+master %>% filter(AGE < 900) %>% filter(AGE == min(AGE))
+```
+
+```{r}
+master %>% ggplot(aes(x=AGE, fill = WASSPEEDING, weight = FATALS)) + geom_histogram() + scale_x_continuous(name="AGE", limits=c(0, 100)) + xlab("Age - Colored by Sex") + ylab("Number of Crashes") + ggtitle("Crashes per Demographic")
+```
+
+
 #### Speedlimits
+
+```{r}
+master %>% ggplot(aes(x = as.factor(VSPD_LIM), weight = FATALS)) + geom_bar()
+```
+
 
 ### Does impairment affect fatality in crashes overall? When are impaired crashes most likely?
 
