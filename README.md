@@ -1,24 +1,19 @@
 
-# Final Project DS202
+# Analysis on Fatal Motor Vehicle Accidents in the United States
 
 #### Marissa Baietto, Ryan Dorle, Braeden Collings
 
-## Introduction (ANYONE CAN FIX THIS SECTION TO MAKE IT CLEANER)
+## Introduction
 
-- Describe topic The goal of the project is to explore multiple datasets
-  to better understand fatal vehicle crashes. Understanding this topic
-  better can lead to increased awareness, targeted policing efforts, and
-  identification of common trends for accidents. Ultimately, the goal is
-  the circumstances in which individuals get into vehicular accidents,
-  and how to avoid fatal crashes.
-- Why topic is important Fatal car crashes are a part of daily life due
-  to the high volume of drivers in the united states. We want to
-  investigate the data of multiple variables to see if there are trends
-  that tend to happen. With the discovery of trends or common occurance
-  the knowledge can be used to help citizens as well as law enforcment
-  to better saftey on the roads.
-- Research question In pursuit of the stated goal, we will explore the
-  following questions:
+The goal of the project is to explore multiple datasets to better
+understand fatal vehicle crashes. Unfortunately, fatal car crashes have
+become increasingly prevalent due to the high volume of drivers in the
+United States. Analysis on this topic can lead to increased awareness,
+more effective policing efforts, and identification of common trends for
+accidents. Ultimately, our goal is to understand the circumstances in
+which individuals get into vehicular accidents.
+
+In pursuit of the stated goal, we will explore the following questions:
 
 1.  Does impairment affect fatality in crashes overall? When are
     impaired crashes most likely?
@@ -276,27 +271,7 @@ write.csv(df1, 'master.csv')
 - SPEEDREL: Whether the crash was speeding related.
 - VSPD_LIM: What the speeding limit was.
 
-## Methods
-
-- Methods utilized, if used
-
 ## Results
-
-- All results and graphics
-  - For each graphic,
-    - Motivation for making the graphic
-    - Insights obtained from the graphics
-    - Necessary explanations
-  - Formatting
-    - Axis Labels, Title, Captions, Color Scheme if necessary
-    - Each graphic illustrates one point
-    - Make color scheme cohesive
-    - Avoid repetition
-- List trials and errors
-  - Critical of findings
-  - Multiple approaches and techniques used to verify unintuitive
-    results
-- Any additional research used to help understand/explain findings
 
 ``` r
 library(readr)
@@ -416,15 +391,14 @@ Originally, this graph showed high fatalities in January and February,
 but little to no fatalities for rest of the year, with almost none in
 November and December. We knew that this could not be correct, as it was
 impossible for there to be no fatalities in December. This led us to the
-finding that we mistakenly skewed the data when originally downscaling
-the dataset. At first, we filtered the final dataframe such that we were
-selecting the first 500 cases for every state and year pair. It turned
-out that the state case numbers were created in chronological order,
-with the smallest case numbers being in January and the largest in
-December. To fix this, we changed the filter to select only the even
-numbered state cases. This way, we would be getting a random sample of
-the cases with all of the months having a representative proportion of
-cases.
+finding that we mistakenly skewed the data. At first, we filtered the
+final dataframe such that we were selecting the first 500 cases for
+every state and year pair. It turned out that the state case numbers
+were created in chronological order, with the smallest case numbers
+being in January and the largest in December. To fix this, we changed
+the filter to select only the even numbered state cases. This way, we
+would be getting a random sample of the cases with all of the months
+represented accurately.
 
 It is interesting to note that some of the holidays are immediately
 apparent, such as New Years Day being the highest datapoint in January,
@@ -524,6 +498,16 @@ p1 / p2
 
 ![](README_files/figure-gfm/unnamed-chunk-19-1.png)<!-- -->
 
+The first graph shows the number of fatalities for each of 3 groups:
+driver was speeding, driver was not speeding, and unknown. The ratio of
+the number of fatalities for non speeding and speeding crashes is three
+to one. The second graph uses the fatality rate, which is the total
+number of fatalities divided by the total number of crashes for each
+group. In this graph, it can be seen that both speeding and non-speeding
+have similar fatality rates. So, there are more crashes that did not
+involve speeding than crashes that involved speeding, but crashes that
+involved speeding result in more fatalities.
+
 #### Speeding and Age
 
 ``` r
@@ -531,7 +515,7 @@ master %>% filter(AGE < 900) %>% filter(AGE == min(AGE))
 ```
 
 ``` r
-master %>% ggplot(aes(x=AGE, fill = WASSPEEDING, weight = FATALS)) + geom_histogram() + scale_x_continuous(name="AGE", limits=c(0, 100)) + xlab("Age - Colored by Sex") + ylab("Number of Crashes") + ggtitle("Crashes per Demographic")
+master %>% ggplot(aes(x=AGE, fill = WASSPEEDING, weight = FATALS)) + geom_histogram() + scale_x_continuous(name="AGE", limits=c(0, 100)) + xlab("Age - Colored by Sex") + ylab("Number of Crashes") + ggtitle("Speeding by Age")
 ```
 
     ## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
@@ -542,15 +526,42 @@ master %>% ggplot(aes(x=AGE, fill = WASSPEEDING, weight = FATALS)) + geom_histog
 
 ![](README_files/figure-gfm/unnamed-chunk-21-1.png)<!-- -->
 
-#### Speedlimits and Fatalities
+There was one outlier in age, which was a 6 year old. This seemed odd
+that a six year old was driving a vehicle, so we looked up this case in
+the original dataset with all of the variables. It turned out that the
+six year old was driving an atv, which is not unusual.
+
+The graph shows the number of fatalities for each age group, with the
+fill being whether or not the driver was speeding. From the graph, we
+can see that the distribution of speeding follows the same trend as age
+overall: more people in their early twenties speed, with a steady
+decline as age increases. It appears that on average, speeding is rarely
+a cause of car accidents for drivers over 75.
+
+#### Speed Limits and Fatalities
 
 ``` r
-master %>% ggplot(aes(x = as.factor(VSPD_LIM), weight = FATALS)) + geom_bar()
+p1 <- master %>% ggplot(aes(x = (VSPD_LIM))) + geom_boxplot() + xlab("Speed Limit") + ggtitle("Distribution of Speed Limit") + scale_x_continuous(breaks=seq(0,100,by=10)) + theme(axis.text.y=element_blank(), axis.ticks.y=element_blank() )
+
+p2 <- master %>% group_by(VSPD_LIM) %>% mutate(num_cases = sum(VEH_NO)) %>% ungroup() %>% ggplot(aes(x = as.factor(VSPD_LIM), weight = FATALS/num_cases)) + geom_bar() + xlab("Speed Limit") + ylab("Fatality Rate") + ggtitle("Fatality Rates by Speed Limit")
+
+p1/p2
 ```
 
 ![](README_files/figure-gfm/unnamed-chunk-22-1.png)<!-- -->
 
+This graph was created to see whether more crashes occur at higher
+speeds, and whether crashes that occurred at higher speeds result in
+more fatalities. From the first graph, it appears that fifty percent of
+the fatal crashes occured between 40 and 60 miles per hour, which is
+lower than we expected. There were outliers at 0, 5, 98, and 99 miles
+per hour. The 0 mph was most likely a parked vehicle that was hit. The
+second graph shows the fatality rate for each speed limit, and a
+positive relationship between speed limit and fatality rate is depicted.
+
 ### Does impairment affect fatality in crashes overall? When are impaired crashes most likely?
+
+#### Impairment
 
 ``` r
 master$ImpairmentAlcohol <- ifelse(master$DRINKINGNAME %in% c("No (Alcohol Not Involved)", "Unknown (Police Reported)", "Not Reported", "Reported as Unknown"), FALSE, TRUE)
@@ -565,6 +576,8 @@ master %>% ggplot(aes(x = Impairment)) + geom_bar() + ggtitle("Was the Deceased 
 ```
 
 ![](README_files/figure-gfm/unnamed-chunk-23-1.png)<!-- -->
+
+#### Impairment and Hour
 
 A graph just to get an idea of what amount of fatal crashes had a form
 of drugs or alcohol in there system at the time of the crash.
@@ -583,6 +596,8 @@ fatalities when impairment was involved. We can see that at the times
 from 9pm - 2am where the highest rates.
 
 ### What regions of the United States have the most fatal crashes? What conditions are present in those regions?
+
+#### Impairment and Region
 
 ``` r
 master <- master %>% 
@@ -609,6 +624,8 @@ master %>% ggplot(aes(x = Region, fill = Impairment)) + geom_bar() + ggtitle("Re
 This graph gives us a chance to see what regions had the most deaths, as
 well as a color change for when impairment was involved in the crash.
 
+#### Population Density
+
 ``` r
 master %>% ggplot(aes(x = Region, fill = RUR_URBNAME)) + geom_bar() + ggtitle("Population Density")
 ```
@@ -617,6 +634,8 @@ master %>% ggplot(aes(x = Region, fill = RUR_URBNAME)) + geom_bar() + ggtitle("P
 
 We can bring in another variable to see if the population density of a
 region plays a roll in fatal crashes and we find that it does not.
+
+#### Population Density and Impairment
 
 ``` r
 master %>% ggplot(aes(x = Impairment, fill = RUR_URBNAME)) + geom_bar() + ggtitle("Population Density & Impairment")
@@ -629,6 +648,8 @@ affected by population denstity and again we find that they are not.
 
 ### How does the demographics of the driver affect crashes? Are changes based on occupants more prevalent for younger drivers?
 
+#### Age and Sex
+
 ``` r
 master %>% ggplot(aes(x=AGE, fill = SEXNAME)) + geom_histogram()
 ```
@@ -637,7 +658,7 @@ master %>% ggplot(aes(x=AGE, fill = SEXNAME)) + geom_histogram()
 
 ![](README_files/figure-gfm/unnamed-chunk-28-1.png)<!-- -->
 
-Similar to the hour, there is a stange outlier that we will eliminate
+Similar to the hour, there is a strange outlier that we will eliminate
 
 ``` r
 master %>% ggplot(aes(x=AGE, fill = SEXNAME)) + geom_histogram() + scale_x_continuous(name="AGE", limits=c(0, 100)) + xlab("Age - Colored by Sex") + ylab("Number of Crashes") + ggtitle("Crashes per Demographic")
@@ -654,6 +675,8 @@ master %>% ggplot(aes(x=AGE, fill = SEXNAME)) + geom_histogram() + scale_x_conti
 This data clearly shows that driver age and sex are largely impactful in
 fatal car crashes.
 
+#### Lighting Conditions
+
 ``` r
 master %>% ggplot(aes(x=LGT_CONDNAME)) + geom_bar() + theme(axis.text.x = element_text(angle = 30, vjust = 0.5)) + ggtitle("Count of Crashes based on Lighting Conditions") + ylab("Number of Crashes") + xlab("Lighting Condition")
 ```
@@ -664,6 +687,8 @@ Looking at the time of day, it makes sense that daylight would have
 significantly more crashes than dark. It is important to not that when
 dark, there are significantly more when the area is not lighted.
 
+#### Weather Conditions
+
 ``` r
 master %>% ggplot(aes(y=STATENAME, fill = WEATHERNAME)) + geom_bar() + xlab("Number of Crashes") + ylab("State Name") + labs(fill = "Weather Condition") + ggtitle("Weather Conditions for each Crash per State")
 ```
@@ -673,6 +698,8 @@ master %>% ggplot(aes(y=STATENAME, fill = WEATHERNAME)) + geom_bar() + xlab("Num
 Looking at crashes per state, it is clear even in colder states, where
 snow is common, clear or cloudy conditions are the most common
 conditions for crashes
+
+#### Weather Conditions and Lighting Conditions
 
 ``` r
 master %>% ggplot(aes(x=WEATHERNAME, fill = LGT_CONDNAME)) + geom_bar() + theme(axis.text.x = element_text(angle = 30, vjust = 0.5)) + ggtitle("Count of Crashes based on Weather Conditions") + ylab("Number of Crashes") + xlab("Weather Condition") + labs(fill = "Lighting Condition")
@@ -685,6 +712,23 @@ careful for are cloudy or clear days when the area is lighted.
 
 ## Conclusion
 
-- Overall idea
-- Interesting further questions
-- Ideas for future research
+In conclusion, our analysis of fatal vehicle crashes in the United
+States has shed light on several critical factors influencing these
+tragic events. The most common theme throughout our analysis was that
+we, like many, had severe misconceptions on the reality of fatal car
+crashes. It is not as simple to avoid driving in the dark, drive on
+clear, sunny days, and to avoid speeding. In fact, most of these fatal
+accidents occured on days that seem relatively safe - lighted, clear,
+sunny days in which drivers did not drink or speed. This implies that
+drivers must never let their guard down, as traffic accidents can happen
+even to the safest drivers and under the best circumstances. With this
+result, we can encourage drivers to have the same alertness no matter
+the circumstances, which is an important lesson.
+
+Further research on changes in fatal accidents over the years is needed,
+as we did not have the time to dive into changes between 2017 and 2021.
+It would also be interesting to see what changes occured during the
+pandemic years, and whether the roads were “safter”. Lastly, there were
+many variables we were not able to analyze, and further research on
+these factors such as make of car and how pedestrians and bicyclists are
+affected by vehicle crashes is the next step.
