@@ -14,17 +14,19 @@ The goal of the project is to explore multiple datasets to better understand fat
 
 In pursuit of the stated goal, we will explore the following questions:
 
-1. Does impairment affect fatality in crashes overall? When are impaired crashes most likely?
+1. When are crashes most likely? Are there any seasonal effects, and are night crashes more likely than in the morning or afternoon?
 
-2. What regions of the United States have the most fatal crashes? What conditions are present in those regions?
+2. How is speeding related to the number of fatalities? Are younger drivers more prone to speeding? Is higher speeding limits associated with more fatalities?
 
-3. How does the demographics of the driver affect crashes? Are changes based on occupants more prevalent for younger drivers?
+3. Does impairment affect fatality in crashes overall? When are impaired crashes most likely?
 
-4. Are crashes affected by lighting and road conditions? How so, and what conditions are most impact? 
+4. What regions of the United States have the most fatal crashes? What conditions are present in those regions?
 
-5. When are crashes most likely? Are there any seasonal effects, and are night crashes more likely than in the morning or afternoon?
+5. How does the demographics of the driver affect crashes? Are changes based on occupants more prevalent for younger drivers?
 
-6. How is speeding related to the number of fatalities? Are younger drivers more prone to speeding? Is higher speeding limits associated with more fatalities?
+6. Are crashes affected by lighting and road conditions? How so, and what conditions are most impact? 
+
+These are the main questions we are looking to answer through the completion of this project. With the findings we will be able to draw meaningful conclusions on fatal car crashes throughout the United States. 
 
 ## Data
 ### Structure
@@ -209,11 +211,11 @@ master <- master %>%
 The above code was used to pair each month with the appropriate season. Information from almanac.com was used to identify the meteorological start and end dates of each season.
 
 ```{r}
-master %>% ggplot(aes(x = MONTH, weight = FATALS, fill = Season)) + geom_bar() + scale_x_discrete(limits = c("January","February","March","April","May","June","July","August","September","October","November","December"))+
+master %>% ggplot(aes(x = MONTH, fill = Season, weight = FATALS)) + geom_bar() + scale_x_discrete(limits = c("January","February","March","April","May","June","July","August","September","October","November","December"))+
   theme(axis.text.x = element_text(angle=45, vjust=1, hjust=1)) + ylab("Fatalities") + ggtitle("Fatalities by Month and Season")
 ```
 
-This graph was created to see if car crashes are more prevalent in winter months, than in the summer. We predicted that car crashes would increase in the late autumn and winter months due to traveling for Thanksgiving and Christmas, as well as due to the increasing chances of driving in snow and other hazardous conditions in cold months. Instead, this graph depicts the opposite of our hypothesis: the most car crashes occur in the summer and early autumn. Since our analysis shows the opposite of our expectations, we went to the internet to see if other websites had found the same results. Multiple websites and reports affirmed our analysis, with one website, jcdelaw.com, inferring that the increased fatal accidents are caused by factors such as 
+This graph was created to see if there are more fatalities in winter months, than in the summer. We predicted that fatalities would increase in the late autumn and winter months due to traveling for Thanksgiving and Christmas, as well as due to the increasing chances of driving in snow and other hazardous conditions in cold months. Instead, this graph depicts the opposite of our hypothesis: the most fatalities occur in the summer and early autumn. Since our analysis shows the opposite of our expectations, we went to the internet to see if other websites had found the same results. Multiple websites and reports affirmed our analysis, with one website, jcdelaw.com, inferring that the increased fatal accidents are caused by factors such as 
 road construction, tourism, heat-caused impaired driving, and increased drinking and driving. 
 
 #### Month and Day
@@ -221,7 +223,7 @@ road construction, tourism, heat-caused impaired driving, and increased drinking
 master %>% group_by(MONTH) %>% summarise(count = sum(FATALS)) %>% arrange(desc(count))
 ```
 
-The above code creates a list of the months in order of most to least fatal accidents. This list was then applied to the graph below for its fill.
+The above code creates a list of the months in order of most to least fatalities This list was then applied to the graph below for its fill.
 
 ```{r}
 farb<-c("#c91e1e","#c80028","#ce0053","#d3007f","#d900ae","#dd00de","#b500e4", "#8a00e9","#6900d9","#5700e7","#4100f3", "#1e00ff")
@@ -244,7 +246,7 @@ highlight_df <- master %>% filter((MONTH == 1 & DAY == 1) | (MONTH == 2 & DAY ==
 master %>% group_by(DAY) %>% ggplot(aes(x = DAY, weight = FATALS)) + geom_bar(aes(fill = factor(MONTH, levels = c("10","7","8","6","9","5","11","12","4","3","1","2")))) +facet_wrap(~MONTH, labeller = as_labeller(plot_names)) + theme(legend.position="bottom") + scale_fill_manual(values= farb)+geom_bar(data=highlight_df, fill='green') + theme( legend.position="right")+labs(fill='Monthly Fatalities') + ylab("Fatalities") + ggtitle("Fatalities by Day and Month")
 ```
 
-The purpose of the above graph is to identify trends in fatal accidents within each month. Red depicts months with the most number of fatal accidents, and blue depicts months with the least number of fatal accidents. We split the data into months so that we could identify trends in holidays and other periods that we thought would have interesting patterns. The green bars are holidays or special periods, such as New Years Day, Valentines Day, Halloween, Thanksgiving week, and Christmas day. 
+The purpose of the above graph is to identify trends in fatal accidents within each month. Red depicts months with the most number of fatalities, and blue depicts months with the least number of fatalities. We split the data into months so that we could identify trends in holidays and other periods that we thought would have interesting patterns. The green bars are holidays or special periods, such as New Years Day, Valentines Day, Halloween, Thanksgiving week, and Christmas day. 
 
 Originally, this graph showed high fatalities in January and February, but little to no fatalities for rest of the year, with almost none in November and December. We knew that this could not be correct, as it was impossible for there to be no fatalities in December. This led us to the finding that we mistakenly skewed the data. At first, we filtered the final dataframe such that we were selecting the first 500 cases for every state and year pair. It turned out that the state case numbers were created in chronological order, with the smallest case numbers being in January and the largest in December. To fix this, we changed the filter to select only the even numbered state cases. This way, we would be getting a random sample of the cases with all of the months represented accurately.
 
@@ -296,11 +298,11 @@ The first graph shows the number of fatalities for each of 3 groups: driver was 
 master %>% filter(AGE < 900) %>% filter(AGE == min(AGE))
 ```
 
-```{r}
-master %>% ggplot(aes(x=AGE, fill = WASSPEEDING, weight = FATALS)) + geom_histogram() + scale_x_continuous(name="AGE", limits=c(0, 100)) + xlab("Age - Colored by Sex") + ylab("Number of Crashes") + ggtitle("Speeding by Age")
+```{r, message=FALSE, warning=FALSE}
+master %>% ggplot(aes(x=AGE, fill = WASSPEEDING, weight = FATALS)) + geom_histogram() + scale_x_continuous(name="AGE", limits=c(0, 100)) + xlab("Age") + ylab("Number of Fatalities") + ggtitle("Speeding by Age") + labs(fill = "Was Speeding")
 ```
 
-There was one outlier in age, which was a 6 year old. This seemed odd that a six year old was driving a vehicle, so we looked up this case in the original dataset with all of the variables. It turned out that the six year old was driving an atv, which is not unusual. 
+There was one outlier in age, which was a 6 year old. This seemed odd that a six year old was driving a vehicle, so we looked up this case in the original dataset with all of the variables. It turned out that the six year old was driving an ATV, which is not unusual. 
 
 The graph shows the number of fatalities for each age group, with the fill being whether or not the driver was speeding. From the graph, we can see that the distribution of speeding follows the same trend as age overall: more people in their early twenties speed, with a steady decline as age increases. It appears that on average, speeding is rarely a cause of car accidents for drivers over 75. 
 
@@ -331,8 +333,9 @@ master %>% ggplot(aes(x = Impairment)) + geom_bar() + ggtitle("Was the Deceased 
 
 ```
 
+A graph just to get an idea of what amount of fatal crashes had a form of drugs or alcohol in there system at the time of the crash. We see that just over 27% of fatal crashes over 2017-2021 had a form of impairment involved.
+
 #### Impairment and Hour
-A graph just to get an idea of what amount of fatal crashes had a form of drugs or alcohol in there system at the time of the crash.
 ```{r}
 master %>% filter(Impairment == TRUE) %>%
   filter(HOUR <=24) %>% ggplot(aes(x = HOUR), fill = factor(MONTH)) + geom_bar(bins = 24) + ggtitle("Hours of Death with Impairment Involved")
@@ -365,7 +368,8 @@ master <- master %>%
 master %>% ggplot(aes(x = Region, fill = Impairment)) + geom_bar() + ggtitle("Region of Death")
 ```
 
-This graph gives us a chance to see what regions had the most deaths, as well as a color change for when impairment was involved in the crash.
+This graph gives us a chance to see what regions had the most deaths, as well as a color change for whether or not impairment was involved in the crash. 
+
 
 #### Population Density
 ```{r}
@@ -391,7 +395,7 @@ master %>% ggplot(aes(x=AGE, fill = SEXNAME)) + geom_histogram()
 
 ```
 
-Similar to the hour, there is a strange outlier that we will eliminate
+Similar to the hour, there is a strange outlier that we will eliminate.
 
 ```{r}
 
@@ -405,7 +409,6 @@ This data clearly shows that driver age and sex are largely impactful in fatal c
 ```{r}
 
 master %>% ggplot(aes(x=LGT_CONDNAME)) + geom_bar() + theme(axis.text.x = element_text(angle = 30, vjust = 0.5)) + ggtitle("Count of Crashes based on Lighting Conditions") + ylab("Number of Crashes") + xlab("Lighting Condition")
-
 ```
 
 Looking at the time of day, it makes sense that daylight would have significantly more crashes than dark. It is important to not that when dark, there are significantly more when the area is not lighted. 
@@ -417,7 +420,7 @@ master %>% ggplot(aes(y=STATENAME, fill = WEATHERNAME)) + geom_bar() + xlab("Num
 
 ```
 
-Looking at crashes per state, it is clear even in colder states, where snow is common, clear or cloudy conditions are the most common conditions for crashes
+Looking at crashes per state, it is clear even in colder states, where snow is common, clear or cloudy conditions are the most common conditions for crashes.
 
 #### Weather Conditions and Lighting Conditions
 ```{r}
@@ -428,6 +431,6 @@ This seemingly unimportant data suggests the conditions to be most careful for a
 
 ## Conclusion
 
-In conclusion, our  analysis of fatal vehicle crashes in the United States has shed light on several critical factors influencing these tragic events. The most common theme throughout our analysis was that we, like many, had severe misconceptions on the reality of fatal car crashes. It is not as simple to avoid driving in the dark, drive on clear, sunny days, and to avoid speeding. In fact, most of these fatal accidents occured on days that seem relatively safe - lighted, clear, sunny days in which drivers did not drink or speed. This implies that drivers must never let their guard down, as traffic accidents can happen even to the safest drivers and under the best circumstances. With this result, we can encourage drivers to have the same alertness no matter the circumstances, which is an important lesson.
+In conclusion, our  analysis of fatal vehicle crashes in the United States has shed light on several critical factors influencing these tragic events. The most common theme throughout our analysis was that we, like many, had severe misconceptions on the reality of fatal car crashes. It is not as simple to avoid driving in the dark, drive on clear, sunny days, and to avoid speeding. In fact, most of these fatal accidents occurred on days that seem relatively safe - lighted, clear, sunny days in which drivers did not drink or speed. This implies that drivers must never let their guard down, as traffic accidents can happen even to the safest drivers and under the best circumstances. With this result, we can encourage drivers to have the same alertness no matter the circumstances, which is an important lesson.
 
-Further research on changes in fatal accidents over the years is needed, as we did not have the time to dive into changes between 2017 and 2021. It would also be interesting to see what changes occured during the pandemic years, and whether the roads were "safter". Lastly, there were many variables we were not able to analyze, and further research on these factors such as make of car and how pedestrians and bicyclists are affected by vehicle crashes is the next step.
+Further research on changes in fatal accidents over the years is needed, as we did not have the time to dive into changes between 2017 and 2021. It would also be interesting to see what changes occurred during the pandemic years, and whether the roads were "safer". Lastly, there were many variables we were not able to analyze, and further research on these factors such as make of car and how pedestrians and bicyclists are affected by vehicle crashes is the next step.
