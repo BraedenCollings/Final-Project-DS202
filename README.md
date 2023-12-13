@@ -227,16 +227,6 @@ analysis.
 
 ``` r
 colnames(df1)
-```
-
-    ##  [1] "STATENAME"    "ST_CASE"      "MONTH"        "DAY"          "YEAR"        
-    ##  [6] "HOUR"         "MINUTE"       "RUR_URBNAME"  "LATITUDE"     "LONGITUD"    
-    ## [11] "LGT_CONDNAME" "FATALS"       "DRUNK_DR"     "DAY_WEEK"     "WEATHERNAME" 
-    ## [16] "AGE"          "SEXNAME"      "DRINKINGNAME" "DRUGSNAME"    "LAG_HRSNAME" 
-    ## [21] "VEH_NO"       "PER_NO"       "...23"        "HIT_RUNNAME"  "NUMOCCSNAME" 
-    ## [26] "L_STATENAME"  "SPEEDRELNAME" "VSPD_LIM"     "...22"
-
-``` r
 df1 <- df1 %>% select(-one_of('...22', '...21', '...23'))
 ```
 
@@ -312,23 +302,7 @@ write.csv(df1, 'master.csv')
 library(readr)
 library(tidyverse)
 master <- read_csv('master.csv')
-head(master)
 ```
-
-    ## # A tibble: 6 × 28
-    ##    ...1 STATENAME ST_CASE MONTH   DAY  YEAR  HOUR MINUTE RUR_URBNAME LATITUDE
-    ##   <dbl> <chr>       <dbl> <dbl> <dbl> <dbl> <dbl>  <dbl> <chr>          <dbl>
-    ## 1     1 Alabama     10002     2    14  2017    14     59 Urban           34.7
-    ## 2     2 Alabama     10004     1     1  2017    16     55 Urban           33.5
-    ## 3     3 Alabama     10006     1     6  2017    18     40 Rural           34.4
-    ## 4     4 Alabama     10008     1    11  2017    16     50 Rural           31.0
-    ## 5     5 Alabama     10010     1    14  2017     4      0 Urban           33.7
-    ## 6     6 Alabama     10012     1    19  2017    21     50 Rural           32.1
-    ## # ℹ 18 more variables: LONGITUD <dbl>, LGT_CONDNAME <chr>, FATALS <dbl>,
-    ## #   DRUNK_DR <dbl>, DAY_WEEK <dbl>, WEATHERNAME <chr>, AGE <dbl>,
-    ## #   SEXNAME <chr>, DRINKINGNAME <chr>, DRUGSNAME <chr>, LAG_HRSNAME <chr>,
-    ## #   VEH_NO <dbl>, PER_NO <dbl>, HIT_RUNNAME <chr>, NUMOCCSNAME <chr>,
-    ## #   L_STATENAME <chr>, SPEEDRELNAME <chr>, VSPD_LIM <dbl>
 
 ### When are crashes most likely? Are there any seasonal effects, and are night crashes more likely than in the morning or afternoon?
 
@@ -401,22 +375,6 @@ drinking and driving.
 ``` r
 master %>% group_by(MONTH) %>% summarise(count = sum(FATALS)) %>% arrange(desc(count))
 ```
-
-    ## # A tibble: 12 × 2
-    ##    MONTH count
-    ##    <dbl> <dbl>
-    ##  1    10  8924
-    ##  2     9  8898
-    ##  3     7  8848
-    ##  4     8  8787
-    ##  5     6  8635
-    ##  6     5  8194
-    ##  7    11  8116
-    ##  8    12  7875
-    ##  9     4  7162
-    ## 10     3  7110
-    ## 11     1  6979
-    ## 12     2  6262
 
 The above code creates a list of the months in order of most to least
 fatal accidents. This list was then applied to the graph below for its
@@ -546,13 +504,7 @@ off at school.
 
 ### How is speeding related to the number of fatalities? Are younger drivers more prone to speeding? Is higher speeding limits associated with more fatalities?
 
-#### Speeding
-
-``` r
-master %>% ggplot(aes(x = SPEEDRELNAME, weight = FATALS)) + geom_bar() + coord_flip()
-```
-
-![](README_files/figure-gfm/unnamed-chunk-18-1.png)<!-- -->
+#### Speeding and Fatalities
 
 ``` r
 master <- master %>% mutate(
@@ -564,42 +516,19 @@ master <- master %>% mutate(
 ```
 
 ``` r
-master %>% ggplot(aes(x = WASSPEEDING, weight = FATALS)) + geom_bar() + ggtitle("Distribution of Speeding Behavior (Condensed)") + xlab("Driver Was Speeding") + ylab("Fatalities")
+library(patchwork)
+p1 <- master %>% ggplot(aes(x = WASSPEEDING, weight = FATALS)) + geom_bar() + ggtitle("Speeding Behavior and Fatalities") + xlab("Driver Was Speeding") + ylab("Fatalities")
+p2 <- master %>% group_by((WASSPEEDING)) %>% mutate(num_cases = sum(VEH_NO)) %>% ungroup() %>% ggplot(aes(x = WASSPEEDING, weight = FATALS/num_cases)) + geom_bar() + ggtitle("Speeding Behavior and Fatality Rates") + xlab("Driver Was Speeding") + ylab("Fatality Rate")
+p1 / p2
 ```
 
-![](README_files/figure-gfm/unnamed-chunk-20-1.png)<!-- -->
-
-``` r
-master %>% group_by((WASSPEEDING)) %>% mutate(num_cases = sum(VEH_NO)) %>% ungroup() %>% ggplot(aes(x = WASSPEEDING, weight = FATALS/num_cases)) + geom_bar() + ggtitle("Distribution of Speeding Behavior with Fatality Rate") + xlab("Driver Was Speeding") + ylab("Fatality Rate")
-```
-
-![](README_files/figure-gfm/unnamed-chunk-20-2.png)<!-- -->
-
-#### Speeding and Weekday
-
-``` r
-master %>% ggplot(aes(x = as.factor(DAY_WEEK), weight = FATALS, fill=WASSPEEDING)) + geom_bar() + scale_x_discrete(
-                      labels=c("Sunday","Monday", "Tuesday", "Wednesday","Thursday","Friday", "Saturday")) + xlab("Weekday") + ylab("Fatalities") + ggtitle("Fatalities by Weekday")
-```
-
-![](README_files/figure-gfm/unnamed-chunk-21-1.png)<!-- -->
+![](README_files/figure-gfm/unnamed-chunk-19-1.png)<!-- -->
 
 #### Speeding and Age
 
 ``` r
 master %>% filter(AGE < 900) %>% filter(AGE == min(AGE))
 ```
-
-    ## # A tibble: 1 × 30
-    ##    ...1 STATENAME ST_CASE MONTH   DAY  YEAR  HOUR MINUTE RUR_URBNAME LATITUDE
-    ##   <dbl> <chr>       <dbl> <dbl> <dbl> <dbl> <dbl>  <dbl> <chr>          <dbl>
-    ## 1 49382 Texas      483296    12    25  2019    10     15 Rural           31.0
-    ## # ℹ 20 more variables: LONGITUD <dbl>, LGT_CONDNAME <chr>, FATALS <dbl>,
-    ## #   DRUNK_DR <dbl>, DAY_WEEK <dbl>, WEATHERNAME <chr>, AGE <dbl>,
-    ## #   SEXNAME <chr>, DRINKINGNAME <chr>, DRUGSNAME <chr>, LAG_HRSNAME <chr>,
-    ## #   VEH_NO <dbl>, PER_NO <dbl>, HIT_RUNNAME <chr>, NUMOCCSNAME <chr>,
-    ## #   L_STATENAME <chr>, SPEEDRELNAME <chr>, VSPD_LIM <dbl>, Season <chr>,
-    ## #   WASSPEEDING <chr>
 
 ``` r
 master %>% ggplot(aes(x=AGE, fill = WASSPEEDING, weight = FATALS)) + geom_histogram() + scale_x_continuous(name="AGE", limits=c(0, 100)) + xlab("Age - Colored by Sex") + ylab("Number of Crashes") + ggtitle("Crashes per Demographic")
@@ -611,15 +540,15 @@ master %>% ggplot(aes(x=AGE, fill = WASSPEEDING, weight = FATALS)) + geom_histog
 
     ## Warning: Removed 6 rows containing missing values (`geom_bar()`).
 
-![](README_files/figure-gfm/unnamed-chunk-23-1.png)<!-- -->
+![](README_files/figure-gfm/unnamed-chunk-21-1.png)<!-- -->
 
-#### Speedlimits
+#### Speedlimits and Fatalities
 
 ``` r
 master %>% ggplot(aes(x = as.factor(VSPD_LIM), weight = FATALS)) + geom_bar()
 ```
 
-![](README_files/figure-gfm/unnamed-chunk-24-1.png)<!-- -->
+![](README_files/figure-gfm/unnamed-chunk-22-1.png)<!-- -->
 
 ### Does impairment affect fatality in crashes overall? When are impaired crashes most likely?
 
@@ -635,7 +564,7 @@ master <- master %>% mutate(
 master %>% ggplot(aes(x = Impairment)) + geom_bar() + ggtitle("Was the Deceased party Impaired")
 ```
 
-![](README_files/figure-gfm/unnamed-chunk-25-1.png)<!-- -->
+![](README_files/figure-gfm/unnamed-chunk-23-1.png)<!-- -->
 
 A graph just to get an idea of what amount of fatal crashes had a form
 of drugs or alcohol in there system at the time of the crash.
@@ -647,7 +576,7 @@ master %>% filter(Impairment == TRUE) %>%
 
     ## Warning in geom_bar(bins = 24): Ignoring unknown parameters: `bins`
 
-![](README_files/figure-gfm/unnamed-chunk-26-1.png)<!-- -->
+![](README_files/figure-gfm/unnamed-chunk-24-1.png)<!-- -->
 
 A graph to look at what hours of the day had the highest rate of
 fatalities when impairment was involved. We can see that at the times
@@ -675,7 +604,7 @@ master <- master %>%
 master %>% ggplot(aes(x = Region, fill = Impairment)) + geom_bar() + ggtitle("Region of Death")
 ```
 
-![](README_files/figure-gfm/unnamed-chunk-27-1.png)<!-- -->
+![](README_files/figure-gfm/unnamed-chunk-25-1.png)<!-- -->
 
 This graph gives us a chance to see what regions had the most deaths, as
 well as a color change for when impairment was involved in the crash.
@@ -684,7 +613,7 @@ well as a color change for when impairment was involved in the crash.
 master %>% ggplot(aes(x = Region, fill = RUR_URBNAME)) + geom_bar() + ggtitle("Population Density")
 ```
 
-![](README_files/figure-gfm/unnamed-chunk-28-1.png)<!-- -->
+![](README_files/figure-gfm/unnamed-chunk-26-1.png)<!-- -->
 
 We can bring in another variable to see if the population density of a
 region plays a roll in fatal crashes and we find that it does not.
@@ -693,7 +622,7 @@ region plays a roll in fatal crashes and we find that it does not.
 master %>% ggplot(aes(x = Impairment, fill = RUR_URBNAME)) + geom_bar() + ggtitle("Population Density & Impairment")
 ```
 
-![](README_files/figure-gfm/unnamed-chunk-29-1.png)<!-- -->
+![](README_files/figure-gfm/unnamed-chunk-27-1.png)<!-- -->
 
 Just another graph for reference to see if deaths due to impairment are
 affected by population denstity and again we find that they are not.
@@ -706,7 +635,7 @@ master %>% ggplot(aes(x=AGE, fill = SEXNAME)) + geom_histogram()
 
     ## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
 
-![](README_files/figure-gfm/unnamed-chunk-30-1.png)<!-- -->
+![](README_files/figure-gfm/unnamed-chunk-28-1.png)<!-- -->
 
 Similar to the hour, there is a stange outlier that we will eliminate
 
@@ -720,7 +649,7 @@ master %>% ggplot(aes(x=AGE, fill = SEXNAME)) + geom_histogram() + scale_x_conti
 
     ## Warning: Removed 8 rows containing missing values (`geom_bar()`).
 
-![](README_files/figure-gfm/unnamed-chunk-31-1.png)<!-- -->
+![](README_files/figure-gfm/unnamed-chunk-29-1.png)<!-- -->
 
 This data clearly shows that driver age and sex are largely impactful in
 fatal car crashes.
@@ -729,7 +658,7 @@ fatal car crashes.
 master %>% ggplot(aes(x=LGT_CONDNAME)) + geom_bar() + theme(axis.text.x = element_text(angle = 30, vjust = 0.5)) + ggtitle("Count of Crashes based on Lighting Conditions") + ylab("Number of Crashes") + xlab("Lighting Condition")
 ```
 
-![](README_files/figure-gfm/unnamed-chunk-32-1.png)<!-- -->
+![](README_files/figure-gfm/unnamed-chunk-30-1.png)<!-- -->
 
 Looking at the time of day, it makes sense that daylight would have
 significantly more crashes than dark. It is important to not that when
@@ -739,7 +668,7 @@ dark, there are significantly more when the area is not lighted.
 master %>% ggplot(aes(y=STATENAME, fill = WEATHERNAME)) + geom_bar() + xlab("Number of Crashes") + ylab("State Name") + labs(fill = "Weather Condition") + ggtitle("Weather Conditions for each Crash per State")
 ```
 
-![](README_files/figure-gfm/unnamed-chunk-33-1.png)<!-- -->
+![](README_files/figure-gfm/unnamed-chunk-31-1.png)<!-- -->
 
 Looking at crashes per state, it is clear even in colder states, where
 snow is common, clear or cloudy conditions are the most common
@@ -749,7 +678,7 @@ conditions for crashes
 master %>% ggplot(aes(x=WEATHERNAME, fill = LGT_CONDNAME)) + geom_bar() + theme(axis.text.x = element_text(angle = 30, vjust = 0.5)) + ggtitle("Count of Crashes based on Weather Conditions") + ylab("Number of Crashes") + xlab("Weather Condition") + labs(fill = "Lighting Condition")
 ```
 
-![](README_files/figure-gfm/unnamed-chunk-34-1.png)<!-- -->
+![](README_files/figure-gfm/unnamed-chunk-32-1.png)<!-- -->
 
 This seemingly unimportant data suggests the conditions to be most
 careful for are cloudy or clear days when the area is lighted.

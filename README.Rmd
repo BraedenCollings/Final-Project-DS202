@@ -136,7 +136,7 @@ df1 <- df %>% group_by(STATENAME, YEAR) %>% filter(VEH_NO == 1 & ST_CASE %% 2 ==
 ```
 
 We noticed that there were 2 strange columns in the final dataframe named '...22' and '...21'. We believe that these were created when we joined the 'accident', 'person', and 'vehicle' datasets, as there were so many variables that R was not able to show them all when we viewed the merged datasets. We took these columns out, as they had no value to our analysis. 
-```{r, warning=FALSE,message=FALSE}
+```{r, warning=FALSE,message=FALSE, results = "hide"}
 colnames(df1)
 df1 <- df1 %>% select(-one_of('...22', '...21', '...23'))
 ```
@@ -197,7 +197,6 @@ write.csv(df1, 'master.csv')
 library(readr)
 library(tidyverse)
 master <- read_csv('master.csv')
-head(master)
 ```
 
 ### When are crashes most likely? Are there any seasonal effects, and are night crashes more likely than in the morning or afternoon?
@@ -239,7 +238,7 @@ This graph was created to see if car crashes are more prevalent in winter months
 road construction, tourism, heat-caused impaired driving, and increased drinking and driving. 
 
 #### Month and Day
-```{r}
+```{r, echo = T, results = "hide"}
 master %>% group_by(MONTH) %>% summarise(count = sum(FATALS)) %>% arrange(desc(count))
 ```
 
@@ -292,11 +291,8 @@ Lastly, we created a histogram showing the number of fatalities per hour. We wer
 
 ### How is speeding related to the number of fatalities? Are younger drivers more prone to speeding? Is higher speeding limits associated with more fatalities?
 
-#### Speeding
+#### Speeding and Fatalities
 
-```{r}
-master %>% ggplot(aes(x = SPEEDRELNAME, weight = FATALS)) + geom_bar() + coord_flip()
-```
 ```{r, warning=FALSE,message=FALSE}
 master <- master %>% mutate(
   WASSPEEDING = case_when(
@@ -306,23 +302,16 @@ master <- master %>% mutate(
   ))
 ```
 
-```{r}
-master %>% ggplot(aes(x = WASSPEEDING, weight = FATALS)) + geom_bar() + ggtitle("Distribution of Speeding Behavior (Condensed)") + xlab("Driver Was Speeding") + ylab("Fatalities")
-master %>% group_by((WASSPEEDING)) %>% mutate(num_cases = sum(VEH_NO)) %>% ungroup() %>% ggplot(aes(x = WASSPEEDING, weight = FATALS/num_cases)) + geom_bar() + ggtitle("Distribution of Speeding Behavior with Fatality Rate") + xlab("Driver Was Speeding") + ylab("Fatality Rate")
+```{r, warning = FALSE}
+library(patchwork)
+p1 <- master %>% ggplot(aes(x = WASSPEEDING, weight = FATALS)) + geom_bar() + ggtitle("Speeding Behavior and Fatalities") + xlab("Driver Was Speeding") + ylab("Fatalities")
+p2 <- master %>% group_by((WASSPEEDING)) %>% mutate(num_cases = sum(VEH_NO)) %>% ungroup() %>% ggplot(aes(x = WASSPEEDING, weight = FATALS/num_cases)) + geom_bar() + ggtitle("Speeding Behavior and Fatality Rates") + xlab("Driver Was Speeding") + ylab("Fatality Rate")
+p1 / p2
 ```
-
-
-#### Speeding and Weekday
-
-```{r}
-master %>% ggplot(aes(x = as.factor(DAY_WEEK), weight = FATALS, fill=WASSPEEDING)) + geom_bar() + scale_x_discrete(
-                      labels=c("Sunday","Monday", "Tuesday", "Wednesday","Thursday","Friday", "Saturday")) + xlab("Weekday") + ylab("Fatalities") + ggtitle("Fatalities by Weekday")
-```
-
 
 #### Speeding and Age
 
-```{r}
+```{r, echo=T, results="hide"}
 master %>% filter(AGE < 900) %>% filter(AGE == min(AGE))
 ```
 
@@ -331,7 +320,7 @@ master %>% ggplot(aes(x=AGE, fill = WASSPEEDING, weight = FATALS)) + geom_histog
 ```
 
 
-#### Speedlimits
+#### Speedlimits and Fatalities
 
 ```{r}
 master %>% ggplot(aes(x = as.factor(VSPD_LIM), weight = FATALS)) + geom_bar()
