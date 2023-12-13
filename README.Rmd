@@ -10,10 +10,10 @@ knitr::opts_chunk$set(echo = TRUE)
 #### Marissa Baietto, Ryan Dorle, Braeden Collings
 
 ## Introduction (ANYONE CAN FIX THIS SECTION TO MAKE IT CLEANER)
-* Describe topic
-The goal of the project is to explore multiple datasets to better understand fatal vehicle crashes. Understanding this topic better can lead to increased awareness, targeted policing efforts, and identification of common trends for accidents. Ultimately, the goal is the circumstances in which individuals get into vehicular accidents, and how to avoid fatal crashes.
-* Why topic is important
-Fatal car crashes are a part of daily life due to the high volume of drivers in the united states. We want to investigate the data of multiple variables to see if there are trends that tend to happen. With the discovery of trends or common occurance the knowledge can be used to help citizens as well as law enforcment to better saftey on the roads.
+* Describe topic:
+The goal of the project is to explore multiple datasets to better understand fatal vehicle crashes. Understanding this topic better can lead to increased awareness, targeted policing efforts, and identification of common trends for accidents. Ultimately, the goal is the circumstances in which individuals get into vehicular accidents, and how to avoid fatal crashes. We combined multiple data sets to create a large data set with vehicle crashes resulting in deaths from the years 2017-2021. We included many variables that we plan to investigate for various reasons to attempt to find trends or correlations. 
+* Why topic is important:
+Fatal car crashes are a part of daily life due to the high volume of drivers in the United States. We want to investigate the data of multiple variables to see if there are trends that tend to cause deaths or the opposite. With the discovery of trends or common occurrence the knowledge can be used to help citizens as well as law enforcement to create better safety on the roads. Whenever we have the ability to travel safer in everyday transportation it is important to take the necessary steps to make it as safe as possible and that is our goal with this project. 
 * Research question
 In pursuit of the stated goal, we will explore the following questions:
 
@@ -28,6 +28,8 @@ In pursuit of the stated goal, we will explore the following questions:
 5. When are crashes most likely? Are there any seasonal effects, and are night crashes more likely than in the morning or afternoon?
 
 6. How is speeding related to the number of fatalities? Are younger drivers more prone to speeding? Is higher speeding limits associated with more fatalities?
+
+These are the main questions we are looking to answer through the completion of this project. With the findings we will be able to draw different conclusions on fatal car crashes throughout the United States. 
 
 ## Data
 ### Structure
@@ -353,7 +355,7 @@ master %>% ggplot(aes(x = Impairment)) + geom_bar() + ggtitle("Was the Deceased 
 
 ```
 
-A graph just to get an idea of what amount of fatal crashes had a form of drugs or alcohol in there system at the time of the crash.
+A graph just to get an idea of what amount of fatal crashes had a form of drugs or alcohol in there system at the time of the crash. We see that just over 27% of fatal crashes over 2017-2021 had a form of impairment involved.
 ```{r}
 master %>% filter(Impairment == TRUE) %>%
   filter(HOUR <=24) %>% ggplot(aes(x = HOUR), fill = factor(MONTH)) + geom_bar(bins = 24) + ggtitle("Hours of Death with Impairment Involved")
@@ -386,7 +388,8 @@ master <- master %>%
 master %>% ggplot(aes(x = Region, fill = Impairment)) + geom_bar() + ggtitle("Region of Death")
 ```
 
-This graph gives us a chance to see what regions had the most deaths, as well as a color change for when impairment was involved in the crash.
+This graph gives us a chance to see what regions had the most deaths, as well as a color change for whether or not impairment was involved in the crash. 
+
 
 ```{r}
 master %>% ggplot(aes(x = Region, fill = RUR_URBNAME)) + geom_bar() + ggtitle("Population Density")
@@ -422,7 +425,6 @@ This data clearly shows that driver age and sex are largely impactful in fatal c
 ```{r}
 
 master %>% ggplot(aes(x=LGT_CONDNAME)) + geom_bar() + theme(axis.text.x = element_text(angle = 30, vjust = 0.5)) + ggtitle("Count of Crashes based on Lighting Conditions") + ylab("Number of Crashes") + xlab("Lighting Condition")
-
 ```
 
 Looking at the time of day, it makes sense that daylight would have significantly more crashes than dark. It is important to not that when dark, there are significantly more when the area is not lighted. 

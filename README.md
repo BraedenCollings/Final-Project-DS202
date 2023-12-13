@@ -5,18 +5,25 @@
 
 ## Introduction (ANYONE CAN FIX THIS SECTION TO MAKE IT CLEANER)
 
-- Describe topic The goal of the project is to explore multiple datasets
-  to better understand fatal vehicle crashes. Understanding this topic
-  better can lead to increased awareness, targeted policing efforts, and
-  identification of common trends for accidents. Ultimately, the goal is
-  the circumstances in which individuals get into vehicular accidents,
-  and how to avoid fatal crashes.
-- Why topic is important Fatal car crashes are a part of daily life due
-  to the high volume of drivers in the united states. We want to
+- Describe topic: The goal of the project is to explore multiple
+  datasets to better understand fatal vehicle crashes. Understanding
+  this topic better can lead to increased awareness, targeted policing
+  efforts, and identification of common trends for accidents.
+  Ultimately, the goal is the circumstances in which individuals get
+  into vehicular accidents, and how to avoid fatal crashes. We combined
+  multiple data sets to create a large data set with vehicle crashes
+  resulting in deaths from the years 2017-2021. We included many
+  variables that we plan to investigate for various reasons to attempt
+  to find trends or correlations.
+- Why topic is important: Fatal car crashes are a part of daily life due
+  to the high volume of drivers in the United States. We want to
   investigate the data of multiple variables to see if there are trends
-  that tend to happen. With the discovery of trends or common occurance
-  the knowledge can be used to help citizens as well as law enforcment
-  to better saftey on the roads.
+  that tend to cause deaths or the opposite. With the discovery of
+  trends or common occurrence the knowledge can be used to help citizens
+  as well as law enforcement to create better safety on the roads.
+  Whenever we have the ability to travel safer in everyday
+  transportation it is important to take the necessary steps to make it
+  as safe as possible and that is our goal with this project.
 - Research question In pursuit of the stated goal, we will explore the
   following questions:
 
@@ -38,6 +45,10 @@
 6.  How is speeding related to the number of fatalities? Are younger
     drivers more prone to speeding? Is higher speeding limits associated
     with more fatalities?
+
+These are the main questions we are looking to answer through the
+completion of this project. With the findings we will be able to draw
+different conclusions on fatal car crashes throughout the United States.
 
 ## Data
 
@@ -638,7 +649,9 @@ master %>% ggplot(aes(x = Impairment)) + geom_bar() + ggtitle("Was the Deceased 
 ![](README_files/figure-gfm/unnamed-chunk-25-1.png)<!-- -->
 
 A graph just to get an idea of what amount of fatal crashes had a form
-of drugs or alcohol in there system at the time of the crash.
+of drugs or alcohol in there system at the time of the crash. We see
+that just over 27% of fatal crashes over 2017-2021 had a form of
+impairment involved.
 
 ``` r
 master %>% filter(Impairment == TRUE) %>%
@@ -678,7 +691,8 @@ master %>% ggplot(aes(x = Region, fill = Impairment)) + geom_bar() + ggtitle("Re
 ![](README_files/figure-gfm/unnamed-chunk-27-1.png)<!-- -->
 
 This graph gives us a chance to see what regions had the most deaths, as
-well as a color change for when impairment was involved in the crash.
+well as a color change for whether or not impairment was involved in the
+crash.
 
 ``` r
 master %>% ggplot(aes(x = Region, fill = RUR_URBNAME)) + geom_bar() + ggtitle("Population Density")
